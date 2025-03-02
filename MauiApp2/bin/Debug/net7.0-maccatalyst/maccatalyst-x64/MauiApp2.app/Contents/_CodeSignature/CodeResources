@@ -10,11 +10,15 @@
 		</data>
 		<key>Resources/Assets.car</key>
 		<data>
-		y8PHjixL5aChA9R7TitE0tqpsMs=
+		yCkh6t7GHnrhyrslV2YJkIFhEG4=
+		</data>
+		<key>Resources/Manrope.ttf</key>
+		<data>
+		iTIBBr5oq4VEsdYubv1pNQlxqaM=
 		</data>
 		<key>Resources/MauiInfo.plist</key>
 		<data>
-		iEtuUGCV6JM3gxS/pO33swhmpp8=
+		/pDZWm3d+oYNGOENxxzRqbldmYs=
 		</data>
 		<key>Resources/MonoTouchDebugConfiguration.txt</key>
 		<data>
@@ -30,7 +34,7 @@
 		</data>
 		<key>Resources/appicon.icns</key>
 		<data>
-		b662XKpGlZAnh83xLx3sOUcfUA0=
+		N24YGqee87UV97Q8uRyXjsFb2BQ=
 		</data>
 		<key>Resources/dotnet_bot.png</key>
 		<data>
@@ -51,14 +55,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			UOt54DqNm9UlTG2SD5yc5A906FX/F4a+oN1BICAJGlM=
+			g5jpTeNf94sL6lNuVxpADj88hVxA0Zv8gG02lHoE7T8=
 			</data>
 		</dict>
 		<key>MonoBundle/MauiApp2.pdb</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			IBiIyMql/akgFZbFQeakINMv872Eu97AALXuv49NPXo=
+			Atm4wpTdgBPDl01TjSYbPmdK+yFgLd/s2YzTkNp/0kE=
 			</data>
 		</dict>
 		<key>MonoBundle/Microsoft.CSharp.dll</key>
@@ -1381,14 +1385,21 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			4zeNvbbMFzt7nl5+gChrqsjjsPI06HRqiW1CwD+Ab0c=
+			QvO8YMiW86rLB3r6f9tbHnF99i+eVwsO0oSMuT6ASNk=
+			</data>
+		</dict>
+		<key>Resources/Manrope.ttf</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			mr2fhQ2NX984xd1hZKd1C9LQUTiRe/Fi/0O6KyiIp9o=
 			</data>
 		</dict>
 		<key>Resources/MauiInfo.plist</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			tx0KXqEC+DvcCGyogQTEQWHcCWJYYqH24NtPwhpQEjo=
+			Vn+XGaWjhMwJmgHra+SHVvBWklPrnqMaokcSPfHRuaQ=
 			</data>
 		</dict>
 		<key>Resources/MonoTouchDebugConfiguration.txt</key>
@@ -1416,7 +1427,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			ec7nXoGJoI5Tvia6KZkz7qQzZ7+dKhFRFQ3JU8eaVlY=
+			eyHPAidQr8aklrWHIOaXPoFrvxBCdVyl9/OpjHXlrqA=
 			</data>
 		</dict>
 		<key>Resources/dotnet_bot.png</key>

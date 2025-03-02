@@ -22,12 +22,6 @@ build_metadata.AdditionalFiles.ManifestResourceName = MauiApp2.AppShell.xaml
 build_metadata.AdditionalFiles.TargetPath = AppShell.xaml
 build_metadata.AdditionalFiles.RelativePath = AppShell.xaml
 
-[/Users/yuri/Shared/Download/MauiApp2/MauiApp2/MainPage.xaml]
-build_metadata.AdditionalFiles.GenKind = Xaml
-build_metadata.AdditionalFiles.ManifestResourceName = MauiApp2.MainPage.xaml
-build_metadata.AdditionalFiles.TargetPath = MainPage.xaml
-build_metadata.AdditionalFiles.RelativePath = MainPage.xaml
-
 [/Users/yuri/Shared/Download/MauiApp2/MauiApp2/Resources/Styles/Colors.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = MauiApp2.Resources.Styles.Colors.xaml
@@ -39,3 +33,15 @@ build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = MauiApp2.Resources.Styles.Styles.xaml
 build_metadata.AdditionalFiles.TargetPath = Resources/Styles/Styles.xaml
 build_metadata.AdditionalFiles.RelativePath = Resources/Styles/Styles.xaml
+
+[/Users/yuri/Shared/Download/MauiApp2/MauiApp2/Views/MainPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = MauiApp2.Views.MainPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Views/MainPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Views/MainPage.xaml
+
+[/Users/yuri/Shared/Download/MauiApp2/MauiApp2/Views/Menu.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = MauiApp2.Views.Menu.xaml
+build_metadata.AdditionalFiles.TargetPath = Views/Menu.xaml
+build_metadata.AdditionalFiles.RelativePath = Views/Menu.xaml

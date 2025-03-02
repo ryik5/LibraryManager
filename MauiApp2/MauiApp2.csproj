@@ -46,4 +46,22 @@
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Models\" />
+      <Folder Include="ViewModels\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <MauiXaml Update="Views\MainPage.xaml">
+        <SubType>Designer</SubType>
+      </MauiXaml>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Views\MainPage.xaml.cs">
+        <DependentUpon>MainPage.xaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+    </ItemGroup>
+
 </Project>
