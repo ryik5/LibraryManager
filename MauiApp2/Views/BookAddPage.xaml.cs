@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace MauiApp2.Views;
 
-public partial class Menu : ContentPage
+public partial class BookAddPage : ContentPage
 {
-    public Menu()
+    public BookAddPage()
     {
         InitializeComponent();
     }

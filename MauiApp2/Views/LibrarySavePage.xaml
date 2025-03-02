@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiApp2.Views.LibrarySavePage">
+    <ContentPage.Content>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Label Text="Test text" 
+                   FontSize="24"
+                   BackgroundColor="{StaticResource Tertiary}" 
+                   VerticalTextAlignment="Center"
+                   HorizontalTextAlignment="Center">
+            </Label>
+
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>
