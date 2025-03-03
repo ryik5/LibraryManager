@@ -2,43 +2,79 @@
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel="clr-namespace:LibraryManager.ViewModels"
              x:Class="LibraryManager.Views.Library">
+    <ContentPage.BindingContext>
+        <viewmodel:LibraryViewModel/>
+    </ContentPage.BindingContext>
     <ContentPage.MenuBarItems>
         <MenuBarItem Text="Library">
-            <MenuFlyoutItem Text="Create"
-                            Command="{Binding LibraryCreateCommand}" />
-            <MenuFlyoutItem Text="Load"
-                            Command="{Binding LibraryLoadCommand}" />
-            <MenuFlyoutItem Text="Save"
-                            Command="{Binding LibrarySaveCommand}" />
-            <MenuFlyoutItem Text="Close"
-                            Command="{Binding LibraryCloseCommand}" />            
-            <MenuFlyoutSeparator />   
-            
-            <MenuFlyoutSubItem Text="Change Location">
-                <MenuFlyoutItem Text="Redmond, USA"
-                                Command="{Binding ChangeLocationCommand}"
-                                CommandParameter="Redmond" />
-                <MenuFlyoutItem Text="London, UK"
-                                Command="{Binding ChangeLocationCommand}"
-                                CommandParameter="London" />
-                <MenuFlyoutItem Text="Berlin, DE"
-                                Command="{Binding ChangeLocationCommand}"
-                                CommandParameter="Berlin"/>
+            <MenuFlyoutSubItem Text="Library">
+                <MenuFlyoutItem Text="New Library"
+                                Command="{Binding LibraryCreateNewCommand}" />
+                <MenuFlyoutItem Text="Load Library"
+                                Command="{Binding LibraryLoadCommand}" />
+                <MenuFlyoutItem Text="Save Library"
+                                Command="{Binding LibrarySaveCommand}" />
+                <MenuFlyoutItem Text="Save As Library"
+                                Command="{Binding LibrarySaveAsCommand}" />
+                <MenuFlyoutItem Text="Close Library"
+                                Command="{Binding LibraryCloseCommand}" />
+                <MenuFlyoutSeparator />
             </MenuFlyoutSubItem>
-            <MenuFlyoutItem Text="Add Location"
-                            Command="{Binding AddLocationCommand}" />
-            <MenuFlyoutItem Text="Edit Location"
-                            Command="{Binding EditLocationCommand}" />
-            <MenuFlyoutItem Text="Remove Location"
-                            Command="{Binding RemoveLocationCommand}" />                            
         </MenuBarItem>
-        <MenuBarItem Text="View">
-            <MenuFlyoutItem Text="Refresh"
-                            Command="{Binding RefreshCommand}" />
-            <MenuFlyoutItem Text="Change Theme"
-                            Command="{Binding ChangeThemeCommand}" />
+        <MenuBarItem Text="Books">
+            <MenuFlyoutSubItem Text="Book">
+                <MenuFlyoutItem Text="Add"
+                                Command="{Binding BooksAddCommand}"
+                                CommandParameter="Redmond" />
+                <MenuFlyoutItem Text="Edit Book"
+                                Command="{Binding BooksEditCommand}"
+                                CommandParameter="Berlin" />
+                <MenuFlyoutItem Text="Import Book"
+                                Command="{Binding BooksImportCommand}"
+                                CommandParameter="Berlin" />
+                <MenuFlyoutItem Text="Export Book"
+                                Command="{Binding BooksExportCommand}"
+                                CommandParameter="Berlin" />
+            </MenuFlyoutSubItem>
+
+            <MenuFlyoutSubItem Text="Books">
+                <MenuFlyoutItem Text="Demo 'Add Books'"
+                                Command="{Binding BooksAddDemoCommand}"
+                                CommandParameter="London" />
+                <MenuFlyoutItem Text="Import Books"
+                                Command="{Binding BooksImportCommand}"
+                                CommandParameter="Berlin" />
+                <MenuFlyoutItem Text="Export Books"
+                                Command="{Binding BooksExportCommand}"
+                                CommandParameter="Berlin" />
+
+                <MenuFlyoutSeparator />
+                <MenuFlyoutItem Text="Sort Books"
+                                Command="{Binding BooksSortCommand}"
+                                CommandParameter="Berlin" />
+
+                <MenuFlyoutSeparator />
+                <MenuFlyoutItem Text="Delete Books"
+                                Command="{Binding BooksDeleteCommand}"
+                                CommandParameter="Berlin" />
+            </MenuFlyoutSubItem>
+            <MenuFlyoutSubItem Text="Find Books">
+                <MenuFlyoutItem Text="Find"
+                                Command="{Binding FindBooksCommand}" />
+            </MenuFlyoutSubItem>
         </MenuBarItem>
-        
+
+        <MenuBarItem Text="Tools">
+            <MenuFlyoutItem Text="Settings"
+                            Command="{Binding SettingCommand}" />
+            <MenuFlyoutItem Text="Debug"
+                            Command="{Binding DebugCommand}" />
+        </MenuBarItem>
+        <MenuBarItem Text="Help">
+            <MenuFlyoutItem Text="About"
+                            Command="{Binding AboutCommand}" />
+        </MenuBarItem>
     </ContentPage.MenuBarItems>
 </ContentPage>

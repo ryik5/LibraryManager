@@ -27,7 +27,7 @@
                 Title="New"
                 ContentTemplate="{DataTemplate local:Library}"/>
         </Tab>
-        <Tab Title="Library_">
+        <!--<Tab Title="Library_">
             <ShellContent
                 Title="New" Shell.TabBarIsVisible="True"
                 ContentTemplate="{DataTemplate local:LibraryNewPage}"/>
@@ -89,7 +89,7 @@
             <ShellContent
                 Title="Test"
                 ContentTemplate="{DataTemplate local:BookAddPage}" />
-        </Tab>
+        </Tab>-->
     </TabBar>
 
 </Shell>
