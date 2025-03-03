@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <Shell
-    x:Class="MauiApp2.AppShell"
+    x:Class="LibraryManager.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:MauiApp2.Views"
+    xmlns:local="clr-namespace:LibraryManager.Views"
     FlyoutHeaderBehavior="CollapseOnScroll"
     Shell.FlyoutBehavior="Disabled">
     <Shell.Resources>
@@ -12,15 +12,24 @@
             <Setter Property="FontFamily" Value="ManropeExtraLight" />  
             <Setter Property="FontSize" Value="22" />  
         </Style> 
-        <!-- <Style TargetType="TabBar"> -->
-        <!--     <Setter Property="Title" Value=""></Setter> -->
-        <!-- </Style> -->
+        <Style TargetType="TabBar">
+            <Setter Property="Shell.TabBarBackgroundColor" Value="{StaticResource Primary}" />
+            <Setter Property="Shell.TabBarForegroundColor" Value="{StaticResource White}"/>
+            <Setter Property="Shell.TabBarTitleColor" Value="{StaticResource Tertiary}" />
+            <Setter Property="Shell.TabBarUnselectedColor" Value="{StaticResource Tertiary}" />
+        </Style>
+        
     </Shell.Resources>
     
     <TabBar FlyoutDisplayOptions="AsMultipleItems">
         <Tab Title="Library">
             <ShellContent
                 Title="New"
+                ContentTemplate="{DataTemplate local:Library}"/>
+        </Tab>
+        <Tab Title="Library_">
+            <ShellContent
+                Title="New" Shell.TabBarIsVisible="True"
                 ContentTemplate="{DataTemplate local:LibraryNewPage}"/>
             <ShellContent
                 Title="Load"
@@ -76,6 +85,7 @@
         </Tab>
         
         <Tab Title="About">
+            
             <ShellContent
                 Title="Test"
                 ContentTemplate="{DataTemplate local:BookAddPage}" />

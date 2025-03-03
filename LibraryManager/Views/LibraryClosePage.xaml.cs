@@ -1,4 +1,4 @@
-﻿namespace MauiApp2.Views;
+﻿namespace LibraryManager.Views;
 
 public partial class LibraryClosePage : ContentPage
 {

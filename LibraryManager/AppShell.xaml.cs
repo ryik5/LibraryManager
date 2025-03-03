@@ -1,4 +1,4 @@
-﻿namespace MauiApp2;
+﻿namespace LibraryManager;
 
 public partial class AppShell : Shell
 {

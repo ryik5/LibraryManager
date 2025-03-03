@@ -2,8 +2,9 @@
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="MauiApp2.Views.BookAddPage">
+             x:Class="LibraryManager.Views.LibrarySaveAsPage"
+             Background="{StaticResource Secondary}">
     <ContentPage.Content>
-        <Button BackgroundColor="{StaticResource Secondary}" WidthRequest="120" HeightRequest="30"/>
+        <Label Text="This is statusBar"/>
     </ContentPage.Content>
 </ContentPage>

@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MauiApp2.Views;
+namespace LibraryManager.Views;
 
-public partial class LibraryLoadPage : ContentPage
+public partial class LibrarySaveAsPage : ContentPage
 {
-    public LibraryLoadPage()
+    public LibrarySaveAsPage()
     {
         InitializeComponent();
     }
