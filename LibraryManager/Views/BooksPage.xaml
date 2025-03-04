@@ -3,19 +3,19 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodel="clr-namespace:LibraryManager.ViewModels"
-             x:Class="LibraryManager.Views.LibraryNewPage">
-    
+             x:Class="LibraryManager.Views.BooksPage">
+
     <ContentPage.BindingContext>
-        <viewmodel:LibraryViewModel/>
+        <viewmodel:BooksViewModel />
     </ContentPage.BindingContext>
-    
+
     <ContentPage.MenuBarItems>
         <MenuBarItem Text="Library">
             <MenuFlyoutSubItem Text="Library">
-                <MenuFlyoutItem Text="Books Page "
+                <MenuFlyoutItem Text="BooksPage "
                                 Command="{Binding NavigateCommand}"
                                 CommandParameter="BooksPage" />
-                
+
                 <MenuFlyoutItem Text="LibraryNew"
                                 Command="{Binding NavigateCommand}"
                                 CommandParameter="LibraryNew" />
@@ -35,8 +35,33 @@
         </MenuBarItem>
     </ContentPage.MenuBarItems>
     <ContentPage.Content>
-        <Grid BackgroundColor="{StaticResource Tertiary}">
-            
+        <Grid>
+            <CollectionView ItemsSource="{Binding Books}"
+                            SelectionMode="Multiple"
+                            SelectedItems="{Binding SelectedBooks}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <viewmodel:HoverableLabel
+                                Text="{Binding Title}"
+                                Grid.Column="0"
+                                PointerEntered="OnPointerEntered"
+                                PointerExited="OnPointerExited" />
+                            <viewmodel:HoverableLabel
+                                Text="{Binding Author}"
+                                Grid.Column="1" />
+                            <viewmodel:HoverableLabel
+                                Text="{Binding Year}"
+                                Grid.Column="2" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
         </Grid>
     </ContentPage.Content>
 </ContentPage>

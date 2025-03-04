@@ -26,9 +26,7 @@
     <ItemGroup>
         <!-- App Icon -->
         <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\library.svg" Color="#005596" BaseSize="128,128"/>
-
-
-
+        
         <!-- Splash Screen -->
         <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#005596" BaseSize="128,128"/>
 
@@ -49,10 +47,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Models\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <MauiXaml Update="Views\LibraryClosePage.xaml">
         <SubType>Designer</SubType>
       </MauiXaml>
@@ -63,6 +57,13 @@
         <DependentUpon>MainPage.xaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
+    </ItemGroup>
+    
+    <ItemGroup>
+      <Folder Include="Events\" />
+      <Folder Include="Extensions\" />
+      <Folder Include="Managers\" />
+      <Folder Include="XmlOperator\" />
     </ItemGroup>
 
 </Project>

@@ -8,88 +8,56 @@
     FlyoutHeaderBehavior="CollapseOnScroll"
     Shell.FlyoutBehavior="Disabled">
     <Shell.Resources>
-        <Style TargetType="Label" Class="FlyoutItemLabelStyle">  
-            <Setter Property="FontFamily" Value="ManropeExtraLight" />  
-            <Setter Property="FontSize" Value="22" />  
-        </Style> 
+        <Style TargetType="Label" Class="FlyoutItemLabelStyle">
+            <Setter Property="FontFamily" Value="ManropeExtraLight" />
+            <Setter Property="FontSize" Value="22" />
+        </Style>
         <Style TargetType="TabBar">
             <Setter Property="Shell.TabBarBackgroundColor" Value="{StaticResource Primary}" />
-            <Setter Property="Shell.TabBarForegroundColor" Value="{StaticResource White}"/>
+            <Setter Property="Shell.TabBarForegroundColor" Value="{StaticResource White}" />
             <Setter Property="Shell.TabBarTitleColor" Value="{StaticResource Tertiary}" />
             <Setter Property="Shell.TabBarUnselectedColor" Value="{StaticResource Tertiary}" />
         </Style>
-        
+
     </Shell.Resources>
+
+    <!-- To show in side bar - <FlyoutItem Title="Library"> -->
+    <ShellContent
+        Route="BooksPage"
+        ContentTemplate="{DataTemplate local:BooksPage}" />
+    <ShellContent
+        Route="LibraryNew"
+        ContentTemplate="{DataTemplate local:LibraryNewPage}" />
     
-    <TabBar FlyoutDisplayOptions="AsMultipleItems">
-        <Tab Title="Library">
-            <ShellContent
-                Title="New"
-                ContentTemplate="{DataTemplate local:Library}"/>
-        </Tab>
-        <!--<Tab Title="Library_">
-            <ShellContent
-                Title="New" Shell.TabBarIsVisible="True"
-                ContentTemplate="{DataTemplate local:LibraryNewPage}"/>
-            <ShellContent
-                Title="Load"
-                ContentTemplate="{DataTemplate local:LibraryLoadPage}"/>
-            <ShellContent
-                Title="Save"
-                ContentTemplate="{DataTemplate local:LibrarySavePage}"/>
-            <ShellContent
-                Title="Save As"
-                ContentTemplate="{DataTemplate local:LibrarySaveAsPage}"/>
-            <ShellContent
-                Title="Close"
-                ContentTemplate="{DataTemplate local:LibraryClosePage}"/>
-        </Tab>
-        <Tab Title="Books">
-        <ShellContent
-            Title="Add new"
-            ContentTemplate="{DataTemplate local:BookAddPage}"/>
-        
-        <ShellContent
-            Title="Edit Book"
-            ContentTemplate="{DataTemplate local:BookAddPage}" />
-        <ShellContent
-            Title="Delete Book(s)"
-            ContentTemplate="{DataTemplate local:BookAddPage}" />
-        <ShellContent
-            Title="Import Book"
-            ContentTemplate="{DataTemplate local:BookAddPage}" />
-        <ShellContent
-            Title="Export Book"
-            ContentTemplate="{DataTemplate local:BookAddPage}" />
-        <ShellContent
-            Title="Sort Books"
-            ContentTemplate="{DataTemplate local:BookAddPage}" />
-        </Tab>
-        
-        <Tab Title="Find Books">
-            <ShellContent
-                Title="Test"
-                ContentTemplate="{DataTemplate local:BookAddPage}" />
-        </Tab>           
-             
-        <Tab Title="Tools">
-            <ShellContent
-                Title="Test"
-                ContentTemplate="{DataTemplate local:BookAddPage}" />
-        </Tab>
-                
-        <Tab Title="Settings">
-            <ShellContent
-                Title="Test"
-                ContentTemplate="{DataTemplate local:BookAddPage}" />
-        </Tab>
-        
-        <Tab Title="About">
-            
-            <ShellContent
-                Title="Test"
-                ContentTemplate="{DataTemplate local:BookAddPage}" />
-        </Tab>-->
-    </TabBar>
+    
+    <ShellContent
+        Route="Save"
+        ContentTemplate="{DataTemplate local:LibrarySavePage}" />
+    <ShellContent
+        Route="Save As"
+        ContentTemplate="{DataTemplate local:LibrarySaveAsPage}" />
+    <ShellContent
+        Route="Close"
+        ContentTemplate="{DataTemplate local:LibraryClosePage}" />
+
+    <ShellContent
+        Route="Add new"
+        ContentTemplate="{DataTemplate local:LibraryNewPage}" />
+
+    <ShellContent
+        Route="Edit Book"
+        ContentTemplate="{DataTemplate local:LibraryNewPage}" />
+    <ShellContent
+        Route="Delete Book(s)"
+        ContentTemplate="{DataTemplate local:LibraryNewPage}" />
+    <ShellContent
+        Route="Import Book"
+        ContentTemplate="{DataTemplate local:LibraryNewPage}" />
+    <ShellContent
+        Route="Export Book"
+        ContentTemplate="{DataTemplate local:LibraryNewPage}" />
+    <ShellContent
+        Route="Sort Books"
+        ContentTemplate="{DataTemplate local:LibraryNewPage}" />
 
 </Shell>

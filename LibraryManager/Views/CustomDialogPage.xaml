@@ -2,8 +2,8 @@
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="LibraryManager.Views.BookAddPage">
+             x:Class="LibraryManager.Views.CustomDialogPage">
     <ContentPage.Content>
-        <Button BackgroundColor="{StaticResource Secondary}" WidthRequest="120" HeightRequest="30"/>
+        
     </ContentPage.Content>
 </ContentPage>
