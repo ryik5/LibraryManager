@@ -1,7 +1,6 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
@@ -9,54 +8,59 @@ using LibraryManager.Models;
 
 namespace LibraryManager.ViewModels;
 
-public class BooksViewModel : INotifyPropertyChanged
+public class BooksViewModel : BindableObject, INotifyPropertyChanged
 {
-    private readonly LibraryModel _library;
-    
-    
-    public ICommand NavigateCommand { get; }
-    public ObservableCollection<Book> Books     {
-        get => _library.BookList;
-        set => SetProperty(ref _library.BookList, value);
-    }
-    
-    public ObservableCollection<Book> SelectedBooks { get; set; }
-
     public BooksViewModel(ILibrary library)
     {
-        _library = new LibraryModel(library); // Constructor injection ensures proper dependency handling
-        RaisePropertyChanged(nameof(Books));
+         
+        Library = library;
+      //  _library = new LibraryModel(library); // Constructor injection ensures proper dependency handling
+       // RaisePropertyChanged(nameof(Books));
+       
+       //SelectedBooks = new ObservableCollection<Book>();
+        
+       // Monitor selected items
+       // SelectedBooks.CollectionChanged += OnSelectionChanged;
 
         // Initialize the generic navigation command
         NavigateCommand = new AsyncRelayCommand<string>(async (route) => await NavigateToPage(route));
-        
-        SelectedBooks = new ObservableCollection<Book>();
+     }
 
-        // Monitor selected items
-        SelectedBooks.CollectionChanged += OnSelectionChanged;
+    #region Public properties
+
+    public ICommand NavigateCommand { get; }
+
+    /*public ObservableCollection<Book> Books
+    {
+        get => _library.BookList;
+        set => SetProperty(ref _library.BookList, value);
+    }*/
+    public ILibrary Library
+    {
+        get => _library;
+        set => SetProperty(ref _library, value);
     }
 
-    /*public BooksViewModel()
-    {
-        _library = new LibraryModel(App.Services.GetService<Library>()); //(Application.Current as App)?.Library
-        RaisePropertyChanged(nameof(Books));
+    public IList<Book> SelectedBooks {
+        get => _selectedBooks;
+        set => SetProperty(ref _selectedBooks, value);
+    }
+    private IList<Book> _selectedBooks=new List<Book>();
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    #endregion
 
 
-        // Initialize the generic navigation command
-        NavigateCommand = new AsyncRelayCommand<string>(async (route) => await NavigateToPage(route));
+    #region Private methods
 
-        SelectedBooks = new ObservableCollection<Book>();
-
-        // Monitor selected items
-        SelectedBooks.CollectionChanged += OnSelectionChanged;
-    }*/
-
-    private  Task NavigateToPage(string route)
+    private Task NavigateToPage(string route)
     {
         Console.WriteLine($"NavigateCommand triggered with route: {route}");
 
         if (string.IsNullOrWhiteSpace(route))
-            return Task.CompletedTask;;
+            return Task.CompletedTask;
+        ;
 
         try
         {
@@ -64,10 +68,11 @@ public class BooksViewModel : INotifyPropertyChanged
             var currentRoute = Shell.Current.CurrentState.Location.OriginalString;
             if (currentRoute == $"//BooksManagePage")
             {
-                #if DEBUG
+#if DEBUG
                 Console.WriteLine($"You're already on the {route} page. Navigation skipped.");
-                #endif
-                
+                AddBook();
+#endif
+
                 return Task.CompletedTask;
             }
 
@@ -77,14 +82,26 @@ public class BooksViewModel : INotifyPropertyChanged
         catch (Exception ex)
         {
             // Handle any issues with navigation
-            #if DEBUG
+#if DEBUG
             Console.WriteLine($"Navigation error: {ex.Message}");
-            #endif
+#endif
         }
+
         return Task.CompletedTask;
     }
 
+    private void AddBook()
+    {
+        Library.BookList.Add(
+            new Book { Id = 0, Title = "1984", Author = "George Orwell", Year = 1949, TotalPages = 1 }
+            );
+    }
 
+    #region Binding implementation
+
+    
+    
+    
     private void OnSelectionChanged(object sender, NotifyCollectionChangedEventArgs e)
     {
         if (e.Action == NotifyCollectionChangedAction.Add)
@@ -92,9 +109,9 @@ public class BooksViewModel : INotifyPropertyChanged
             foreach (var newItem in e.NewItems)
             {
                 var selectedBook = newItem as Book;
-                #if DEBUG
+#if DEBUG
                 Console.WriteLine($"Selected: {selectedBook?.Title}");
-                #endif
+#endif
             }
         }
 
@@ -103,15 +120,12 @@ public class BooksViewModel : INotifyPropertyChanged
             foreach (var removedItem in e.OldItems)
             {
                 var deselectedBook = removedItem as Book;
-                #if DEBUG
+#if DEBUG
                 Console.WriteLine($"Deselected: {deselectedBook?.Title}");
-                #endif
+#endif
             }
         }
     }
-
-    
-    public event PropertyChangedEventHandler PropertyChanged;
 
     private void RaisePropertyChanged([CallerMemberName] string propertyName = null)
     {
@@ -125,4 +139,15 @@ public class BooksViewModel : INotifyPropertyChanged
         RaisePropertyChanged(propertyName);
         return true;
     }
+
+    #endregion
+
+    #endregion
+
+    #region private fields
+
+   // private readonly LibraryModel _library;
+    private ILibrary _library;
+
+    #endregion
 }

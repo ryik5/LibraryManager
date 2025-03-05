@@ -1,3 +1,4 @@
+using LibraryManager.Extensions;
 using LibraryManager.Models;
 using LibraryManager.ViewModels;
 
@@ -10,22 +11,8 @@ public partial class BooksManagePage : ContentPage
     {
         InitializeComponent();
         
-        // Manually resolve or assign the ViewModel when using DI
-//         BindingContext = (Application.Current as App)?.BooksViewModel;
-         //BindingContext = App.Services.GetService<BooksViewModel>();
-         BindingContext = App.Services.GetService<BooksViewModel>();
-         
-    }
+        BindingContext = App.Services.GetService<BooksViewModel>();
 
-    /*public BooksManagePage(BooksViewModel viewModel)
-    {
-        InitializeComponent();
-        
-        // Set the ViewModel as the BindingContext (via DI)
-       // BindingContext = viewModel;
-
-       BindingContext = App.Services.GetService<BooksViewModel>();
-       
         // Initialize a tooltip label to show dynamically
         _tooltipLabel = new Label
         {
@@ -35,15 +22,16 @@ public partial class BooksManagePage : ContentPage
             IsVisible = false, // Hide the tooltip initially
             ZIndex = 99
         };
-        
-        // Add the tooltip to the parent layout
+
+        /*// Add the tooltip to the parent layout
         var mainLayout = this.Content as Grid;
         if (mainLayout != null)
         {
             mainLayout.Children.Add(_tooltipLabel);
-        }
-    }*/
-    
+        }*/
+    }
+
+
     // Triggered when the pointer enters an element
     private void OnPointerEntered(object sender, EventArgs e)
     {
@@ -65,7 +53,6 @@ public partial class BooksManagePage : ContentPage
         _tooltipLabel.IsVisible = false; // Hide the tooltip when exiting
     }
 
-    
     // TODO : do normal code
     // A helper to define tooltips dynamically for each field
     private string GetTooltipText(Label label)
@@ -79,6 +66,21 @@ public partial class BooksManagePage : ContentPage
         return $"Tooltip for {label.Text}";
     }
 
-    
+
     private Label _tooltipLabel;
+
+    private void SelectableItemsView_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (BindingContext is BooksViewModel bvs)
+        {
+            bvs.SelectedBooks.Clear();
+            foreach (Book item in e.CurrentSelection)
+            {
+                #if DEBUG
+                Console.WriteLine($"Selected: {item?.Title}");
+                #endif
+                bvs.SelectedBooks.Add(item);
+            }
+        }
+    }
 }

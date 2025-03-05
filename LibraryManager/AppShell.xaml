@@ -55,26 +55,9 @@
     
     <FlyoutItem Title="Library" Shell.TabBarIsVisible="False">
         <ShellContent Route="LibraryManagePage" ContentTemplate="{DataTemplate view:LibraryManagePage}" />
-
-        <!--
-        <ShellContent Route="CreateLibrary" ContentTemplate="{DataTemplate view:LibraryManagePage}" />
-        <ShellContent Route="LoadLibrary" ContentTemplate="{DataTemplate view:LibraryManagePage}" />
-        <ShellContent Route="SaveLibrary" ContentTemplate="{DataTemplate view:LibraryManagePage}" />
-        <ShellContent Route="SaveAsLibrary" ContentTemplate="{DataTemplate view:LibraryManagePage}" />
-        <ShellContent Route="CloseLibrary" ContentTemplate="{DataTemplate view:LibraryManagePage}" />
-    -->
     </FlyoutItem>
     
     <FlyoutItem Title="Books" Shell.TabBarIsVisible="False">
         <ShellContent Route="BooksManagePage" ContentTemplate="{DataTemplate view:BooksManagePage}" />
-
-        <!--
-        <ShellContent Route="AddNewBook" ContentTemplate="{DataTemplate view:BooksManagePage}" />
-        <ShellContent Route="EditBook" ContentTemplate="{DataTemplate view:BooksManagePage}" />
-        <ShellContent Route="DeleteBooks" ContentTemplate="{DataTemplate view:BooksManagePage}" />
-        <ShellContent Route="ImportBook" ContentTemplate="{DataTemplate view:BooksManagePage}" />
-        <ShellContent Route="ExportBook" ContentTemplate="{DataTemplate view:BooksManagePage}" />
-        <ShellContent Route="SortBooks" ContentTemplate="{DataTemplate view:BooksManagePage}" />
-    -->
     </FlyoutItem>
 </Shell>

@@ -7,51 +7,50 @@
 
     <ContentPage.MenuBarItems>
         <MenuBarItem Text="Books">
-            <MenuFlyoutSubItem Text="Books">
-                <MenuFlyoutItem Text="Add Book"
-                                Command="{Binding NavigateCommand}"
-                                CommandParameter="AddNewBook" />
-                <MenuFlyoutItem Text="Edit Book"
-                                Command="{Binding NavigateCommand}"
-                                CommandParameter="EditBook" />
-                <MenuFlyoutItem Text="Delete Books"
-                                Command="{Binding NavigateCommand}"
-                                CommandParameter="DeleteBooks" />
-                <MenuFlyoutItem Text="Import Book"
-                                Command="{Binding NavigateCommand}"
-                                CommandParameter="ImportBook" />
-                <MenuFlyoutItem Text="Export Book"
-                                Command="{Binding NavigateCommand}"
-                                CommandParameter="ExportBook" />                
-                <MenuFlyoutItem Text="Sort Books"
-                                Command="{Binding NavigateCommand}"
-                                CommandParameter="SortBooks" />
-                <MenuFlyoutSeparator />
-            </MenuFlyoutSubItem>
+            <MenuFlyoutItem Text="Add Book"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="AddNewBook" />
+            <MenuFlyoutItem Text="Edit Book"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="EditBook" />
+            <MenuFlyoutItem Text="Delete Books"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="DeleteBooks" />
+            <MenuFlyoutItem Text="Import Book"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="ImportBook" />
+            <MenuFlyoutItem Text="Export Book"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="ExportBook" />
+            <MenuFlyoutItem Text="Sort Books"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="SortBooks" />
+            <MenuFlyoutSeparator />
         </MenuBarItem>
     </ContentPage.MenuBarItems>
+    
     <ContentPage.Content>
         <Grid>
-            <CollectionView ItemsSource="{Binding Books}"
+            <CollectionView ItemsSource="{Binding Library.BookList}"
                             SelectionMode="Multiple"
-                            SelectedItems="{Binding SelectedBooks}">
+                            SelectedItems="{Binding SelectedBooks, Mode=TwoWay}"
+                            SelectionChanged="SelectableItemsView_OnSelectionChanged"
+                            Margin="10, 30, 10, 10">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Grid Padding="5">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="4*" />
                                 <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-                            <viewmodel:HoverableLabel
-                                Text="{Binding Title}"
-                                Grid.Column="0"
-                                PointerEntered="OnPointerEntered"
-                                PointerExited="OnPointerExited" />
-                            <viewmodel:HoverableLabel
-                                Text="{Binding Author}"
-                                Grid.Column="1" />
-                            <viewmodel:HoverableLabel
+                            <Label FontSize="18"
+                                   Text="{Binding Author}"
+                                   Grid.Column="0" />                            
+                            <Label FontSize="18" HorizontalTextAlignment="Start"
+                                   Text="{Binding Title}"
+                                   Grid.Column="1"/>
+                            <Label FontSize="18" HorizontalTextAlignment="Start"
                                 Text="{Binding Year}"
                                 Grid.Column="2" />
                         </Grid>
