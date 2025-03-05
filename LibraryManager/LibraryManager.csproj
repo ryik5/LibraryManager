@@ -44,24 +44,11 @@
     <ItemGroup>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0"/>
-    </ItemGroup>
-
-    <ItemGroup>
-      <MauiXaml Update="Views\LibraryClosePage.xaml">
-        <SubType>Designer</SubType>
-      </MauiXaml>
-    </ItemGroup>
-    
-    <ItemGroup>
-      <Compile Update="Views\LibraryClosePage.xaml.cs">
-        <DependentUpon>MainPage.xaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
     </ItemGroup>
     
     <ItemGroup>
       <Folder Include="Events\" />
-      <Folder Include="Extensions\" />
       <Folder Include="Managers\" />
       <Folder Include="XmlOperator\" />
     </ItemGroup>

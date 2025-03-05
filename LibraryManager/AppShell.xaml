@@ -4,11 +4,44 @@
     x:Class="LibraryManager.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:LibraryManager.Views"
-    FlyoutHeaderBehavior="CollapseOnScroll"
-    Shell.FlyoutBehavior="Disabled">
+    xmlns:view="clr-namespace:LibraryManager.Views"
+    xmlns:model="clr-namespace:LibraryManager.Models"
+    FlyoutBehavior= "Locked"
+    FlyoutHeaderBehavior="Fixed"
+    FlyoutBackgroundColor="{StaticResource Tertiary}"
+    FlyoutWidth="{OnPlatform Android=180, iOS=200, WinUI=250, MacCatalyst=150}"
+    >
+    
+    <Shell.FlyoutHeader>
+        <Grid Padding="5" ColumnDefinitions="50,*">
+            <!-- Logo/Icon -->
+            <GraphicsView
+                x:Name="LogoGraphicsView"
+                HeightRequest="50"
+                WidthRequest="50"
+                VerticalOptions="Center" 
+                />
+
+            <!-- Menu Item Title -->
+            <Label
+                Text="{Binding Title}"
+                FontSize="16"
+                VerticalOptions="Center"
+                Grid.Column="1" />
+        </Grid>
+
+    </Shell.FlyoutHeader>
+    
+    <Shell.ItemTemplate>
+        <DataTemplate>
+            <Grid Padding="10">
+                <Label Text="{Binding Title}" FontSize="18" TextColor="{StaticResource Primary}" />
+            </Grid>
+        </DataTemplate>
+    </Shell.ItemTemplate>
+
     <Shell.Resources>
-        <Style TargetType="Label" Class="FlyoutItemLabelStyle">
+        <Style TargetType="Label">
             <Setter Property="FontFamily" Value="ManropeExtraLight" />
             <Setter Property="FontSize" Value="22" />
         </Style>
@@ -18,46 +51,30 @@
             <Setter Property="Shell.TabBarTitleColor" Value="{StaticResource Tertiary}" />
             <Setter Property="Shell.TabBarUnselectedColor" Value="{StaticResource Tertiary}" />
         </Style>
-
     </Shell.Resources>
-
-    <!-- To show in side bar - <FlyoutItem Title="Library"> -->
-    <ShellContent
-        Route="BooksPage"
-        ContentTemplate="{DataTemplate local:BooksPage}" />
-    <ShellContent
-        Route="LibraryNew"
-        ContentTemplate="{DataTemplate local:LibraryNewPage}" />
     
+    <FlyoutItem Title="Library" Shell.TabBarIsVisible="False">
+        <ShellContent Route="LibraryManagePage" ContentTemplate="{DataTemplate view:LibraryManagePage}" />
+
+        <!--
+        <ShellContent Route="CreateLibrary" ContentTemplate="{DataTemplate view:LibraryManagePage}" />
+        <ShellContent Route="LoadLibrary" ContentTemplate="{DataTemplate view:LibraryManagePage}" />
+        <ShellContent Route="SaveLibrary" ContentTemplate="{DataTemplate view:LibraryManagePage}" />
+        <ShellContent Route="SaveAsLibrary" ContentTemplate="{DataTemplate view:LibraryManagePage}" />
+        <ShellContent Route="CloseLibrary" ContentTemplate="{DataTemplate view:LibraryManagePage}" />
+    -->
+    </FlyoutItem>
     
-    <ShellContent
-        Route="Save"
-        ContentTemplate="{DataTemplate local:LibrarySavePage}" />
-    <ShellContent
-        Route="Save As"
-        ContentTemplate="{DataTemplate local:LibrarySaveAsPage}" />
-    <ShellContent
-        Route="Close"
-        ContentTemplate="{DataTemplate local:LibraryClosePage}" />
+    <FlyoutItem Title="Books" Shell.TabBarIsVisible="False">
+        <ShellContent Route="BooksManagePage" ContentTemplate="{DataTemplate view:BooksManagePage}" />
 
-    <ShellContent
-        Route="Add new"
-        ContentTemplate="{DataTemplate local:LibraryNewPage}" />
-
-    <ShellContent
-        Route="Edit Book"
-        ContentTemplate="{DataTemplate local:LibraryNewPage}" />
-    <ShellContent
-        Route="Delete Book(s)"
-        ContentTemplate="{DataTemplate local:LibraryNewPage}" />
-    <ShellContent
-        Route="Import Book"
-        ContentTemplate="{DataTemplate local:LibraryNewPage}" />
-    <ShellContent
-        Route="Export Book"
-        ContentTemplate="{DataTemplate local:LibraryNewPage}" />
-    <ShellContent
-        Route="Sort Books"
-        ContentTemplate="{DataTemplate local:LibraryNewPage}" />
-
+        <!--
+        <ShellContent Route="AddNewBook" ContentTemplate="{DataTemplate view:BooksManagePage}" />
+        <ShellContent Route="EditBook" ContentTemplate="{DataTemplate view:BooksManagePage}" />
+        <ShellContent Route="DeleteBooks" ContentTemplate="{DataTemplate view:BooksManagePage}" />
+        <ShellContent Route="ImportBook" ContentTemplate="{DataTemplate view:BooksManagePage}" />
+        <ShellContent Route="ExportBook" ContentTemplate="{DataTemplate view:BooksManagePage}" />
+        <ShellContent Route="SortBooks" ContentTemplate="{DataTemplate view:BooksManagePage}" />
+    -->
+    </FlyoutItem>
 </Shell>

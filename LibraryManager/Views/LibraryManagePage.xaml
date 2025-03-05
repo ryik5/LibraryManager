@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel="clr-namespace:LibraryManager.ViewModels"
+             x:Class="LibraryManager.Views.LibraryManagePage">
+    
+    <ContentPage.MenuBarItems>
+        <MenuBarItem Text="Library">
+            <MenuFlyoutSubItem Text="Library">
+                <MenuFlyoutItem Text="Create Library"
+                                Command="{Binding NavigateCommand}"
+                                CommandParameter="CreateLibrary" />
+                <MenuFlyoutItem Text="Load Library"
+                                Command="{Binding NavigateCommand}"
+                                CommandParameter="LoadLibrary" />
+                <MenuFlyoutItem Text="Save Library"
+                                Command="{Binding NavigateCommand}"
+                                CommandParameter="SaveLibrary" />
+                <MenuFlyoutItem Text="Save As Library"
+                                Command="{Binding NavigateCommand}"
+                                CommandParameter="SaveAsLibrary" />
+                <MenuFlyoutItem Text="Close Library"
+                                Command="{Binding NavigateCommand}"
+                                CommandParameter="CloseLibrary" />
+                <MenuFlyoutSeparator />
+            </MenuFlyoutSubItem>
+        </MenuBarItem>
+    </ContentPage.MenuBarItems>
+    <ContentPage.Content>
+        <Grid BackgroundColor="{StaticResource Tertiary}">
+            
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

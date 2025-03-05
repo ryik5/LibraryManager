@@ -1,38 +1,89 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using LibraryManager.Models;
 
 namespace LibraryManager.ViewModels;
 
-public class BooksViewModel: INotifyPropertyChanged
+public class BooksViewModel : INotifyPropertyChanged
 {
+    private readonly LibraryModel _library;
+    
+    
     public ICommand NavigateCommand { get; }
-    public ObservableCollection<Book> Books { get; set; }
+    public ObservableCollection<Book> Books     {
+        get => _library.BookList;
+        set => SetProperty(ref _library.BookList, value);
+    }
+    
     public ObservableCollection<Book> SelectedBooks { get; set; }
 
-    public BooksViewModel()
+    public BooksViewModel(ILibrary library)
     {
-        var libraryViewModel = (Application.Current as App)?.Library;
+        _library = new LibraryModel(library); // Constructor injection ensures proper dependency handling
+        RaisePropertyChanged(nameof(Books));
 
         // Initialize the generic navigation command
         NavigateCommand = new AsyncRelayCommand<string>(async (route) => await NavigateToPage(route));
-
-        // Populate with sample data
-        Books = new ObservableCollection<Book>
-        {
-            new Book { Id = 0, Title = "1984", Author = "George Orwell", Year = 1949, TotalPages = 1},
-            new Book { Id = 1,Title = "Pride and Prejudice", Author = "Jane Austen", Year = 1813 , TotalPages = 1},
-            new Book { Id = 2,Title = "The Catcher in the Rye", Author = "J.D. Salinger", Year = 1951, TotalPages = 1 }
-        };
-
+        
         SelectedBooks = new ObservableCollection<Book>();
 
         // Monitor selected items
         SelectedBooks.CollectionChanged += OnSelectionChanged;
     }
+
+    /*public BooksViewModel()
+    {
+        _library = new LibraryModel(App.Services.GetService<Library>()); //(Application.Current as App)?.Library
+        RaisePropertyChanged(nameof(Books));
+
+
+        // Initialize the generic navigation command
+        NavigateCommand = new AsyncRelayCommand<string>(async (route) => await NavigateToPage(route));
+
+        SelectedBooks = new ObservableCollection<Book>();
+
+        // Monitor selected items
+        SelectedBooks.CollectionChanged += OnSelectionChanged;
+    }*/
+
+    private  Task NavigateToPage(string route)
+    {
+        Console.WriteLine($"NavigateCommand triggered with route: {route}");
+
+        if (string.IsNullOrWhiteSpace(route))
+            return Task.CompletedTask;;
+
+        try
+        {
+            // Prevent navigation to the same page
+            var currentRoute = Shell.Current.CurrentState.Location.OriginalString;
+            if (currentRoute == $"//BooksManagePage")
+            {
+                #if DEBUG
+                Console.WriteLine($"You're already on the {route} page. Navigation skipped.");
+                #endif
+                
+                return Task.CompletedTask;
+            }
+
+            // Dynamically navigate using the provided route
+            Shell.Current.GoToAsync(route);
+        }
+        catch (Exception ex)
+        {
+            // Handle any issues with navigation
+            #if DEBUG
+            Console.WriteLine($"Navigation error: {ex.Message}");
+            #endif
+        }
+        return Task.CompletedTask;
+    }
+
 
     private void OnSelectionChanged(object sender, NotifyCollectionChangedEventArgs e)
     {
@@ -41,7 +92,9 @@ public class BooksViewModel: INotifyPropertyChanged
             foreach (var newItem in e.NewItems)
             {
                 var selectedBook = newItem as Book;
-                Console.WriteLine($"Selected: {selectedBook.Title}");
+                #if DEBUG
+                Console.WriteLine($"Selected: {selectedBook?.Title}");
+                #endif
             }
         }
 
@@ -50,32 +103,26 @@ public class BooksViewModel: INotifyPropertyChanged
             foreach (var removedItem in e.OldItems)
             {
                 var deselectedBook = removedItem as Book;
-                Console.WriteLine($"Deselected: {deselectedBook.Title}");
+                #if DEBUG
+                Console.WriteLine($"Deselected: {deselectedBook?.Title}");
+                #endif
             }
         }
     }
 
+    
     public event PropertyChangedEventHandler PropertyChanged;
 
-    protected virtual void OnPropertyChanged(string propertyName = null)
+    private void RaisePropertyChanged([CallerMemberName] string propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
-    
-    private async Task NavigateToPage(string route)
-    {
-        if (string.IsNullOrWhiteSpace(route))
-            return;
 
-        try
-        {
-            // Dynamically navigate using the provided route
-            await Shell.Current.GoToAsync(route);
-        }
-        catch (Exception ex)
-        {
-            // Handle any issues with navigation
-            Console.WriteLine($"Navigation error: {ex.Message}");
-        }
+    private bool SetProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+    {
+        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+        field = value;
+        RaisePropertyChanged(propertyName);
+        return true;
     }
 }

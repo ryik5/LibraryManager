@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace LibraryManager.Models;
+namespace LibraryManager.Extensions;
 
 /// <summary>
 /// Provides extension methods for working with collections.

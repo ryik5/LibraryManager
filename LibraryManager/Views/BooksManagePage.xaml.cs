@@ -1,18 +1,31 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using LibraryManager.Models;
 using LibraryManager.ViewModels;
 
 namespace LibraryManager.Views;
 
-public partial class BooksPage : ContentPage
+public partial class BooksManagePage : ContentPage
 {
-    public BooksPage()
+    // Parameterless constructor required by .NET MAUI Shell navigation
+    public BooksManagePage()
     {
         InitializeComponent();
         
+        // Manually resolve or assign the ViewModel when using DI
+//         BindingContext = (Application.Current as App)?.BooksViewModel;
+         //BindingContext = App.Services.GetService<BooksViewModel>();
+         BindingContext = App.Services.GetService<BooksViewModel>();
+         
+    }
+
+    /*public BooksManagePage(BooksViewModel viewModel)
+    {
+        InitializeComponent();
+        
+        // Set the ViewModel as the BindingContext (via DI)
+       // BindingContext = viewModel;
+
+       BindingContext = App.Services.GetService<BooksViewModel>();
+       
         // Initialize a tooltip label to show dynamically
         _tooltipLabel = new Label
         {
@@ -29,7 +42,7 @@ public partial class BooksPage : ContentPage
         {
             mainLayout.Children.Add(_tooltipLabel);
         }
-    }
+    }*/
     
     // Triggered when the pointer enters an element
     private void OnPointerEntered(object sender, EventArgs e)

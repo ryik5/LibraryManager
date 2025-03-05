@@ -3,33 +3,29 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodel="clr-namespace:LibraryManager.ViewModels"
-             x:Class="LibraryManager.Views.BooksPage">
-
-    <ContentPage.BindingContext>
-        <viewmodel:BooksViewModel />
-    </ContentPage.BindingContext>
+             x:Class="LibraryManager.Views.BooksManagePage">
 
     <ContentPage.MenuBarItems>
-        <MenuBarItem Text="Library">
-            <MenuFlyoutSubItem Text="Library">
-                <MenuFlyoutItem Text="BooksPage "
+        <MenuBarItem Text="Books">
+            <MenuFlyoutSubItem Text="Books">
+                <MenuFlyoutItem Text="Add Book"
                                 Command="{Binding NavigateCommand}"
-                                CommandParameter="BooksPage" />
-
-                <MenuFlyoutItem Text="LibraryNew"
+                                CommandParameter="AddNewBook" />
+                <MenuFlyoutItem Text="Edit Book"
                                 Command="{Binding NavigateCommand}"
-                                CommandParameter="LibraryNew" />
-
-                <MenuFlyoutItem Text="New Library"
-                                Command="{Binding LibraryCreateNewCommand}" />
-                <MenuFlyoutItem Text="Load Library"
-                                Command="{Binding LibraryLoadCommand}" />
-                <MenuFlyoutItem Text="Save Library"
-                                Command="{Binding LibrarySaveCommand}" />
-                <MenuFlyoutItem Text="Save As Library"
-                                Command="{Binding LibrarySaveAsCommand}" />
-                <MenuFlyoutItem Text="Close Library"
-                                Command="{Binding LibraryCloseCommand}" />
+                                CommandParameter="EditBook" />
+                <MenuFlyoutItem Text="Delete Books"
+                                Command="{Binding NavigateCommand}"
+                                CommandParameter="DeleteBooks" />
+                <MenuFlyoutItem Text="Import Book"
+                                Command="{Binding NavigateCommand}"
+                                CommandParameter="ImportBook" />
+                <MenuFlyoutItem Text="Export Book"
+                                Command="{Binding NavigateCommand}"
+                                CommandParameter="ExportBook" />                
+                <MenuFlyoutItem Text="Sort Books"
+                                Command="{Binding NavigateCommand}"
+                                CommandParameter="SortBooks" />
                 <MenuFlyoutSeparator />
             </MenuFlyoutSubItem>
         </MenuBarItem>
