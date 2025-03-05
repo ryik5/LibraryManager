@@ -2,7 +2,6 @@
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:viewmodel="clr-namespace:LibraryManager.ViewModels"
              x:Class="LibraryManager.Views.BooksManagePage">
 
     <ContentPage.MenuBarItems>
@@ -31,10 +30,10 @@
     
     <ContentPage.Content>
         <Grid>
-            <CollectionView ItemsSource="{Binding Library.BookList}"
+            <CollectionView x:Name="BooksCollectionView"
+                ItemsSource="{Binding Library.BookList}"
                             SelectionMode="Multiple"
                             SelectedItems="{Binding SelectedBooks, Mode=TwoWay}"
-                            SelectionChanged="SelectableItemsView_OnSelectionChanged"
                             Margin="10, 30, 10, 10">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>

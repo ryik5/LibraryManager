@@ -8,62 +8,74 @@ namespace LibraryManager.ViewModels;
 
 public class LibraryViewModel
 {
-    private readonly ILibrary _library;
+    private readonly ILibrary? _library;
 
-    public LibraryViewModel(ILibrary library)
+    public LibraryViewModel(ILibrary? library)
     {
+        Console.WriteLine("LibraryViewModel instantiated with library.");
         _library = library; // Constructor injection ensures proper dependency handling
         // Initialize the generic navigation command
-        NavigateCommand = new AsyncRelayCommand<string>(async (route) => await NavigateToPage(route));
+        NavigateCommand = new AsyncRelayCommand<string>(NavigateToPage);
 
-        MessagingCenter.Subscribe<BooksViewModel>(this, "Navigate", async (sender) =>
+        /*MessagingCenter.Subscribe<BooksViewModel>(this, "Navigate", async (sender) =>
         {
             Console.WriteLine("Received navigation request from BooksViewModel.");
-            await NavigateToPage("CreateLibrary");
-        });
+           // await NavigateToPage("CreateLibrary").ConfigureAwait(false);
+        });*/
     }
 
-    /*public LibraryViewModel()
+    public LibraryViewModel()
     {
+        Console.WriteLine("LibraryViewModel instantiated with library.");
+
         _library = App.Services.GetService<ILibrary>();
 
         // Initialize the generic navigation command
-        NavigateCommand = new AsyncRelayCommand<string>(async (route) => await NavigateToPage(route));
+        NavigateCommand = new AsyncRelayCommand<string>(NavigateToPage);
 
-        MessagingCenter.Subscribe<BooksViewModel>(this, "Navigate", async (sender) =>
+        /*MessagingCenter.Subscribe<BooksViewModel>(this, "Navigate", async (sender) =>
         {
             Console.WriteLine("Received navigation request from BooksViewModel.");
-            await NavigateToPage("CreateLibrary");
-        });
-    }*/
+           // await NavigateToPage("CreateLibrary").ConfigureAwait(false);
+        });*/
+    }
+
+    // Add cleanup method to unsubscribe
+    public void Cleanup()
+    {
+        // MessagingCenter cleanup
+        Console.WriteLine("Cleaning up MessagingCenter resources in LibraryViewModel.");
+        MessagingCenter.Unsubscribe<BooksViewModel>(this, "Navigate");
+    }
+    ~LibraryViewModel()
+    {
+        Cleanup(); // Safeguard cleanup in destructor (if proper disposal is skipped)
+    }
+
 
     public ICommand NavigateCommand { get; }
+    
 
-    /* LibraryLoadCommand = new AsyncRelayCommand(ShowCustomDialogPage);
-      public ICommand LibraryLoadCommand { get; }*/
-
-    private Task NavigateToPage(string route)
+    private async Task NavigateToPage(string? route)
     {
         Console.WriteLine($"NavigateCommand triggered with route: {route}");
 
         if (string.IsNullOrWhiteSpace(route))
-            return Task.CompletedTask;
+            return;
 
         try
         {
             // Prevent navigation to the same page
             var currentRoute = Shell.Current.CurrentState.Location.OriginalString;
-            if (currentRoute == $"//LibraryManagePage")
+            if (currentRoute == $"//{nameof(LibraryManagePage)}")
             {
 #if DEBUG
                 Console.WriteLine($"You're already on the {route} page. Navigation skipped.");
 #endif
-
-                return Task.CompletedTask;
             }
 
             // Dynamically navigate using the provided route
-            Shell.Current.GoToAsync(route);
+          // await Shell.Current.GoToAsync(route).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
@@ -72,8 +84,6 @@ public class LibraryViewModel
             Console.WriteLine($"Navigation error: {ex.Message}");
 #endif
         }
-
-        return Task.CompletedTask;
     }
 
 

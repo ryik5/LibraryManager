@@ -39,8 +39,12 @@ public static class MauiProgram
         };
          // Register all shared ViewModels
         builder.Services.AddSingleton<ILibrary>(Library);
-        builder.Services.AddTransient<LibraryViewModel>();
+        builder.Services.AddSingleton<LibraryViewModel>();
+        builder.Services.AddSingleton<BooksViewModel>();
+
+        /*builder.Services.AddTransient<LibraryViewModel>();
         builder.Services.AddTransient<BooksViewModel>();
+        */
         
         #if DEBUG
         builder.Logging.AddDebug();

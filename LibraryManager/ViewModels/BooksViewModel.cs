@@ -5,36 +5,54 @@ using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using LibraryManager.Models;
+using LibraryManager.Views;
 
 namespace LibraryManager.ViewModels;
 
-public class BooksViewModel : BindableObject, INotifyPropertyChanged
+public class BooksViewModel : BindableObject, INotifyPropertyChanged, IDisposable
 {
     public BooksViewModel(ILibrary library)
     {
-         
         Library = library;
-      //  _library = new LibraryModel(library); // Constructor injection ensures proper dependency handling
-       // RaisePropertyChanged(nameof(Books));
-       
-       //SelectedBooks = new ObservableCollection<Book>();
-        
-       // Monitor selected items
-       // SelectedBooks.CollectionChanged += OnSelectionChanged;
 
         // Initialize the generic navigation command
-        NavigateCommand = new AsyncRelayCommand<string>(async (route) => await NavigateToPage(route));
-     }
+        NavigateCommand = new AsyncRelayCommand<string>(NavigateToPage);
 
+     }
+    public BooksViewModel()
+    {
+        Library  = App.Services.GetService<ILibrary>();
+
+        // Initialize the generic navigation command
+        NavigateCommand = new AsyncRelayCommand<string>(NavigateToPage);
+    }
+    
+    // Cleanup method for external calls
+    public void Dispose()
+    {
+        if (_disposed) return; // Safeguard against multiple Dispose calls.
+        _disposed = true;
+
+        // Perform cleanup: Unsubscribe from any events
+        SelectedBooks = null;
+        if (_library is INotifyPropertyChanged notifyLibrary)
+        {
+            notifyLibrary.PropertyChanged -= OnLibraryChanged;
+        }
+        
+        Console.WriteLine("BooksViewModel disposed successfully.");
+    }
+    private void OnLibraryChanged(object sender, PropertyChangedEventArgs e)
+    {
+        Console.WriteLine($"Library property changed: {e.PropertyName}");
+    }
+
+
+    
     #region Public properties
 
     public ICommand NavigateCommand { get; }
-
-    /*public ObservableCollection<Book> Books
-    {
-        get => _library.BookList;
-        set => SetProperty(ref _library.BookList, value);
-    }*/
+    
     public ILibrary Library
     {
         get => _library;
@@ -54,30 +72,27 @@ public class BooksViewModel : BindableObject, INotifyPropertyChanged
 
     #region Private methods
 
-    private Task NavigateToPage(string route)
+    private async Task NavigateToPage(string? route)
     {
         Console.WriteLine($"NavigateCommand triggered with route: {route}");
 
         if (string.IsNullOrWhiteSpace(route))
-            return Task.CompletedTask;
-        ;
+            return;
 
         try
         {
             // Prevent navigation to the same page
             var currentRoute = Shell.Current.CurrentState.Location.OriginalString;
-            if (currentRoute == $"//BooksManagePage")
+            if (currentRoute == $"//{nameof(BooksManagePage)}")
             {
 #if DEBUG
                 Console.WriteLine($"You're already on the {route} page. Navigation skipped.");
                 AddBook();
 #endif
-
-                return Task.CompletedTask;
             }
 
             // Dynamically navigate using the provided route
-            Shell.Current.GoToAsync(route);
+         // await Shell.Current.GoToAsync(route).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
@@ -86,8 +101,6 @@ public class BooksViewModel : BindableObject, INotifyPropertyChanged
             Console.WriteLine($"Navigation error: {ex.Message}");
 #endif
         }
-
-        return Task.CompletedTask;
     }
 
     private void AddBook()
@@ -148,6 +161,6 @@ public class BooksViewModel : BindableObject, INotifyPropertyChanged
 
    // private readonly LibraryModel _library;
     private ILibrary _library;
-
+    private bool _disposed; // Safeguard for multiple calls to Dispose.
     #endregion
 }

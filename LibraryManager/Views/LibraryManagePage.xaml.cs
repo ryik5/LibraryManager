@@ -8,7 +8,28 @@ public partial class LibraryManagePage : ContentPage
     {
         InitializeComponent();
         
-        // Manually resolve or assign the ViewModel when using DI
-        BindingContext = App.Services.GetService<LibraryViewModel>();
+        // Fetch the singleton instance of LibraryViewModel
+        BindingContext ??= App.Services.GetService<LibraryViewModel>();
+    }
+    
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        
+        // Ensure BindingContext is assigned only if not already set
+        if (BindingContext == null)
+        {
+            BindingContext = App.Services.GetService<LibraryViewModel>();
+        }
+    }
+
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+
+        if (BindingContext != null)
+        {
+            BindingContext = null;
+        }
     }
 }

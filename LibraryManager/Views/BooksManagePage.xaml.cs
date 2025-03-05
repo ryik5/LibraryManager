@@ -11,63 +11,36 @@ public partial class BooksManagePage : ContentPage
     {
         InitializeComponent();
         
-        BindingContext = App.Services.GetService<BooksViewModel>();
+        // Fetch the singleton instance of BooksViewModel
+        BindingContext ??= App.Services.GetService<BooksViewModel>();
+    }
+    
 
-        // Initialize a tooltip label to show dynamically
-        _tooltipLabel = new Label
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        
+        // Avoid assigning a new instance unnecessarily
+        if (BindingContext == null)
         {
-            BackgroundColor = Colors.LightGray,
-            TextColor = Colors.Black,
-            Padding = 5,
-            IsVisible = false, // Hide the tooltip initially
-            ZIndex = 99
-        };
+            BindingContext = App.Services.GetService<BooksViewModel>();
+        }
 
-        /*// Add the tooltip to the parent layout
-        var mainLayout = this.Content as Grid;
-        if (mainLayout != null)
-        {
-            mainLayout.Children.Add(_tooltipLabel);
-        }*/
+        // Add event handlers
+        BooksCollectionView.SelectionChanged += SelectableItemsView_OnSelectionChanged;
     }
 
-
-    // Triggered when the pointer enters an element
-    private void OnPointerEntered(object sender, EventArgs e)
+    protected override void OnDisappearing()
     {
-        if (sender is HoverableLabel hoveredLabel)
-        {
-            _tooltipLabel.Text = GetTooltipText(hoveredLabel); // Generate tooltip text dynamically
-            _tooltipLabel.IsVisible = true;
+        base.OnDisappearing();
 
-            // Adjust the tooltip's position
-            var position = hoveredLabel.Bounds.Location;
-            _tooltipLabel.TranslationX = position.X + 20; // Offset for better visibility
-            _tooltipLabel.TranslationY = position.Y + 10;
+        BooksCollectionView.SelectionChanged-= SelectableItemsView_OnSelectionChanged;
+        
+        if (BindingContext != null)
+        {
+            BindingContext = null;
         }
     }
-
-    // Triggered when the pointer exits an element
-    private void OnPointerExited(object sender, EventArgs e)
-    {
-        _tooltipLabel.IsVisible = false; // Hide the tooltip when exiting
-    }
-
-    // TODO : do normal code
-    // A helper to define tooltips dynamically for each field
-    private string GetTooltipText(Label label)
-    {
-        // Example: Match label text to tooltip content
-        if (label.Text == "1984")
-            return "A dystopian novel by George Orwell.";
-        if (label.Text == "Pride and Prejudice")
-            return "A classic novel by Jane Austen.";
-
-        return $"Tooltip for {label.Text}";
-    }
-
-
-    private Label _tooltipLabel;
 
     private void SelectableItemsView_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
