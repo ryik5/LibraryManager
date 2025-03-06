@@ -17,10 +17,7 @@ public partial class LibraryManagePage : ContentPage
         base.OnAppearing();
         
         // Ensure BindingContext is assigned only if not already set
-        if (BindingContext == null)
-        {
-            BindingContext = App.Services.GetService<LibraryViewModel>();
-        }
+        BindingContext ??= App.Services.GetService<LibraryViewModel>();
     }
 
     protected override void OnDisappearing()

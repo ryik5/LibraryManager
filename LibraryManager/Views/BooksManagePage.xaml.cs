@@ -1,4 +1,3 @@
-using LibraryManager.Extensions;
 using LibraryManager.Models;
 using LibraryManager.ViewModels;
 
@@ -21,10 +20,7 @@ public partial class BooksManagePage : ContentPage
         base.OnAppearing();
         
         // Avoid assigning a new instance unnecessarily
-        if (BindingContext == null)
-        {
-            BindingContext = App.Services.GetService<BooksViewModel>();
-        }
+        BindingContext ??= App.Services.GetService<BooksViewModel>();
 
         // Add event handlers
         BooksCollectionView.SelectionChanged += SelectableItemsView_OnSelectionChanged;
@@ -34,12 +30,11 @@ public partial class BooksManagePage : ContentPage
     {
         base.OnDisappearing();
 
-        BooksCollectionView.SelectionChanged-= SelectableItemsView_OnSelectionChanged;
+        if(BooksCollectionView !=null)
+            BooksCollectionView.SelectionChanged-= SelectableItemsView_OnSelectionChanged;
         
         if (BindingContext != null)
-        {
             BindingContext = null;
-        }
     }
 
     private void SelectableItemsView_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)

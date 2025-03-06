@@ -1,5 +1,3 @@
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
@@ -9,7 +7,7 @@ using LibraryManager.Views;
 
 namespace LibraryManager.ViewModels;
 
-public class BooksViewModel : BindableObject, INotifyPropertyChanged, IDisposable
+public class BooksViewModel : INotifyPropertyChanged, IDisposable
 {
     public BooksViewModel(ILibrary library)
     {
@@ -17,17 +15,9 @@ public class BooksViewModel : BindableObject, INotifyPropertyChanged, IDisposabl
 
         // Initialize the generic navigation command
         NavigateCommand = new AsyncRelayCommand<string>(NavigateToPage);
-
-     }
-    public BooksViewModel()
-    {
-        Library  = App.Services.GetService<ILibrary>();
-
-        // Initialize the generic navigation command
-        NavigateCommand = new AsyncRelayCommand<string>(NavigateToPage);
     }
-    
-    // Cleanup method for external calls
+
+    // Dispose method for external calls
     public void Dispose()
     {
         if (_disposed) return; // Safeguard against multiple Dispose calls.
@@ -39,33 +29,36 @@ public class BooksViewModel : BindableObject, INotifyPropertyChanged, IDisposabl
         {
             notifyLibrary.PropertyChanged -= OnLibraryChanged;
         }
-        
+
         Console.WriteLine("BooksViewModel disposed successfully.");
     }
+
+    ~BooksViewModel()
+    {
+        Dispose(); // Safeguard cleanup in destructor (if proper disposal is skipped)
+    }
+
     private void OnLibraryChanged(object sender, PropertyChangedEventArgs e)
     {
         Console.WriteLine($"Library property changed: {e.PropertyName}");
     }
 
 
-    
     #region Public properties
 
     public ICommand NavigateCommand { get; }
-    
+
     public ILibrary Library
     {
         get => _library;
         set => SetProperty(ref _library, value);
     }
 
-    public IList<Book> SelectedBooks {
+    public IList<Book> SelectedBooks
+    {
         get => _selectedBooks;
         set => SetProperty(ref _selectedBooks, value);
     }
-    private IList<Book> _selectedBooks=new List<Book>();
-
-    public event PropertyChangedEventHandler PropertyChanged;
 
     #endregion
 
@@ -92,7 +85,7 @@ public class BooksViewModel : BindableObject, INotifyPropertyChanged, IDisposabl
             }
 
             // Dynamically navigate using the provided route
-         // await Shell.Current.GoToAsync(route).ConfigureAwait(false);
+            // await Shell.Current.GoToAsync(route).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
@@ -107,38 +100,15 @@ public class BooksViewModel : BindableObject, INotifyPropertyChanged, IDisposabl
     {
         Library.BookList.Add(
             new Book { Id = 0, Title = "1984", Author = "George Orwell", Year = 1949, TotalPages = 1 }
-            );
+        );
     }
+
+    #endregion
+
 
     #region Binding implementation
 
-    
-    
-    
-    private void OnSelectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-    {
-        if (e.Action == NotifyCollectionChangedAction.Add)
-        {
-            foreach (var newItem in e.NewItems)
-            {
-                var selectedBook = newItem as Book;
-#if DEBUG
-                Console.WriteLine($"Selected: {selectedBook?.Title}");
-#endif
-            }
-        }
-
-        if (e.Action == NotifyCollectionChangedAction.Remove)
-        {
-            foreach (var removedItem in e.OldItems)
-            {
-                var deselectedBook = removedItem as Book;
-#if DEBUG
-                Console.WriteLine($"Deselected: {deselectedBook?.Title}");
-#endif
-            }
-        }
-    }
+    public event PropertyChangedEventHandler PropertyChanged;
 
     private void RaisePropertyChanged([CallerMemberName] string propertyName = null)
     {
@@ -155,12 +125,13 @@ public class BooksViewModel : BindableObject, INotifyPropertyChanged, IDisposabl
 
     #endregion
 
-    #endregion
 
-    #region private fields
+    #region Private fields
 
-   // private readonly LibraryModel _library;
+    // private readonly LibraryModel _library;
     private ILibrary _library;
+    private IList<Book> _selectedBooks = new List<Book>();
     private bool _disposed; // Safeguard for multiple calls to Dispose.
+
     #endregion
 }

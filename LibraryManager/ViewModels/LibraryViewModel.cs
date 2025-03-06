@@ -1,4 +1,6 @@
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using LibraryManager.Models;
@@ -6,7 +8,7 @@ using LibraryManager.Views;
 
 namespace LibraryManager.ViewModels;
 
-public class LibraryViewModel
+public class LibraryViewModel : INotifyPropertyChanged, IDisposable
 {
     private readonly ILibrary? _library;
 
@@ -24,37 +26,22 @@ public class LibraryViewModel
         });*/
     }
 
-    public LibraryViewModel()
-    {
-        Console.WriteLine("LibraryViewModel instantiated with library.");
-
-        _library = App.Services.GetService<ILibrary>();
-
-        // Initialize the generic navigation command
-        NavigateCommand = new AsyncRelayCommand<string>(NavigateToPage);
-
-        /*MessagingCenter.Subscribe<BooksViewModel>(this, "Navigate", async (sender) =>
-        {
-            Console.WriteLine("Received navigation request from BooksViewModel.");
-           // await NavigateToPage("CreateLibrary").ConfigureAwait(false);
-        });*/
-    }
-
     // Add cleanup method to unsubscribe
-    public void Cleanup()
+    public void Dispose()
     {
         // MessagingCenter cleanup
         Console.WriteLine("Cleaning up MessagingCenter resources in LibraryViewModel.");
         MessagingCenter.Unsubscribe<BooksViewModel>(this, "Navigate");
     }
+
     ~LibraryViewModel()
     {
-        Cleanup(); // Safeguard cleanup in destructor (if proper disposal is skipped)
+        Dispose(); // Safeguard cleanup in destructor (if proper disposal is skipped)
     }
 
 
     public ICommand NavigateCommand { get; }
-    
+
 
     private async Task NavigateToPage(string? route)
     {
@@ -75,7 +62,7 @@ public class LibraryViewModel
             }
 
             // Dynamically navigate using the provided route
-          // await Shell.Current.GoToAsync(route).ConfigureAwait(false);
+            // await Shell.Current.GoToAsync(route).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
@@ -128,4 +115,23 @@ public class LibraryViewModel
         // Navigate to NewLibrary page
         await Shell.Current.GoToAsync("NewLibrary");
     }
+
+    #region Binding implementation
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    private void RaisePropertyChanged([CallerMemberName] string propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    private bool SetProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+    {
+        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+        field = value;
+        RaisePropertyChanged(propertyName);
+        return true;
+    }
+
+    #endregion
 }
