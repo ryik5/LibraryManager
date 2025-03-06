@@ -20,8 +20,8 @@ public static class MauiProgram
                 fonts.AddFont("Manrope.ttf", "ManropeExtraLight");
             });
 
-      
-        var Library =  new Library
+
+        var library = new Library
         {
             // Populate with sample data       
             Id = new Random().Next(),
@@ -29,26 +29,22 @@ public static class MauiProgram
             Description = "",
             BookList = new ObservableCollection<Book>
             {
+                // TODO : DEMO data. Will clean
                 new Book { Id = 0, Title = "1984", Author = "George Orwell", Year = 1949, TotalPages = 1 },
                 new Book { Id = 1, Title = "Pride and Prejudice", Author = "Jane Austen", Year = 1813, TotalPages = 1 },
-                new Book
-                {
-                    Id = 2, Title = "The Catcher in the Rye", Author = "J.D. Salinger", Year = 1951, TotalPages = 1
-                }
+                new Book { Id = 2, Title = "The Catcher in the Rye", Author = "J.D. Salinger", Year = 1951, TotalPages = 1 }
             }
         };
-         // Register all shared ViewModels
-        builder.Services.AddSingleton<ILibrary>(Library);
+
+        // Register all shared ViewModels and objects
+        builder.Services.AddSingleton<ILibrary>(library);
         builder.Services.AddSingleton<LibraryViewModel>();
         builder.Services.AddSingleton<BooksViewModel>();
 
-        /*builder.Services.AddTransient<LibraryViewModel>();
-        builder.Services.AddTransient<BooksViewModel>();
-        */
-        
-        #if DEBUG
+
+#if DEBUG
         builder.Logging.AddDebug();
-        #endif
+#endif
 
         return builder.Build();
     }

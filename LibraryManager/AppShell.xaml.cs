@@ -10,20 +10,20 @@ public partial class AppShell : Shell
         InitializeComponent();
 
         // Register routes for non-hierarchical pages
-        Routing.RegisterRoute("CreateLibrary", typeof(LibraryManagePage));
-        Routing.RegisterRoute("LoadLibrary", typeof(LibraryManagePage));
-        Routing.RegisterRoute("SaveLibrary", typeof(LibraryManagePage));
-        Routing.RegisterRoute("SaveAsLibrary", typeof(LibraryManagePage));
-        Routing.RegisterRoute("CloseLibrary", typeof(LibraryManagePage));
+        Routing.RegisterRoute("CreateLibrary", typeof(LibraryPage));
+        Routing.RegisterRoute("LoadLibrary", typeof(LibraryPage));
+        Routing.RegisterRoute("SaveLibrary", typeof(LibraryPage));
+        Routing.RegisterRoute("SaveAsLibrary", typeof(LibraryPage));
+        Routing.RegisterRoute("CloseLibrary", typeof(LibraryPage));
         
-        Routing.RegisterRoute("AddNewBook", typeof(BooksManagePage));
-        Routing.RegisterRoute("EditBook", typeof(BooksManagePage));
-        Routing.RegisterRoute("DeleteBooks", typeof(BooksManagePage));
-        Routing.RegisterRoute("ImportBook", typeof(BooksManagePage));
-        Routing.RegisterRoute("ExportBook", typeof(BooksManagePage));
-        Routing.RegisterRoute("SortBooks", typeof(BooksManagePage));
+        Routing.RegisterRoute("AddNewBook", typeof(BooksPage));
+        Routing.RegisterRoute("EditBook", typeof(BooksPage));
+        Routing.RegisterRoute("DeleteBooks", typeof(BooksPage));
+        Routing.RegisterRoute("ImportBook", typeof(BooksPage));
+        Routing.RegisterRoute("ExportBook", typeof(BooksPage));
+        Routing.RegisterRoute("SortBooks", typeof(BooksPage));
 
-        // Assign the custom drawable to the GraphicsView
+        // App Logo. Assign the custom drawable to the GraphicsView
         LogoGraphicsView.Drawable = new CustomDrawable();
     }
 }

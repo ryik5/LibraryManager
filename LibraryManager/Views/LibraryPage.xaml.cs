@@ -2,9 +2,10 @@ using LibraryManager.ViewModels;
 
 namespace LibraryManager.Views;
 
-public partial class LibraryManagePage : ContentPage
+public partial class LibraryPage : ContentPage
 {
-    public LibraryManagePage()
+    // Parameterless constructor required by .NET MAUI Shell navigation
+    public LibraryPage()
     {
         InitializeComponent();
         
@@ -12,6 +13,9 @@ public partial class LibraryManagePage : ContentPage
         BindingContext ??= App.Services.GetService<LibraryViewModel>();
     }
     
+    /// <summary>
+    /// To ensure the BindingContext is bound correctly
+    /// </summary>
     protected override void OnAppearing()
     {
         base.OnAppearing();
@@ -20,6 +24,9 @@ public partial class LibraryManagePage : ContentPage
         BindingContext ??= App.Services.GetService<LibraryViewModel>();
     }
 
+    /// <summary>
+    /// To ensure the BindingContext is cleared correctly
+    /// </summary>
     protected override void OnDisappearing()
     {
         base.OnDisappearing();

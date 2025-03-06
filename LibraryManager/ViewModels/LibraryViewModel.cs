@@ -10,12 +10,13 @@ namespace LibraryManager.ViewModels;
 
 public class LibraryViewModel : INotifyPropertyChanged, IDisposable
 {
-    private readonly ILibrary? _library;
-
     public LibraryViewModel(ILibrary? library)
     {
+        #if DEBUG
         Console.WriteLine("LibraryViewModel instantiated with library.");
+        #endif
         _library = library; // Constructor injection ensures proper dependency handling
+        
         // Initialize the generic navigation command
         NavigateCommand = new AsyncRelayCommand<string>(NavigateToPage);
 
@@ -25,12 +26,17 @@ public class LibraryViewModel : INotifyPropertyChanged, IDisposable
            // await NavigateToPage("CreateLibrary").ConfigureAwait(false);
         });*/
     }
-
-    // Add cleanup method to unsubscribe
+    
+    // Dispose method for external calls
     public void Dispose()
     {
+        if (_disposed) return; // Safeguard against multiple Dispose calls.
+        _disposed = true;
+
         // MessagingCenter cleanup
+        #if DEBUG
         Console.WriteLine("Cleaning up MessagingCenter resources in LibraryViewModel.");
+        #endif
         MessagingCenter.Unsubscribe<BooksViewModel>(this, "Navigate");
     }
 
@@ -40,9 +46,14 @@ public class LibraryViewModel : INotifyPropertyChanged, IDisposable
     }
 
 
+    #region Public properties
+    
     public ICommand NavigateCommand { get; }
 
+    #endregion 
 
+
+    #region Private methods
     private async Task NavigateToPage(string? route)
     {
         Console.WriteLine($"NavigateCommand triggered with route: {route}");
@@ -54,7 +65,7 @@ public class LibraryViewModel : INotifyPropertyChanged, IDisposable
         {
             // Prevent navigation to the same page
             var currentRoute = Shell.Current.CurrentState.Location.OriginalString;
-            if (currentRoute == $"//{nameof(LibraryManagePage)}")
+            if (currentRoute == $"//{nameof(LibraryPage)}")
             {
 #if DEBUG
                 Console.WriteLine($"You're already on the {route} page. Navigation skipped.");
@@ -72,8 +83,7 @@ public class LibraryViewModel : INotifyPropertyChanged, IDisposable
 #endif
         }
     }
-
-
+    
     private async Task LibraryCreateNewAsync()
     {
         await ShowMessageAsync("Message", "Pressed - CreateNewLibrary");
@@ -116,6 +126,9 @@ public class LibraryViewModel : INotifyPropertyChanged, IDisposable
         await Shell.Current.GoToAsync("NewLibrary");
     }
 
+    #endregion
+    
+    
     #region Binding implementation
 
     public event PropertyChangedEventHandler PropertyChanged;
@@ -132,6 +145,14 @@ public class LibraryViewModel : INotifyPropertyChanged, IDisposable
         RaisePropertyChanged(propertyName);
         return true;
     }
+
+    #endregion
+
+    
+    #region Private fields
+
+    private readonly ILibrary? _library;
+    private bool _disposed; // Safeguard for multiple calls to Dispose.
 
     #endregion
 }

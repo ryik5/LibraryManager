@@ -76,7 +76,7 @@ public class BooksViewModel : INotifyPropertyChanged, IDisposable
         {
             // Prevent navigation to the same page
             var currentRoute = Shell.Current.CurrentState.Location.OriginalString;
-            if (currentRoute == $"//{nameof(BooksManagePage)}")
+            if (currentRoute == $"//{nameof(BooksPage)}")
             {
 #if DEBUG
                 Console.WriteLine($"You're already on the {route} page. Navigation skipped.");
@@ -128,7 +128,6 @@ public class BooksViewModel : INotifyPropertyChanged, IDisposable
 
     #region Private fields
 
-    // private readonly LibraryModel _library;
     private ILibrary _library;
     private IList<Book> _selectedBooks = new List<Book>();
     private bool _disposed; // Safeguard for multiple calls to Dispose.

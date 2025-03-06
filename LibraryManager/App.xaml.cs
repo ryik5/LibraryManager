@@ -1,10 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.Diagnostics;
-using CommunityToolkit.Mvvm.Messaging;
-using LibraryManager.Models;
-using LibraryManager.ViewModels;
-
-namespace LibraryManager;
+﻿namespace LibraryManager;
 
 public partial class App : Application
 {
@@ -13,10 +7,12 @@ public partial class App : Application
         InitializeComponent();
 
         Services = serviceProvider;
-        
+
         MainPage = new AppShell();
     }
 
+    /// <summary>
+    /// DI for singletons // TODO : Check necessary
+    /// </summary>
     public static IServiceProvider Services { get; private set; }
-    
 }

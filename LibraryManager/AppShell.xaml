@@ -5,39 +5,107 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:view="clr-namespace:LibraryManager.Views"
-    xmlns:model="clr-namespace:LibraryManager.Models"
-    FlyoutBehavior= "Locked"
+    xmlns:local="clr-namespace:LibraryManager"
+    FlyoutBehavior="Locked"
     FlyoutHeaderBehavior="Fixed"
     FlyoutBackgroundColor="{StaticResource Tertiary}"
     FlyoutWidth="{OnPlatform Android=180, iOS=200, WinUI=250, MacCatalyst=150}"
-    >
-    
+    x:DataType="local:AppShell">
+
     <Shell.FlyoutHeader>
-        <Grid Padding="5" ColumnDefinitions="50,*">
-            <!-- Logo/Icon -->
-            <GraphicsView
-                x:Name="LogoGraphicsView"
-                HeightRequest="50"
-                WidthRequest="50"
-                VerticalOptions="Center" 
-                />
+        <Grid Margin="00,35,00,00" Padding="5" RowDefinitions="20,50">
 
             <!-- Menu Item Title -->
             <Label
-                Text="{Binding Title}"
-                FontSize="16"
+                Text="Library Manager"
+                FontAttributes="Bold"
+                FontSize="18"
                 VerticalOptions="Center"
-                Grid.Column="1" />
+                HorizontalOptions="Center" />
+
+            <!-- Logo/Icon -->
+            <GraphicsView Grid.Row="1"
+                          x:Name="LogoGraphicsView"
+                          HeightRequest="50"
+                          WidthRequest="50"
+                          VerticalOptions="Center">
+                <GraphicsView.Margin>0,20,0,0</GraphicsView.Margin>
+            </GraphicsView>
+
         </Grid>
 
     </Shell.FlyoutHeader>
-    
+
+    <!-- TODO : improve style for -->
+    <!--Don't work - mark of selected a flyoutItem-->
     <Shell.ItemTemplate>
         <DataTemplate>
-            <Grid Padding="10">
-                <Label Text="{Binding Title}" FontSize="18" TextColor="{StaticResource Primary}" />
+            <Grid x:Name="FlyoutItemLayout"
+                  HeightRequest="{OnPlatform 44, Android=50}"
+                  ColumnSpacing="{OnPlatform WinUI=0}"
+                  RowSpacing="{OnPlatform WinUI=0}">
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroupList>
+                        <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Normal">
+                                <VisualState.Setters>
+                                    <Setter Property="BackgroundColor" Value="Transparent" />
+                                </VisualState.Setters>
+                            </VisualState>
+                            <VisualState x:Name="Selected">
+                                <VisualState.Setters>
+                                    <Setter Property="BackgroundColor"
+                                            Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Tertiary}}" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </VisualStateManager.VisualStateGroups>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="{OnPlatform Android=54, iOS=50, WinUI=Auto, MacCatalyst=20}" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Image x:Name="FlyoutItemImage"
+                       Source="{Binding FlyoutIcon}"
+                       VerticalOptions="Center"
+                       HorizontalOptions="{OnPlatform Default=Center, WinUI=Start}"
+                       HeightRequest="{OnPlatform Android=24, iOS=22, WinUI=16, MacCatalyst=24}"
+                       WidthRequest="{OnPlatform Android=24, iOS=22, WinUI=16, MacCatalyst=24}">
+                    <Image.Margin>
+                        <OnPlatform x:TypeArguments="Thickness">
+                            <OnPlatform.Platforms>
+                                <On Platform="MacCatalyst" Value="12,0,12,0" />
+                            </OnPlatform.Platforms>
+                        </OnPlatform>
+                    </Image.Margin>
+                </Image>
+                <Label x:Name="FlyoutItemLabel"
+                       Grid.Column="1"
+                       Text="{Binding Title}"
+                       FontSize="{OnPlatform Android=14, iOS=14, MacCatalyst=20}"
+                       FontAttributes="{OnPlatform iOS=Bold}"
+                       HorizontalOptions="{OnPlatform WinUI=Start}"
+                       HorizontalTextAlignment="{OnPlatform WinUI=Start}"
+                       VerticalTextAlignment="Center"
+                       TextColor="{AppThemeBinding Light={StaticResource White}, Dark=Black}">
+                    <Label.Margin>
+                        <OnPlatform x:TypeArguments="Thickness">
+                            <OnPlatform.Platforms>
+                                <On Platform="Android" Value="20, 0, 0, 0" />
+                            </OnPlatform.Platforms>
+                        </OnPlatform>
+                    </Label.Margin>
+                    <Label.FontFamily>
+                        <OnPlatform x:TypeArguments="x:String">
+                            <OnPlatform.Platforms>
+                                <On Platform="Android" Value="sans-serif-medium" />
+                            </OnPlatform.Platforms>
+                        </OnPlatform>
+                    </Label.FontFamily>
+                </Label>
             </Grid>
         </DataTemplate>
+
     </Shell.ItemTemplate>
 
     <Shell.Resources>
@@ -52,12 +120,12 @@
             <Setter Property="Shell.TabBarUnselectedColor" Value="{StaticResource Tertiary}" />
         </Style>
     </Shell.Resources>
-    
+
     <FlyoutItem Title="Library" Shell.TabBarIsVisible="False">
-        <ShellContent Route="LibraryManagePage" ContentTemplate="{DataTemplate view:LibraryManagePage}" />
+        <ShellContent Route="LibraryPage" ContentTemplate="{DataTemplate view:LibraryPage}" />
     </FlyoutItem>
-    
+
     <FlyoutItem Title="Books" Shell.TabBarIsVisible="False">
-        <ShellContent Route="BooksManagePage" ContentTemplate="{DataTemplate view:BooksManagePage}" />
+        <ShellContent Route="BooksPage" ContentTemplate="{DataTemplate view:BooksPage}" />
     </FlyoutItem>
 </Shell>
