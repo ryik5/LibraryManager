@@ -9,7 +9,7 @@
         <MenuBarItem Text="Books">
             <MenuFlyoutItem Text="Add Book"
                             Command="{Binding NavigateCommand}"
-                            CommandParameter="AddNewBook" />
+                            CommandParameter="Add Book" />
             <MenuFlyoutItem Text="Edit Book"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="EditBook" />

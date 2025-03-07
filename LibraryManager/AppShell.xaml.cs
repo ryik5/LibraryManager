@@ -10,8 +10,8 @@ public partial class AppShell : Shell
         InitializeComponent();
 
         // Register routes for non-hierarchical pages
-        Routing.RegisterRoute("CreateLibrary", typeof(LibraryPage));
-        Routing.RegisterRoute("LoadLibrary", typeof(LibraryPage));
+        Routing.RegisterRoute(Constants.CREATE_NEW_LIBRARY, typeof(LibraryPage));
+        Routing.RegisterRoute(Constants.LIBRARY_LOAD, typeof(LibraryPage));
         Routing.RegisterRoute("SaveLibrary", typeof(LibraryPage));
         Routing.RegisterRoute("SaveAsLibrary", typeof(LibraryPage));
         Routing.RegisterRoute("CloseLibrary", typeof(LibraryPage));

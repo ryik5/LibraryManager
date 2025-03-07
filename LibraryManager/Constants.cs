@@ -49,20 +49,20 @@ public static class Constants
     #endregion
 
     #region book details: FindBookViewModel, CreatorBookDetailsViewModel, EditorBookDetailsViewModel
+     public const string ADD_BOOK = "Add Book";
+     public const string LAST_ADDED_BOOK = "Last added book";
+     public const string ADDING_BOOK_WAS_CANCELLED = "Adding book was cancelled";
+     public const string EDIT_BOOK = "Edit Book";
+     public const string ORIGINAL_STATE_BOOK = "Original state of the book";
+     public const string LOADED_FOR_EDITING = "is loaded for editing";
+     public const string LAST_EDITED_BOOK = "Last edited book";
+     public const string EDITING_BOOK_WAS_CANCELLED = "Editing book was cancelled";
+ 
     public const string FIND_BOOKS = "Find Books";
     public const string SORTING_ASCENDING = "a...Z";
     public const string SORTING_DESCENDING = "Z...a";
     public const string BOOK_WAS_DELETED_SUCCESSFULLY = "Book was deleted successfully";
     public const string NO_BOOKS_FOUND = "No books found";
-    public const string ADD_BOOK = "Add Book";
-    public const string LAST_ADDED_BOOK = "Last added book";
-    public const string ADDING_BOOK_WAS_CANCELLED = "Adding book was cancelled";
-    public const string EDIT_BOOK = "Edit Book";
-    public const string ORIGINAL_STATE_BOOK = "Original state of the book";
-    public const string LOADED_FOR_EDITING = "is loaded for editing";
-    public const string LAST_EDITED_BOOK = "Last edited book";
-    public const string EDITING_BOOK_WAS_CANCELLED = "Editing book was cancelled";
-
     public const string CONTENT_WAS_LOADED = "Content was loaded";
     public const string LOAD_CONTENT = "Load content";
     public const string LOADING_STARTED = "Loading started";

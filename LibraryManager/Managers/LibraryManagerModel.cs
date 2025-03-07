@@ -17,20 +17,30 @@ public class LibraryManagerModel : INotifyPropertyChanged, ILibraryManageable
 
         if (Library is ILibrary)
         {
-            Library.BookList.CollectionChanged -= BookList_CollectionChanged;
-            Library.Set(library);
+             Library.Set(library);
         }
         else
         {
             _library = library;
-            RaisePropertyChanged(nameof(Library));
         }
-
-        Library.BookList.CollectionChanged += BookList_CollectionChanged;
     }
 
 
     #region public methods
+    
+    public Task RunCommand(string commandParameter)
+    {
+        switch (commandParameter)
+        {
+            case Constants.CREATE_NEW_LIBRARY:
+                break;
+            
+            default:
+                break;
+        }
+        return Task.CompletedTask;
+    }
+    
     /// <summary>
     /// Creates a new library with the specified ID.
     /// </summary>
@@ -103,21 +113,10 @@ public class LibraryManagerModel : INotifyPropertyChanged, ILibraryManageable
     }
 
     public event EventHandler<ActionFinishedEventArgs> LoadingFinished;
-    public event EventHandler<TotalBooksEventArgs> TotalBooksChanged;
     #endregion
 
 
     #region private methods
-    /// <summary>
-    /// Handles the CollectionChanged event of the BookList.
-    /// </summary>
-    /// <param name="sender">The source of the event.</param>
-    /// <param name="e">The NotifyCollectionChangedEventArgs instance containing the event data.</param>
-    private void BookList_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-    {
-        TotalBooksChanged.Invoke(this, new TotalBooksEventArgs { TotalBooks = Library.BookList?.Count ?? 0 });
-    }
-
     /// <summary>
     /// Handles the LoadingFinished event of the LibraryLoader.
     /// </summary>

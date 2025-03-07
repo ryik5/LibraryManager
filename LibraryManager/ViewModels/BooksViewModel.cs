@@ -13,6 +13,9 @@ public class BooksViewModel : INotifyPropertyChanged, IDisposable
     public BooksViewModel(ILibrary library)
     {
         Library = library;
+        Library.BookList.CollectionChanged += BookList_CollectionChanged;
+
+        _bookManageable = new BookManagerModel(Library);
 
         // Initialize the generic navigation command
         NavigateCommand = new AsyncRelayCommand<string>(NavigateToPage);
@@ -23,6 +26,7 @@ public class BooksViewModel : INotifyPropertyChanged, IDisposable
     {
         if (_disposed) return; // Safeguard against multiple Dispose calls.
         _disposed = true;
+        Library.BookList.CollectionChanged -= BookList_CollectionChanged;
 
         // Perform cleanup: Unsubscribe from any events
         SelectedBooks = null;
@@ -31,7 +35,7 @@ public class BooksViewModel : INotifyPropertyChanged, IDisposable
             notifyLibrary.PropertyChanged -= OnLibraryChanged;
         }
 
-        Console.WriteLine("BooksViewModel disposed successfully.");
+        Debug.WriteLine("BooksViewModel disposed successfully.");
     }
 
     ~BooksViewModel()
@@ -41,13 +45,21 @@ public class BooksViewModel : INotifyPropertyChanged, IDisposable
 
     private void OnLibraryChanged(object sender, PropertyChangedEventArgs e)
     {
-        Console.WriteLine($"Library property changed: {e.PropertyName}");
+        Debug.WriteLine($"Library property changed: {e.PropertyName}");
     }
-
+    /// <summary>
+    /// Handles the CollectionChanged event of the BookList.
+    /// </summary>
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="e">The NotifyCollectionChangedEventArgs instance containing the event data.</param>
+    private void BookList_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+        TotalBooksChanged?.Invoke(this, new TotalBooksEventArgs { TotalBooks = Library?.BookList?.Count ?? 0 });
+    }
 
     #region Public properties
 
-    public ICommand NavigateCommand { get; }
+    public ICommand NavigateCommand { get; } 
 
     public ILibrary Library
     {
@@ -60,32 +72,34 @@ public class BooksViewModel : INotifyPropertyChanged, IDisposable
         get => _selectedBooks;
         set => SetProperty(ref _selectedBooks, value);
     }
+    
+    public event EventHandler<TotalBooksEventArgs> TotalBooksChanged;
 
     #endregion
 
 
     #region Private methods
 
-    private async Task NavigateToPage(string? commandRoute)
+    private async Task NavigateToPage(string? commandName)
     {
-        Debug.WriteLine($"NavigateCommand triggered with commandRoute: {commandRoute}");
+        Debug.WriteLine($"NavigateCommand triggered with commandName: {commandName}");
 
-        if (string.IsNullOrWhiteSpace(commandRoute))
+        if (string.IsNullOrWhiteSpace(commandName))
             return;
 
         // Prevent navigation to the same page - 'Shell.Current.GoToAsync(...'
         var currentRoute = Shell.Current.CurrentState.Location.OriginalString;
         if (currentRoute == $"//{nameof(BooksPage)}")
         {
-            switch (commandRoute)
+            switch (commandName)
             {
                 case nameof(LibraryPage):
                 {
                     try
                     {
-                        // Dynamically navigate using the provided commandRoute
+                        // Dynamically navigate using the provided commandName
                         // begins '//' added in the beginning to switch a Menu as well as Page. without '//' it switch only Page
-                        await Shell.Current.GoToAsync($"//{commandRoute}").ConfigureAwait(false);
+                        await Shell.Current.GoToAsync($"//{commandName}").ConfigureAwait(false);
                     }
                     catch (Exception ex) // Handle any issues with navigation
                     {
@@ -96,10 +110,21 @@ public class BooksViewModel : INotifyPropertyChanged, IDisposable
                 default:
                 {
 #if DEBUG
-                    Debug.WriteLine($"Commands {commandRoute} on {nameof(BooksPage)} page.");
+                    Debug.WriteLine($"Commands {commandName} on {nameof(BooksPage)} page.");
 #endif
                     // TODO : performing actions at the BooksManager
-                    await AddBook(); //Test only
+
+                    await _bookManageable.RunCommand(commandName);
+
+                    RunInMainThread(() =>
+                        {
+                            RaisePropertyChanged(nameof(Library));
+                            RaisePropertyChanged(nameof(Library.BookList));
+                        }
+                    );
+
+
+                    //  await AddBook(); //Test only
                 }
                     break;
             }
@@ -107,7 +132,8 @@ public class BooksViewModel : INotifyPropertyChanged, IDisposable
         else
         {
 #if DEBUG
-            Debug.WriteLine($"Navigation error path: {commandRoute}");
+            Debug.WriteLine(
+                $"Navigation error path '{commandName}' in class '{nameof(BooksViewModel)}' by method '{nameof(NavigateToPage)}'");
 #endif
         }
     }
@@ -173,6 +199,7 @@ public class BooksViewModel : INotifyPropertyChanged, IDisposable
 
     #region Private fields
 
+    private readonly IBookManageable _bookManageable;
     private ILibrary _library;
     private IList<Book> _selectedBooks = new List<Book>();
     private bool _disposed; // Safeguard for multiple calls to Dispose.

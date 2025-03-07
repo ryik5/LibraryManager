@@ -1,7 +1,9 @@
 ﻿using System.Collections.Immutable;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using LibraryManager.Extensions;
+using LibraryManager.Utils;
 
 namespace LibraryManager.Models;
 
@@ -17,12 +19,29 @@ public class BookManagerModel : INotifyPropertyChanged, IBookManageable
             throw new ArgumentNullException(nameof(library));
 
         _library = library;
-        Library.BookList.CollectionChanged += BookList_CollectionChanged;
-        RaisePropertyChanged(nameof(Library));
     }
 
 
     #region public methods
+
+    public Task RunCommand(string commandParameter)
+    {
+        switch (commandParameter)
+        {
+            case Constants.ADD_BOOK:
+                var book = DemoBookMaker.GenerateBook();
+
+                AddBook(book);
+
+                break;
+
+            default:
+                break;
+        }
+
+        return Task.CompletedTask;
+    }
+
     /// <summary>
     /// Try ti import a book from the specified file path into the Library.
     /// </summary>
@@ -51,10 +70,7 @@ public class BookManagerModel : INotifyPropertyChanged, IBookManageable
     public bool TrySaveBook(IBookKeeper keeper, Book book, string pathToFolder)
     {
         var result = false;
-        InvokeOnUiThread(() =>
-        {
-            result = keeper.TrySaveBook(book, pathToFolder);
-        });
+        InvokeOnUiThread(() => { result = keeper.TrySaveBook(book, pathToFolder); });
         return result;
     }
 
@@ -64,9 +80,9 @@ public class BookManagerModel : INotifyPropertyChanged, IBookManageable
     public void SortBooks()
     {
         InvokeOnUiThread(() =>
-        Library.BookList.ResetAndAddRange(Library.BookList
-            .OrderBy(b => b.Author)
-            .ThenBy(b => b.Title)));
+            Library.BookList.ResetAndAddRange(Library.BookList
+                .OrderBy(b => b.Author)
+                .ThenBy(b => b.Title)));
     }
 
     /// <summary>
@@ -75,7 +91,7 @@ public class BookManagerModel : INotifyPropertyChanged, IBookManageable
     public void SafetySortBooks(List<PropertyCustomInfo> sortProperties)
     {
         InvokeOnUiThread(() =>
-        Library.BookList.ResetAndAddRange(GetSortedBookList(sortProperties)));
+            Library.BookList.ResetAndAddRange(GetSortedBookList(sortProperties)));
     }
 
     /// <summary>
@@ -84,8 +100,11 @@ public class BookManagerModel : INotifyPropertyChanged, IBookManageable
     /// <param name="book">The book to add.</param>
     public void AddBook(Book book)
     {
-        book.Id = Library.BookList.Count == 0 ? 1 : Library.BookList.Max(b => b.Id) + 1;
-        Library.BookList.Add(book);
+        InvokeOnUiThread(() =>
+        {
+            book.Id = _library.BookList.Count == 0 ? 1 : _library.BookList.Max(b => b.Id) + 1;
+            _library.BookList.Add(book);
+        });
     }
 
     /// <summary>
@@ -110,10 +129,12 @@ public class BookManagerModel : INotifyPropertyChanged, IBookManageable
 
         return tmpResult?.ToList() ?? new List<Book>(0);
     }
+
     #endregion
 
 
     #region Properties
+
     /// <summary>
     /// Gets or sets a library.
     /// </summary>
@@ -125,10 +146,12 @@ public class BookManagerModel : INotifyPropertyChanged, IBookManageable
 
     public event EventHandler<ActionFinishedEventArgs> LoadingFinished;
     public event EventHandler<TotalBooksEventArgs> TotalBooksChanged;
+
     #endregion
 
 
     #region private methods
+
     /// <summary>
     /// Returns a sorted list of books based on the provided properties.
     /// </summary>
@@ -143,9 +166,12 @@ public class BookManagerModel : INotifyPropertyChanged, IBookManageable
             if (orderedBooks is IOrderedEnumerable<Book>)
             {
                 if (property.DescendingOrder)
-                    orderedBooks = ((IOrderedEnumerable<Book>)orderedBooks).ThenByDescending(b => property.PropertyInfo.GetValue(b));
+                    orderedBooks =
+                        ((IOrderedEnumerable<Book>)orderedBooks).ThenByDescending(
+                            b => property.PropertyInfo.GetValue(b));
                 else
-                    orderedBooks = ((IOrderedEnumerable<Book>)orderedBooks).ThenBy(b => property.PropertyInfo.GetValue(b));
+                    orderedBooks =
+                        ((IOrderedEnumerable<Book>)orderedBooks).ThenBy(b => property.PropertyInfo.GetValue(b));
             }
             else
             {
@@ -159,12 +185,8 @@ public class BookManagerModel : INotifyPropertyChanged, IBookManageable
         return orderedBooks;
     }
 
-    /// <summary>
-    /// Handles the CollectionChanged event of the BookList.
-    /// </summary>
-    /// <param name="sender">The source of the event.</param>
-    /// <param name="e">The NotifyCollectionChangedEventArgs instance containing the event data.</param>
-    private void BookList_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+     private void BookList_CollectionChanged(object? sender,
+        System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
         TotalBooksChanged.Invoke(this, new TotalBooksEventArgs { TotalBooks = Library.BookList?.Count ?? 0 });
     }
@@ -201,6 +223,7 @@ public class BookManagerModel : INotifyPropertyChanged, IBookManageable
                 tmpResult = FindBooksAnyWhere(strElement);
                 break;
         }
+
         return tmpResult;
     }
 
@@ -220,8 +243,8 @@ public class BookManagerModel : INotifyPropertyChanged, IBookManageable
     /// <returns>An enumerable collection of books that match the search criteria.</returns>
     private IEnumerable<Book> FindBooksByTitle(string? strElement)
         => IsNotNullOrEmpty(strElement)
-        ? Library.BookList.Where(b => b.Title.Contains(strElement, CurrentComparisionRule))
-        : ImmutableArray<Book>.Empty;
+            ? Library.BookList.Where(b => b.Title.Contains(strElement, CurrentComparisionRule))
+            : ImmutableArray<Book>.Empty;
 
     /// <summary>
     /// Finds books in the library by total pages.
@@ -230,8 +253,8 @@ public class BookManagerModel : INotifyPropertyChanged, IBookManageable
     /// <returns>An enumerable collection of books that match the search criteria.</returns>
     private IEnumerable<Book> FindBooksByTotalPages(string? strElement)
         => IsParseable(strElement, out var intElement)
-        ? Library.BookList.Where(b => b.TotalPages == intElement)
-        : ImmutableArray<Book>.Empty;
+            ? Library.BookList.Where(b => b.TotalPages == intElement)
+            : ImmutableArray<Book>.Empty;
 
     /// <summary>
     /// Finds books in the library by publish date.
@@ -240,8 +263,8 @@ public class BookManagerModel : INotifyPropertyChanged, IBookManageable
     /// <returns>An enumerable collection of books that match the search criteria.</returns>
     private IEnumerable<Book> FindBooksByPublishDate(string? strElement)
         => IsParseable(strElement, out var intElement)
-        ? Library.BookList.Where(b => b.Year == intElement)
-        : ImmutableArray<Book>.Empty;
+            ? Library.BookList.Where(b => b.Year == intElement)
+            : ImmutableArray<Book>.Empty;
 
     private IEnumerable<Book> FindBooksAnyWhere(string? strElement)
     {
@@ -251,17 +274,19 @@ public class BookManagerModel : INotifyPropertyChanged, IBookManageable
 
         if (isInt)
             tmpResult = Library.BookList.Where(b =>
-            b.TotalPages == intElement ||
-            b.Year == intElement ||
-            (b.Author?.Contains(strElement, CurrentComparisionRule) ?? false) ||
-            (b.Title?.Contains(strElement, CurrentComparisionRule) ?? false));
+                b.TotalPages == intElement ||
+                b.Year == intElement ||
+                (b.Author?.Contains(strElement, CurrentComparisionRule) ?? false) ||
+                (b.Title?.Contains(strElement, CurrentComparisionRule) ?? false));
         else
-            tmpResult = isString ? Library.BookList.Where(b =>
-            (b.Author?.Contains(strElement, CurrentComparisionRule) ?? false) ||
-            (b.Description?.Contains(strElement, CurrentComparisionRule) ?? false) ||
-            (b.Genre?.Contains(strElement, CurrentComparisionRule) ?? false) ||
-            (b.ISBN?.Contains(strElement, CurrentComparisionRule) ?? false) ||
-            (b.Title?.Contains(strElement, CurrentComparisionRule) ?? false)) : ImmutableArray<Book>.Empty;
+            tmpResult = isString
+                ? Library.BookList.Where(b =>
+                    (b.Author?.Contains(strElement, CurrentComparisionRule) ?? false) ||
+                    (b.Description?.Contains(strElement, CurrentComparisionRule) ?? false) ||
+                    (b.Genre?.Contains(strElement, CurrentComparisionRule) ?? false) ||
+                    (b.ISBN?.Contains(strElement, CurrentComparisionRule) ?? false) ||
+                    (b.Title?.Contains(strElement, CurrentComparisionRule) ?? false))
+                : ImmutableArray<Book>.Empty;
 
         return tmpResult ?? ImmutableArray<Book>.Empty;
     }
@@ -281,14 +306,14 @@ public class BookManagerModel : INotifyPropertyChanged, IBookManageable
     /// <returns>True if the string is not null or empty; otherwise, false.</returns>
     private bool IsNotNullOrEmpty(string? strElement) => !string.IsNullOrEmpty(strElement);
 
-    private void InvokeOnUiThread(Action action) => MainThread.BeginInvokeOnMainThread(() => action());
-
+    private void InvokeOnUiThread(Action action) => MainThread.BeginInvokeOnMainThread(action);
 
     private const StringComparison CurrentComparisionRule = StringComparison.OrdinalIgnoreCase;
 
     private ILibrary _library;
+
     #endregion
-    
+
     public event PropertyChangedEventHandler PropertyChanged;
 
     protected virtual void RaisePropertyChanged([CallerMemberName] string propertyName = null)

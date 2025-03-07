@@ -11,10 +11,10 @@
             <!--<MenuFlyoutSubItem Text="Library">-->
             <MenuFlyoutItem Text="Create Library"
                             Command="{Binding NavigateCommand}"
-                            CommandParameter="CreateLibrary" />
+                            CommandParameter="Create a new library" />
             <MenuFlyoutItem Text="Load Library"
                             Command="{Binding NavigateCommand}"
-                            CommandParameter="LoadLibrary" />
+                            CommandParameter="Load the library" />
             <MenuFlyoutItem Text="Save Library"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="SaveLibrary" />

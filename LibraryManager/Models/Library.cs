@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using LibraryManager.Extensions;
 
 namespace LibraryManager.Models;
 
@@ -20,7 +21,7 @@ public class Library: ILibrary, INotifyPropertyChanged, IXmlSerializable
         Id = library.Id;
         Name = library.Name;
         Description = library.Description;
-        _bookList = library.BookList;
+        _bookList.ResetAndAddRange(library.BookList);
         RaisePropertyChanged(nameof(BookList));
     }
 

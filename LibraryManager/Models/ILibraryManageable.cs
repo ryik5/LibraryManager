@@ -7,8 +7,17 @@
 public interface ILibraryManageable : ILoadable
 {
     public event EventHandler<ActionFinishedEventArgs> LoadingFinished;
-    public event EventHandler<TotalBooksEventArgs> TotalBooksChanged;
 
+    /// <summary>
+    /// Executes a specified command within the context of book management.
+    /// </summary>
+    /// <param name="commandParameter">The parameter or name of the command to execute.</param>
+    /// <remarks>
+    /// This method provides a way to run specific functions or operations using a command parameter,
+    /// enabling additional extensibility or dynamic behaviors based on the provided input.
+    /// </remarks>
+    Task RunCommand(string commandParameter);
+    
     /// <summary>
     /// Creates a new library with the specified ID.
     /// </summary>

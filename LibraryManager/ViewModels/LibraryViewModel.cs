@@ -10,12 +10,12 @@ namespace LibraryManager.ViewModels;
 
 public class LibraryViewModel : INotifyPropertyChanged, IDisposable
 {
-    public LibraryViewModel(ILibrary? library)
+    public LibraryViewModel(ILibrary library)
     {
-#if DEBUG
-        Console.WriteLine("LibraryViewModel instantiated with library.");
-#endif
-        _library = library; // Constructor injection ensures proper dependency handling
+        Library = library; // Constructor injection ensures proper dependency handling
+        Library.BookList.CollectionChanged += BookList_CollectionChanged;
+        
+        _libraryManageable = new LibraryManagerModel(Library);
 
         // Initialize the generic navigation command
         NavigateCommand = new AsyncRelayCommand<string>(NavigateToPage);
@@ -37,6 +37,9 @@ public class LibraryViewModel : INotifyPropertyChanged, IDisposable
 #if DEBUG
         Console.WriteLine("Cleaning up MessagingCenter resources in LibraryViewModel.");
 #endif
+        if (Library != null) 
+            Library.BookList.CollectionChanged -= BookList_CollectionChanged;
+        
         MessagingCenter.Unsubscribe<BooksViewModel>(this, "Navigate");
     }
 
@@ -50,30 +53,37 @@ public class LibraryViewModel : INotifyPropertyChanged, IDisposable
 
     public ICommand NavigateCommand { get; }
 
+    public ILibrary? Library
+    {
+        get => _library;
+        set => SetProperty(ref _library, value);
+    }
+    public event EventHandler<TotalBooksEventArgs> TotalBooksChanged;
+
     #endregion
 
 
     #region Private methods
 
-    private async Task NavigateToPage(string? commandRoute)
+    private async Task NavigateToPage(string? commandName)
     {
-        Debug.WriteLine($"NavigateCommand triggered with commandRoute: {commandRoute}");
+        Debug.WriteLine($"NavigateCommand triggered with commandName: {commandName}");
 
-        if (string.IsNullOrWhiteSpace(commandRoute))
+        if (string.IsNullOrWhiteSpace(commandName))
             return;
 
         var currentRoute = Shell.Current.CurrentState.Location.OriginalString;
         if (currentRoute == $"//{nameof(LibraryPage)}")
         {
-            switch (commandRoute)
+            switch (commandName)
             {
                 case nameof(BooksPage):
                 {
                     try
                     {
-                        // Dynamically navigate using the provided commandRoute
+                        // Dynamically navigate using the provided commandName
                         // begins '//' added in the beginning to switch a Menu as well as Page. without '//' it switch only Page
-                        await Shell.Current.GoToAsync($"//{commandRoute}").ConfigureAwait(false);
+                        await Shell.Current.GoToAsync($"//{commandName}").ConfigureAwait(false);
                     }
                     catch (Exception ex)
                     {
@@ -84,7 +94,7 @@ public class LibraryViewModel : INotifyPropertyChanged, IDisposable
                 default:
                 {
 #if DEBUG
-                    Debug.WriteLine($"Commands {commandRoute} on {nameof(LibraryPage)} page.");
+                    Debug.WriteLine($"Commands {commandName} on {nameof(LibraryPage)} page.");
 #endif
                     // TODO : performing actions at the LibraryManager
                 }
@@ -94,7 +104,8 @@ public class LibraryViewModel : INotifyPropertyChanged, IDisposable
         else
         {
 #if DEBUG
-            Debug.WriteLine($"Navigation error path: {commandRoute}");
+            Debug.WriteLine(
+                $"Navigation error path '{commandName}' in class '{nameof(BooksViewModel)}' by method '{nameof(NavigateToPage)}'");
 #endif
         }
     }
@@ -126,7 +137,7 @@ public class LibraryViewModel : INotifyPropertyChanged, IDisposable
     private async Task ShowCustomDialogPage()
     {
         var dialogPage = new CustomDialogPage("Custom Modal Dialog", "Would you like to continue?");
-        await Application.Current.MainPage.Navigation.PushModalAsync(dialogPage);
+        await Application.Current?.MainPage?.Navigation.PushModalAsync(dialogPage)!;
 
         var result = await dialogPage.DialogResultTask.Task; // Await the user's response
 
@@ -134,19 +145,23 @@ public class LibraryViewModel : INotifyPropertyChanged, IDisposable
         Debug.WriteLine(result ? "User pressed OK." : "User pressed Cancel.");
 #endif
     }
+    
 
-    private async Task NavigateToNewLibrary()
+    /// <summary>
+    /// Handles the CollectionChanged event of the BookList.
+    /// </summary>
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="e">The NotifyCollectionChangedEventArgs instance containing the event data.</param>
+    private void BookList_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
-        // Navigate to NewLibrary page
-        await Shell.Current.GoToAsync("NewLibrary");
+        TotalBooksChanged?.Invoke(this, new TotalBooksEventArgs { TotalBooks = Library?.BookList?.Count ?? 0 });
     }
-
     #endregion
 
 
     #region Binding implementation
 
-    public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     private void RaisePropertyChanged([CallerMemberName] string propertyName = null)
     {
@@ -166,7 +181,8 @@ public class LibraryViewModel : INotifyPropertyChanged, IDisposable
 
     #region Private fields
 
-    private readonly ILibrary? _library;
+    private ILibrary? _library;
+    private ILibraryManageable _libraryManageable;
     private bool _disposed; // Safeguard for multiple calls to Dispose.
 
     #endregion
