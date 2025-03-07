@@ -55,35 +55,46 @@ public class LibraryViewModel : INotifyPropertyChanged, IDisposable
 
     #region Private methods
 
-    private async Task NavigateToPage(string? route)
+    private async Task NavigateToPage(string? commandRoute)
     {
-        Debug.WriteLine($"NavigateCommand triggered with route: {route}");
+        Debug.WriteLine($"NavigateCommand triggered with commandRoute: {commandRoute}");
 
-        if (string.IsNullOrWhiteSpace(route))
+        if (string.IsNullOrWhiteSpace(commandRoute))
             return;
 
-        try
+        var currentRoute = Shell.Current.CurrentState.Location.OriginalString;
+        if (currentRoute == $"//{nameof(LibraryPage)}")
         {
-            // Prevent navigation to the same page
-            var currentRoute = Shell.Current.CurrentState.Location.OriginalString;
-            if (currentRoute == $"//{nameof(LibraryPage)}" && route != $"{nameof(BooksPage)}")
+            switch (commandRoute)
             {
+                case nameof(BooksPage):
+                {
+                    try
+                    {
+                        // Dynamically navigate using the provided commandRoute
+                        // begins '//' added in the beginning to switch a Menu as well as Page. without '//' it switch only Page
+                        await Shell.Current.GoToAsync($"//{commandRoute}").ConfigureAwait(false);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"Navigation error: {ex.Message}");
+                    }
+                }
+                    break;
+                default:
+                {
 #if DEBUG
-                Debug.WriteLine($"You're already on the {route} page. Navigation skipped.");
+                    Debug.WriteLine($"Commands {commandRoute} on {nameof(LibraryPage)} page.");
 #endif
-            } // Dynamically navigate using the provided route
-            else if (route == $"{nameof(BooksPage)}")
-            {
-                // begins '//' added in the beginning to switch a Menu as well as Page
-                // without '//' it switch only Page
-                await Shell.Current.GoToAsync($"//{route}").ConfigureAwait(false);
+                    // TODO : performing actions at the LibraryManager
+                }
+                    break;
             }
         }
-        catch (Exception ex)
+        else
         {
-            // Handle any issues with navigation
 #if DEBUG
-            Debug.WriteLine($"Navigation error: {ex.Message}");
+            Debug.WriteLine($"Navigation error path: {commandRoute}");
 #endif
         }
     }

@@ -66,38 +66,48 @@ public class BooksViewModel : INotifyPropertyChanged, IDisposable
 
     #region Private methods
 
-    private async Task NavigateToPage(string? route)
+    private async Task NavigateToPage(string? commandRoute)
     {
-        Debug.WriteLine($"NavigateCommand triggered with route: {route}");
+        Debug.WriteLine($"NavigateCommand triggered with commandRoute: {commandRoute}");
 
-        if (string.IsNullOrWhiteSpace(route))
+        if (string.IsNullOrWhiteSpace(commandRoute))
             return;
 
-        try
+        // Prevent navigation to the same page - 'Shell.Current.GoToAsync(...'
+        var currentRoute = Shell.Current.CurrentState.Location.OriginalString;
+        if (currentRoute == $"//{nameof(BooksPage)}")
         {
-            // Prevent navigation to the same page - 'Shell.Current.GoToAsync(...'
-            var currentRoute = Shell.Current.CurrentState.Location.OriginalString;
-            if (currentRoute == $"//{nameof(BooksPage)}" && route != $"{nameof(LibraryPage)}")
+            switch (commandRoute)
             {
+                case nameof(LibraryPage):
+                {
+                    try
+                    {
+                        // Dynamically navigate using the provided commandRoute
+                        // begins '//' added in the beginning to switch a Menu as well as Page. without '//' it switch only Page
+                        await Shell.Current.GoToAsync($"//{commandRoute}").ConfigureAwait(false);
+                    }
+                    catch (Exception ex) // Handle any issues with navigation
+                    {
+                        Debug.WriteLine($"Navigation error: {ex.Message}");
+                    }
+                }
+                    break;
+                default:
+                {
 #if DEBUG
-                Debug.WriteLine($"You're already on the {route} page. Navigation skipped.");
+                    Debug.WriteLine($"Commands {commandRoute} on {nameof(BooksPage)} page.");
 #endif
-                // TODO : Do management of the books
-                // Manage Books
-                await AddBook();
-            } // Dynamically navigate using the provided route
-            else if (route == $"{nameof(LibraryPage)}")
-            {
-                // begins '//' added in the beginning to switch a Menu as well as Page
-                // without '//' it switch only Page
-                await Shell.Current.GoToAsync($"//{route}").ConfigureAwait(false);
+                    // TODO : performing actions at the BooksManager
+                    await AddBook(); //Test only
+                }
+                    break;
             }
         }
-        catch (Exception ex)
+        else
         {
-            // Handle any issues with navigation
 #if DEBUG
-            Debug.WriteLine($"Navigation error: {ex.Message}");
+            Debug.WriteLine($"Navigation error path: {commandRoute}");
 #endif
         }
     }
