@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="LibraryManager.Views.TooltipView"
+             IsVisible="False"
+             >
+    
+    <Frame BackgroundColor="LightGray" Padding="10" CornerRadius="5" HasShadow="True">
+        <StackLayout>
+            <!-- Field Name (Bold) -->
+            <Label x:Name="FieldNameLabel" FontAttributes="Bold" FontSize="16" TextColor="Black" />
+            <!-- Field Value (Multi-Line) -->
+            <Label x:Name="FieldValueLabel" FontSize="14" TextColor="Black" LineBreakMode="WordWrap" />
+        </StackLayout>
+    </Frame>
+</ContentView>
