@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
@@ -67,40 +68,74 @@ public class BooksViewModel : INotifyPropertyChanged, IDisposable
 
     private async Task NavigateToPage(string? route)
     {
-        Console.WriteLine($"NavigateCommand triggered with route: {route}");
+        Debug.WriteLine($"NavigateCommand triggered with route: {route}");
 
         if (string.IsNullOrWhiteSpace(route))
             return;
 
         try
         {
-            // Prevent navigation to the same page
+            // Prevent navigation to the same page - 'Shell.Current.GoToAsync(...'
             var currentRoute = Shell.Current.CurrentState.Location.OriginalString;
-            if (currentRoute == $"//{nameof(BooksPage)}")
+            if (currentRoute == $"//{nameof(BooksPage)}" && route != $"{nameof(LibraryPage)}")
             {
 #if DEBUG
-                Console.WriteLine($"You're already on the {route} page. Navigation skipped.");
-                AddBook();
+                Debug.WriteLine($"You're already on the {route} page. Navigation skipped.");
 #endif
+                // TODO : Do management of the books
+                // Manage Books
+                await AddBook();
+            } // Dynamically navigate using the provided route
+            else if (route == $"{nameof(LibraryPage)}")
+            {
+                // begins '//' added in the beginning to switch a Menu as well as Page
+                // without '//' it switch only Page
+                await Shell.Current.GoToAsync($"//{route}").ConfigureAwait(false);
             }
-
-            // Dynamically navigate using the provided route
-            // await Shell.Current.GoToAsync(route).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
             // Handle any issues with navigation
 #if DEBUG
-            Console.WriteLine($"Navigation error: {ex.Message}");
+            Debug.WriteLine($"Navigation error: {ex.Message}");
 #endif
         }
     }
 
-    private void AddBook()
+    /// <summary>
+    /// Adds a new book to the <see cref="Library.BookList"/> in a UI-safe manner.
+    /// </summary>
+    /// <remarks>
+    /// This method ensures the update to the book list is performed on the UI thread. 
+    /// The added book has default values for its properties.
+    /// </remarks>
+    /// <returns>A completed task, indicating the operation is done.</returns>
+    private Task AddBook()
     {
-        Library.BookList.Add(
-            new Book { Id = 0, Title = "1984", Author = "George Orwell", Year = 1949, TotalPages = 1 }
-        );
+        RunInPageThread(() =>
+            Library.BookList.Add(
+                new Book { Id = 0, Title = "1984", Author = "George Orwell", Year = 1949, TotalPages = 1 }
+            ));
+
+        return Task.CompletedTask;
+    }
+
+
+    // Run code in the UI thread
+    // Platform-agnostic, works anywhere in MAUI
+    // Slightly slower due to abstraction (but negligible)
+    private void RunInMainThread(Action a)
+    {
+        // Run code in the UI thread
+        MainThread.BeginInvokeOnMainThread(a.Invoke);
+    }
+
+    // Run code in the UI thread
+    // Best For -  Page- or Application-scoped logic 
+    // Slightly faster in direct access situations 
+    private void RunInPageThread(Action a)
+    {
+        Application.Current?.Dispatcher.Dispatch(a.Invoke);
     }
 
     #endregion

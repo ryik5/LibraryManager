@@ -1,3 +1,4 @@
+using LibraryManager.Extensions;
 using LibraryManager.Models;
 using LibraryManager.ViewModels;
 
@@ -28,11 +29,19 @@ public partial class BooksPage : ContentPage
         BooksCollectionView.SelectionChanged += SelectableItemsView_OnSelectionChanged;
     }
 
+    // TODO : finish
+    /*Left only one way to select:
+           SelectedItems="{Binding SelectedBooks, Mode=TwoWay}"
+            SelectionChanged="SelectableItemsView_OnSelectionChanged">*/
+    
     /// <summary>
     /// To ensure the BindingContext is cleared correctly
     /// </summary>
     protected override void OnDisappearing()
     {
+        // prevention of hung up switching between pages after it has been done selection of the row 
+        BooksCollectionView.SelectedItems=null;
+        
         base.OnDisappearing();
 
         if(BooksCollectionView !=null)
@@ -50,14 +59,7 @@ public partial class BooksPage : ContentPage
     {
         if (BindingContext is BooksViewModel bvs)
         {
-            bvs.SelectedBooks.Clear();
-            foreach (Book item in e.CurrentSelection)
-            {
-                #if DEBUG
-                Console.WriteLine($"Selected: {item?.Title}");
-                #endif
-                bvs.SelectedBooks.Add(item);
-            }
+            bvs.SelectedBooks.ResetAndAddRange(e.CurrentSelection.Select((b=>b as Book)));
         }
     }
 }

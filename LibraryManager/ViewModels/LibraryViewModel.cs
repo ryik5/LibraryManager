@@ -12,11 +12,11 @@ public class LibraryViewModel : INotifyPropertyChanged, IDisposable
 {
     public LibraryViewModel(ILibrary? library)
     {
-        #if DEBUG
+#if DEBUG
         Console.WriteLine("LibraryViewModel instantiated with library.");
-        #endif
+#endif
         _library = library; // Constructor injection ensures proper dependency handling
-        
+
         // Initialize the generic navigation command
         NavigateCommand = new AsyncRelayCommand<string>(NavigateToPage);
 
@@ -26,7 +26,7 @@ public class LibraryViewModel : INotifyPropertyChanged, IDisposable
            // await NavigateToPage("CreateLibrary").ConfigureAwait(false);
         });*/
     }
-    
+
     // Dispose method for external calls
     public void Dispose()
     {
@@ -34,9 +34,9 @@ public class LibraryViewModel : INotifyPropertyChanged, IDisposable
         _disposed = true;
 
         // MessagingCenter cleanup
-        #if DEBUG
+#if DEBUG
         Console.WriteLine("Cleaning up MessagingCenter resources in LibraryViewModel.");
-        #endif
+#endif
         MessagingCenter.Unsubscribe<BooksViewModel>(this, "Navigate");
     }
 
@@ -47,16 +47,17 @@ public class LibraryViewModel : INotifyPropertyChanged, IDisposable
 
 
     #region Public properties
-    
+
     public ICommand NavigateCommand { get; }
 
-    #endregion 
+    #endregion
 
 
     #region Private methods
+
     private async Task NavigateToPage(string? route)
     {
-        Console.WriteLine($"NavigateCommand triggered with route: {route}");
+        Debug.WriteLine($"NavigateCommand triggered with route: {route}");
 
         if (string.IsNullOrWhiteSpace(route))
             return;
@@ -65,25 +66,28 @@ public class LibraryViewModel : INotifyPropertyChanged, IDisposable
         {
             // Prevent navigation to the same page
             var currentRoute = Shell.Current.CurrentState.Location.OriginalString;
-            if (currentRoute == $"//{nameof(LibraryPage)}")
+            if (currentRoute == $"//{nameof(LibraryPage)}" && route != $"{nameof(BooksPage)}")
             {
 #if DEBUG
-                Console.WriteLine($"You're already on the {route} page. Navigation skipped.");
+                Debug.WriteLine($"You're already on the {route} page. Navigation skipped.");
 #endif
+            } // Dynamically navigate using the provided route
+            else if (route == $"{nameof(BooksPage)}")
+            {
+                // begins '//' added in the beginning to switch a Menu as well as Page
+                // without '//' it switch only Page
+                await Shell.Current.GoToAsync($"//{route}").ConfigureAwait(false);
             }
-
-            // Dynamically navigate using the provided route
-            // await Shell.Current.GoToAsync(route).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
             // Handle any issues with navigation
 #if DEBUG
-            Console.WriteLine($"Navigation error: {ex.Message}");
+            Debug.WriteLine($"Navigation error: {ex.Message}");
 #endif
         }
     }
-    
+
     private async Task LibraryCreateNewAsync()
     {
         await ShowMessageAsync("Message", "Pressed - CreateNewLibrary");
@@ -127,8 +131,8 @@ public class LibraryViewModel : INotifyPropertyChanged, IDisposable
     }
 
     #endregion
-    
-    
+
+
     #region Binding implementation
 
     public event PropertyChangedEventHandler PropertyChanged;
@@ -148,7 +152,7 @@ public class LibraryViewModel : INotifyPropertyChanged, IDisposable
 
     #endregion
 
-    
+
     #region Private fields
 
     private readonly ILibrary? _library;

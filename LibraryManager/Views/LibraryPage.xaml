@@ -4,32 +4,36 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodel="clr-namespace:LibraryManager.ViewModels"
              x:Class="LibraryManager.Views.LibraryPage">
-    
+
     <ContentPage.MenuBarItems>
         <MenuBarItem Text="Library">
-            <MenuFlyoutSubItem Text="Library">
-                <MenuFlyoutItem Text="Create Library"
-                                Command="{Binding NavigateCommand}"
-                                CommandParameter="CreateLibrary" />
-                <MenuFlyoutItem Text="Load Library"
-                                Command="{Binding NavigateCommand}"
-                                CommandParameter="LoadLibrary" />
-                <MenuFlyoutItem Text="Save Library"
-                                Command="{Binding NavigateCommand}"
-                                CommandParameter="SaveLibrary" />
-                <MenuFlyoutItem Text="Save As Library"
-                                Command="{Binding NavigateCommand}"
-                                CommandParameter="SaveAsLibrary" />
-                <MenuFlyoutItem Text="Close Library"
-                                Command="{Binding NavigateCommand}"
-                                CommandParameter="CloseLibrary" />
-                <MenuFlyoutSeparator />
-            </MenuFlyoutSubItem>
+            <!--  To make menu like menu with SubMenu -->
+            <!--<MenuFlyoutSubItem Text="Library">-->
+            <MenuFlyoutItem Text="Create Library"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="CreateLibrary" />
+            <MenuFlyoutItem Text="Load Library"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="LoadLibrary" />
+            <MenuFlyoutItem Text="Save Library"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="SaveLibrary" />
+            <MenuFlyoutItem Text="Save As Library"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="SaveAsLibrary" />
+            <MenuFlyoutItem Text="Close Library"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="CloseLibrary" />
+            <MenuFlyoutSeparator />
+            <MenuFlyoutItem Text="Go To Books"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="BooksPage" />
+            <!--</MenuFlyoutSubItem>-->
         </MenuBarItem>
     </ContentPage.MenuBarItems>
     <ContentPage.Content>
         <Grid BackgroundColor="{StaticResource Tertiary}">
-            
+
         </Grid>
     </ContentPage.Content>
 </ContentPage>

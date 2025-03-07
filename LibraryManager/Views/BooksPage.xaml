@@ -26,19 +26,26 @@
                             Command="{Binding NavigateCommand}"
                             CommandParameter="SortBooks" />
             <MenuFlyoutSeparator />
+            <MenuFlyoutItem Text="Go To Library"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="LibraryPage" />           
         </MenuBarItem>
     </ContentPage.MenuBarItems>
 
     <ContentPage.Content>
         <Grid>
+            
+            <!--Displays Books-->
             <CollectionView x:Name="BooksCollectionView"
                             ItemsSource="{Binding Library.BookList}"
                             SelectionMode="Multiple"
                             SelectedItems="{Binding SelectedBooks, Mode=TwoWay}"
-                            Margin="10, 30, 10, 10">
+                            Margin="10, 30, 10, 10"
+                            SelectionChanged="SelectableItemsView_OnSelectionChanged">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Grid Padding="5">
+                            
                             <!-- VisualStateManager to handle different states -->
                             <VisualStateManager.VisualStateGroups>
                                 <VisualStateGroupList>
