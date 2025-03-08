@@ -42,9 +42,7 @@
             <CollectionView x:Name="BooksCollectionView"
                             ItemsSource="{Binding Library.BookList}"
                             SelectionMode="Multiple"
-                            SelectedItems="{Binding SelectedBooks, Mode=TwoWay}"
-                            Margin="10, 30, 10, 10"
-                            SelectionChanged="SelectableItemsView_OnSelectionChanged">
+                            Margin="10, 30, 10, 10">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Grid Padding="5">
