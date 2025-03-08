@@ -14,6 +14,8 @@ public partial class AppShell : Shell
         Routing.RegisterRoute(nameof(LibraryPage), typeof(LibraryPage));
         // to switch from LibraryPage
         Routing.RegisterRoute(nameof(BooksPage), typeof(BooksPage));
+        
+        Routing.RegisterRoute(nameof(AboutPage), typeof(AboutPage));
 
         // App Logo. Assign the custom drawable to the GraphicsView
         LogoGraphicsView.Drawable = new CustomDrawable();

@@ -34,6 +34,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<ILibrary>(library);
         builder.Services.AddSingleton<LibraryViewModel>();
         builder.Services.AddSingleton<BooksViewModel>();
+        builder.Services.AddSingleton<AboutViewModel>();
 
 
 #if DEBUG

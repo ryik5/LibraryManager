@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="LibraryManager.Views.AboutPage">
+    
+    <ContentPage.MenuBarItems>
+        <MenuBarItem Text="Go to">
+            <MenuFlyoutSeparator />
+            <MenuFlyoutItem Text="Go To Books"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="BooksPage" />
+            <MenuFlyoutSeparator />
+            <MenuFlyoutItem Text="Go To Library"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="LibraryPage" />
+            <MenuFlyoutSeparator />
+        </MenuBarItem>
+    </ContentPage.MenuBarItems>
+
+    <ContentPage.Content>
+        <Grid Padding="10">
+            <!-- Row Definitions -->
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40" />
+                <RowDefinition />
+                <RowDefinition Height="40" />
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <Label Text="{Binding Header}"
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center" />
+
+            <!-- Body -->
+            <ScrollView Grid.Row="1" Margin="0,5,0,0">
+                <VerticalStackLayout Spacing="10" Padding="10">
+                    <Label Text="Welcome to the Library Manager!"
+                           FontSize="22"
+                           HorizontalTextAlignment="Center"
+                           FontAttributes="Bold"
+                           TextDecorations="Underline" />
+
+                    <Label
+                        Text="This application with a modular plugin architecture helps you efficiently manage numerous collections of books."
+                        FontSize="20" />
+
+                    <Label Text="Key Features:"
+                           FontSize="20"
+                           FontAttributes="Bold" />
+
+                    <!-- Feature List -->
+                    <StackLayout>
+                        <Label
+                            Text="• Load Books from XML: Import a list of books from an XML file using a dedicated plugin."
+                            FontSize="20" />
+                        <Label
+                            Text="• Add New Books: Input new book details, save book content to the local disk, and clear book content as needed."
+                            FontSize="20" />
+                        <Label Text="• Remove Books: Delete books from the collection."
+                               FontSize="20" />
+                        <Label
+                            Text="• Sort Books: Organize books alphabetically by author and then by title within each author's works."
+                            FontSize="20" />
+                        <Label
+                            Text="• Search Functionality: Find books by searching for partial matches in the author's name, title, publication year, or total pages."
+                            FontSize="20" />
+                        <Label
+                            Text="• Save Books to XML: Export the current book list to an XML file through a dedicated plugin."
+                            FontSize="20" />
+                    </StackLayout>
+
+                    <Label
+                        Text="Designed for flexibility and extensibility, this application allows for the integration of additional plugins to enhance or customize its functionality."
+                        FontSize="20" />
+
+                    <Label Text="Enjoy managing your book collection with ease!"
+                           FontSize="20" />
+
+                    <Label Text="For more information and to access the source code, visit: "
+                           FontSize="20" />
+                    <Button Text="GitHub Repository"
+                            FontSize="18"
+                            TextColor="{StaticResource Primary}"
+                            BackgroundColor="Transparent"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="https://github.com/ryik5/LibraryManager"
+                            Padding="0" />
+
+
+                    <Image Source="qr.png"
+                           WidthRequest="100"
+                           HeightRequest="100"
+                           HorizontalOptions="Center" />
+                </VerticalStackLayout>
+            </ScrollView>
+
+            <!-- Footer -->
+            <Label Text="{Binding Footer}"
+                   FontSize="18"
+                   HorizontalOptions="Start"
+                   VerticalOptions="End"
+                   Grid.Row="2" />
+        </Grid>
+
+    </ContentPage.Content>
+</ContentPage>

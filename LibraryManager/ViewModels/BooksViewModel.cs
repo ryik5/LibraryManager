@@ -151,6 +151,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable
 
     #endregion
 
+    
     #region Private fields
 
     private readonly IBookManageable _bookManageable;
