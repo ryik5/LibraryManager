@@ -27,13 +27,7 @@ public static class MauiProgram
             Id = new Random().Next(),
             Name = "",
             Description = "",
-            BookList = new ObservableCollection<Book>
-            {
-                // TODO : DEMO data. Will clean
-                new Book { Id = 0, Title = "1984", Author = "George Orwell", Year = 1949, TotalPages = 1 },
-                new Book { Id = 1, Title = "Pride and Prejudice", Author = "Jane Austen", Year = 1813, TotalPages = 1 },
-                new Book { Id = 2, Title = "The Catcher in the Rye", Author = "J.D. Salinger", Year = 1951, TotalPages = 1 }
-            }
+            BookList = new ObservableCollection<Book>()
         };
 
         // Register all shared ViewModels and objects

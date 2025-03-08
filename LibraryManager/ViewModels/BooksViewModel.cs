@@ -1,14 +1,11 @@
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using System.Windows.Input;
-using CommunityToolkit.Mvvm.Input;
 using LibraryManager.Models;
 using LibraryManager.Views;
 
 namespace LibraryManager.ViewModels;
 
-public class BooksViewModel : INotifyPropertyChanged, IDisposable
+public class BooksViewModel : AbstractViewModel, IDisposable
 {
     public BooksViewModel(ILibrary library)
     {
@@ -16,51 +13,10 @@ public class BooksViewModel : INotifyPropertyChanged, IDisposable
         Library.BookList.CollectionChanged += BookList_CollectionChanged;
 
         _bookManageable = new BookManagerModel(Library);
+     }
 
-        // Initialize the generic navigation command
-        NavigateCommand = new AsyncRelayCommand<string>(NavigateToPage);
-    }
-
-    // Dispose method for external calls
-    public void Dispose()
-    {
-        if (_disposed) return; // Safeguard against multiple Dispose calls.
-        _disposed = true;
-        Library.BookList.CollectionChanged -= BookList_CollectionChanged;
-
-        // Perform cleanup: Unsubscribe from any events
-        SelectedBooks = null;
-        if (_library is INotifyPropertyChanged notifyLibrary)
-        {
-            notifyLibrary.PropertyChanged -= OnLibraryChanged;
-        }
-
-        Debug.WriteLine("BooksViewModel disposed successfully.");
-    }
-
-    ~BooksViewModel()
-    {
-        Dispose(); // Safeguard cleanup in destructor (if proper disposal is skipped)
-    }
-
-    private void OnLibraryChanged(object sender, PropertyChangedEventArgs e)
-    {
-        Debug.WriteLine($"Library property changed: {e.PropertyName}");
-    }
-    /// <summary>
-    /// Handles the CollectionChanged event of the BookList.
-    /// </summary>
-    /// <param name="sender">The source of the event.</param>
-    /// <param name="e">The NotifyCollectionChangedEventArgs instance containing the event data.</param>
-    private void BookList_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-    {
-        TotalBooksChanged?.Invoke(this, new TotalBooksEventArgs { TotalBooks = Library?.BookList?.Count ?? 0 });
-    }
-
+    
     #region Public properties
-
-    public ICommand NavigateCommand { get; } 
-
     public ILibrary Library
     {
         get => _library;
@@ -72,15 +28,13 @@ public class BooksViewModel : INotifyPropertyChanged, IDisposable
         get => _selectedBooks;
         set => SetProperty(ref _selectedBooks, value);
     }
-    
-    public event EventHandler<TotalBooksEventArgs> TotalBooksChanged;
 
+    public event EventHandler<TotalBooksEventArgs> TotalBooksChanged;
     #endregion
 
-
-    #region Private methods
-
-    private async Task NavigateToPage(string? commandName)
+    
+    #region Public Methods
+    protected override async Task NavigateToPage(string? commandName)
     {
         Debug.WriteLine($"NavigateCommand triggered with commandName: {commandName}");
 
@@ -107,14 +61,16 @@ public class BooksViewModel : INotifyPropertyChanged, IDisposable
                     }
                 }
                     break;
-                default:
+                case Constants.EDIT_BOOK:
+                    break;
+                default: //jobs perform without creating views
                 {
 #if DEBUG
                     Debug.WriteLine($"Commands {commandName} on {nameof(BooksPage)} page.");
 #endif
                     // TODO : performing actions at the BooksManager
 
-                    await _bookManageable.RunCommand(commandName);
+                    await _bookManageable.RunCommand(commandName, SelectedBooks);
 
                     RunInMainThread(() =>
                         {
@@ -138,14 +94,51 @@ public class BooksViewModel : INotifyPropertyChanged, IDisposable
         }
     }
 
-    /// <summary>
-    /// Adds a new book to the <see cref="Library.BookList"/> in a UI-safe manner.
-    /// </summary>
-    /// <remarks>
-    /// This method ensures the update to the book list is performed on the UI thread. 
-    /// The added book has default values for its properties.
-    /// </remarks>
-    /// <returns>A completed task, indicating the operation is done.</returns>
+    
+     // Dispose method for external calls
+     public void Dispose()
+     {
+         if (_disposed) return; // Safeguard against multiple Dispose calls.
+         _disposed = true;
+         Library.BookList.CollectionChanged -= BookList_CollectionChanged;
+ 
+         // Perform cleanup: Unsubscribe from any events
+         SelectedBooks = null;
+         if (_library is INotifyPropertyChanged notifyLibrary)
+         {
+             notifyLibrary.PropertyChanged -= OnLibraryChanged;
+         }
+ 
+         Debug.WriteLine("BooksViewModel disposed successfully.");
+     }
+ 
+     ~BooksViewModel()
+     {
+         Dispose(); // Safeguard cleanup in destructor (if proper disposal is skipped)
+     }
+   #endregion
+
+
+   #region Private methods
+
+     private void OnLibraryChanged(object sender, PropertyChangedEventArgs e)
+     {
+         Debug.WriteLine($"Library property changed: {e.PropertyName}");
+     }
+ 
+     /// <summary>
+     /// Handles the CollectionChanged event of the BookList.
+     /// </summary>
+     /// <param name="sender">The source of the event.</param>
+     /// <param name="e">The NotifyCollectionChangedEventArgs instance containing the event data.</param>
+     private void BookList_CollectionChanged(object? sender,
+         System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+     {
+         TotalBooksChanged?.Invoke(this, new TotalBooksEventArgs { TotalBooks = Library.BookList.Count });
+     }
+     
+    
+
     private Task AddBook()
     {
         RunInPageThread(() =>
@@ -156,46 +149,7 @@ public class BooksViewModel : INotifyPropertyChanged, IDisposable
         return Task.CompletedTask;
     }
 
-
-    // Run code in the UI thread
-    // Platform-agnostic, works anywhere in MAUI
-    // Slightly slower due to abstraction (but negligible)
-    private void RunInMainThread(Action a)
-    {
-        // Run code in the UI thread
-        MainThread.BeginInvokeOnMainThread(a.Invoke);
-    }
-
-    // Run code in the UI thread
-    // Best For -  Page- or Application-scoped logic 
-    // Slightly faster in direct access situations 
-    private void RunInPageThread(Action a)
-    {
-        Application.Current?.Dispatcher.Dispatch(a.Invoke);
-    }
-
     #endregion
-
-
-    #region Binding implementation
-
-    public event PropertyChangedEventHandler PropertyChanged;
-
-    private void RaisePropertyChanged([CallerMemberName] string propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-
-    private bool SetProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
-    {
-        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-        field = value;
-        RaisePropertyChanged(propertyName);
-        return true;
-    }
-
-    #endregion
-
 
     #region Private fields
 

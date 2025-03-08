@@ -14,7 +14,7 @@ public static class Constants
     public const string BOOK_WAS_SAVED_SUCCESSFULLY = "Book was saved successfully";
     public const string FAILED_TO_SAVE_BOOK_TO_PATH = "Failed to save book to path";
     public const string BOOK_WAS_IMPORTED_SUCCESSFULLY = "Book was imported successfully";
-    public const string FAILED_TO_IMPORT_BOOK_BY_PATH = "Failed to import book by the path";
+    public const string FAILED_TO_IMPORT_BOOK_BY_PATH = "Failed to import book from the path";
     #endregion
 
     #region ToolsViewModel
@@ -44,23 +44,26 @@ public static class Constants
     public const string FAILED_TO_SAVE_LIBRARY_TO_PATH = "Failed to save library to path";
     public const string LIBRARY_CLOSE = "Close the current library";
     public const string LIBRARY_WAS_CLOSED = "Library was closed";
-    public const string INPUT_NEW_NAME_LIBRARY = "Input a new name of the library:";
+    public const string INPUT_NEW_NAME_LIBRARY = "Input the new name of the library:";
     public const string LIBRARY_NAME = "Library name";
     #endregion
 
     #region book details: FindBookViewModel, CreatorBookDetailsViewModel, EditorBookDetailsViewModel
      public const string ADD_BOOK = "Add Book";
+     public const string DEMO_ADD_BOOKS = "Demo add books";
      public const string LAST_ADDED_BOOK = "Last added book";
-     public const string ADDING_BOOK_WAS_CANCELLED = "Adding book was cancelled";
+     public const string ADDING_BOOK_WAS_CANCELLED = "Adding book was canceled";
      public const string EDIT_BOOK = "Edit Book";
      public const string ORIGINAL_STATE_BOOK = "Original state of the book";
      public const string LOADED_FOR_EDITING = "is loaded for editing";
      public const string LAST_EDITED_BOOK = "Last edited book";
-     public const string EDITING_BOOK_WAS_CANCELLED = "Editing book was cancelled";
+     public const string EDITING_BOOK_WAS_CANCELLED = "Editing book was canceled";
  
     public const string FIND_BOOKS = "Find Books";
+    public const string SORT_BOOKS = "Sort Books";
     public const string SORTING_ASCENDING = "a...Z";
     public const string SORTING_DESCENDING = "Z...a";
+    public const string DELETE_BOOK = "Delete the selected book";
     public const string BOOK_WAS_DELETED_SUCCESSFULLY = "Book was deleted successfully";
     public const string NO_BOOKS_FOUND = "No books found";
     public const string CONTENT_WAS_LOADED = "Content was loaded";
@@ -78,7 +81,7 @@ public static class Constants
     public const string IMPORT_BOOK = "Import a book";
     public const string EXPORT_BOOK = "Export the selected book";
     public const string INPUT_BOOK_NAME = "Input a name of the book:";
-    public const string INPUT_NAME = "Input a name";
+    public const string INPUT_NAME = "Input the name";
     #endregion
 
     #region DebugViewModel

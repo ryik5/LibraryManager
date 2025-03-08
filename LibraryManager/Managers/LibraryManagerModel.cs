@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Windows;
+﻿using LibraryManager.AbstractObjects;
 
 namespace LibraryManager.Models;
 
@@ -8,7 +6,7 @@ namespace LibraryManager.Models;
 /// Represents a model for managing a library of books.
 /// </summary>
 /// <author>YR 2025-01-09</author>
-public class LibraryManagerModel : INotifyPropertyChanged, ILibraryManageable
+public class LibraryManagerModel : AbstractBindableUiManager, ILibraryManageable
 {
     public LibraryManagerModel(ILibrary? library)
     {
@@ -17,7 +15,7 @@ public class LibraryManagerModel : INotifyPropertyChanged, ILibraryManageable
 
         if (Library is ILibrary)
         {
-             Library.Set(library);
+            Library.Set(library);
         }
         else
         {
@@ -27,20 +25,21 @@ public class LibraryManagerModel : INotifyPropertyChanged, ILibraryManageable
 
 
     #region public methods
-    
+
     public Task RunCommand(string commandParameter)
     {
         switch (commandParameter)
         {
             case Constants.CREATE_NEW_LIBRARY:
                 break;
-            
+
             default:
                 break;
         }
+
         return Task.CompletedTask;
     }
-    
+
     /// <summary>
     /// Creates a new library with the specified ID.
     /// </summary>
@@ -65,7 +64,7 @@ public class LibraryManagerModel : INotifyPropertyChanged, ILibraryManageable
         TryCloseLibrary();
 
         var result = false;
-        InvokeOnUiThread(() =>
+        RunInMainThread(() =>
         {
             result = libraryLoader.TryLoadLibrary(pathToLibrary, out var library);
             if (result)
@@ -85,7 +84,8 @@ public class LibraryManagerModel : INotifyPropertyChanged, ILibraryManageable
     /// <param name="keeper">The keeper responsible for saving the library.</param>
     /// <param name="pathToStorage">The path to the storage where the library will be saved.</param>
     /// <returns>True if the library was successfully saved; otherwise, false.</returns>
-    public bool TrySaveLibrary(ILibraryKeeper keeper, string pathToStorage) => keeper.TrySaveLibrary(Library, pathToStorage);
+    public bool TrySaveLibrary(ILibraryKeeper keeper, string pathToStorage) =>
+        keeper.TrySaveLibrary(Library, pathToStorage);
 
     /// <summary>
     /// Closes the current library.
@@ -93,16 +93,18 @@ public class LibraryManagerModel : INotifyPropertyChanged, ILibraryManageable
     public void TryCloseLibrary()
     {
         if (0 < Library.BookList.Count)
-            InvokeOnUiThread(() => Library.BookList.Clear());
+            RunInMainThread(() => Library.BookList.Clear());
 
         Library.Name = string.Empty;
         Library.Description = string.Empty;
         Library.Id = 0;
     }
+
     #endregion
 
 
     #region Properties
+
     /// <summary>
     /// Gets or sets a library.
     /// </summary>
@@ -113,10 +115,12 @@ public class LibraryManagerModel : INotifyPropertyChanged, ILibraryManageable
     }
 
     public event EventHandler<ActionFinishedEventArgs> LoadingFinished;
+
     #endregion
 
 
     #region private methods
+
     /// <summary>
     /// Handles the LoadingFinished event of the LibraryLoader.
     /// </summary>
@@ -127,29 +131,11 @@ public class LibraryManagerModel : INotifyPropertyChanged, ILibraryManageable
         LoadingFinished?.Invoke(this, new ActionFinishedEventArgs { Message = e.Message, IsFinished = e.IsFinished });
     }
 
-    /// <summary>
-    /// Invokes the specified action on the UI thread.
-    /// </summary>
-    /// <param name="action">The action to invoke.</param>
-    private void InvokeOnUiThread(Action action) => MainThread.BeginInvokeOnMainThread(() => action());
+    #endregion
 
+    #region Private fields
 
     private ILibrary? _library;
+
     #endregion
-    
-    
-    public event PropertyChangedEventHandler PropertyChanged;
-
-    protected virtual void RaisePropertyChanged([CallerMemberName] string propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-
-    protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
-    {
-        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-        field = value;
-        RaisePropertyChanged(propertyName);
-        return true;
-    }
 }

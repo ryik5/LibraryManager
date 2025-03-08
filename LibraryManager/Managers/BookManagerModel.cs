@@ -1,7 +1,5 @@
 ﻿using System.Collections.Immutable;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
+using LibraryManager.AbstractObjects;
 using LibraryManager.Extensions;
 using LibraryManager.Utils;
 
@@ -11,7 +9,7 @@ namespace LibraryManager.Models;
 /// Represents a model for managing books in a library.
 /// </summary>
 /// <author>YR 2025-01-09</author>
-public class BookManagerModel : INotifyPropertyChanged, IBookManageable
+public class BookManagerModel : AbstractBindableUiManager, IBookManageable
 {
     public BookManagerModel(ILibrary library)
     {
@@ -24,17 +22,29 @@ public class BookManagerModel : INotifyPropertyChanged, IBookManageable
 
     #region public methods
 
-    public Task RunCommand(string commandParameter)
+    public Task RunCommand(string commandParameter, IList<Book>? selectedBooks)
     {
         switch (commandParameter)
         {
             case Constants.ADD_BOOK:
-                var book = DemoBookMaker.GenerateBook();
-
-                AddBook(book);
+                AddBook(DemoBookMaker.GenerateBook());
+                break;
+            
+            case Constants.DEMO_ADD_BOOKS:
+                for (var b = 0; b < 10; b++)
+                   AddBook(DemoBookMaker.GenerateBook());
+                break;
+            
+            case Constants.DELETE_BOOK:
+                if (selectedBooks is not null && 0 < selectedBooks.Count)
+                {
+                    foreach (var bookToDelete in selectedBooks)
+                    {
+                        TryRemoveBook(bookToDelete);
+                    }
+                }
 
                 break;
-
             default:
                 break;
         }
@@ -54,7 +64,7 @@ public class BookManagerModel : INotifyPropertyChanged, IBookManageable
 
         var result = bookLoader.TryLoadBook(pathToFile, out var book);
         if (result)
-            InvokeOnUiThread(() => AddBook(book));
+            RunInMainThread(() => AddBook(book));
 
         bookLoader.LoadingFinished -= BookLoader_LoadingBookFinished;
 
@@ -70,7 +80,7 @@ public class BookManagerModel : INotifyPropertyChanged, IBookManageable
     public bool TrySaveBook(IBookKeeper keeper, Book book, string pathToFolder)
     {
         var result = false;
-        InvokeOnUiThread(() => { result = keeper.TrySaveBook(book, pathToFolder); });
+        RunInMainThread(() => { result = keeper.TrySaveBook(book, pathToFolder); });
         return result;
     }
 
@@ -79,7 +89,7 @@ public class BookManagerModel : INotifyPropertyChanged, IBookManageable
     /// </summary>
     public void SortBooks()
     {
-        InvokeOnUiThread(() =>
+        RunInMainThread(() =>
             Library.BookList.ResetAndAddRange(Library.BookList
                 .OrderBy(b => b.Author)
                 .ThenBy(b => b.Title)));
@@ -90,17 +100,18 @@ public class BookManagerModel : INotifyPropertyChanged, IBookManageable
     /// </summary>
     public void SafetySortBooks(List<PropertyCustomInfo> sortProperties)
     {
-        InvokeOnUiThread(() =>
+        RunInMainThread(() =>
             Library.BookList.ResetAndAddRange(GetSortedBookList(sortProperties)));
     }
 
+
     /// <summary>
-    /// Adds a book to the library.
+    /// Adds a new book to the <see cref="Library.BookList"/>
     /// </summary>
     /// <param name="book">The book to add.</param>
     public void AddBook(Book book)
     {
-        InvokeOnUiThread(() =>
+        RunInMainThread(() =>
         {
             book.Id = _library.BookList.Count == 0 ? 1 : _library.BookList.Max(b => b.Id) + 1;
             _library.BookList.Add(book);
@@ -112,7 +123,7 @@ public class BookManagerModel : INotifyPropertyChanged, IBookManageable
     /// </summary>
     /// <param name="book">The book to remove.</param>
     /// <returns>True if the book was successfully removed; otherwise, false.</returns>
-    public bool TryRemoveBook(Book book) => Library.BookList.RemoveItem(book);
+    public bool TryRemoveBook(Book book) => RunInMainThread(() => Library.BookList.RemoveItem(book));
 
     /// <summary>
     /// Finds books in the library by a specified book element.
@@ -125,7 +136,7 @@ public class BookManagerModel : INotifyPropertyChanged, IBookManageable
         IEnumerable<Book> tmpResult = ImmutableArray<Book>.Empty;
         var strElement = partElement?.ToString();
 
-        InvokeOnUiThread(() => tmpResult = FindBooks(bookElement, strElement));
+        RunInMainThread(() => tmpResult = FindBooks(bookElement, strElement));
 
         return tmpResult?.ToList() ?? new List<Book>(0);
     }
@@ -185,7 +196,7 @@ public class BookManagerModel : INotifyPropertyChanged, IBookManageable
         return orderedBooks;
     }
 
-     private void BookList_CollectionChanged(object? sender,
+    private void BookList_CollectionChanged(object? sender,
         System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
         TotalBooksChanged.Invoke(this, new TotalBooksEventArgs { TotalBooks = Library.BookList?.Count ?? 0 });
@@ -306,26 +317,9 @@ public class BookManagerModel : INotifyPropertyChanged, IBookManageable
     /// <returns>True if the string is not null or empty; otherwise, false.</returns>
     private bool IsNotNullOrEmpty(string? strElement) => !string.IsNullOrEmpty(strElement);
 
-    private void InvokeOnUiThread(Action action) => MainThread.BeginInvokeOnMainThread(action);
-
     private const StringComparison CurrentComparisionRule = StringComparison.OrdinalIgnoreCase;
 
     private ILibrary _library;
 
     #endregion
-
-    public event PropertyChangedEventHandler PropertyChanged;
-
-    protected virtual void RaisePropertyChanged([CallerMemberName] string propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-
-    protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
-    {
-        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-        field = value;
-        RaisePropertyChanged(propertyName);
-        return true;
-    }
 }
