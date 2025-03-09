@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel="clr-namespace:LibraryManager.ViewModels"
+             x:Class="LibraryManager.Controls.LibraryPropertiesView">
+
+    <Grid>
+        <Grid.Resources>
+            <Style TargetType="Label">
+                <Setter Property="VerticalTextAlignment" Value="Center" />
+                <Setter Property="FontSize" Value="18" />
+                <Setter Property="Padding" Value="10,0,10,0" />
+            </Style>
+            <Style TargetType="Entry">
+                <Setter Property="VerticalTextAlignment" Value="Center" />
+                <Setter Property="FontSize" Value="18" />
+                <Setter Property="Margin" Value="10,10,10,5" />
+            </Style>
+            <Style TargetType="Frame">
+                <Setter Property="BackgroundColor" Value="Transparent" />
+                <Setter Property="Padding" Value="5" />
+                <Setter Property="BorderColor"
+                        Value="{AppThemeBinding Light={StaticResource Secondary}, Dark={StaticResource Gray500}}" />
+                <Setter Property="Margin" Value="10,10,10,5" />
+            </Style>
+        </Grid.Resources>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Label Text="ID" Grid.Row="0" Grid.Column="0" />
+        <Entry Text="{Binding Library.Id}"
+               IsReadOnly="True"
+               Grid.Row="0" Grid.Column="1" />
+
+        <Label Text="Name" Grid.Row="1" Grid.Column="0" />
+        <Entry Text="{Binding Library.Name}"
+               IsEnabled="{Binding CanOperateWithBooks}"
+               Grid.Row="1" Grid.Column="1" />
+
+        <Label Text="Total Books" Grid.Row="2" Grid.Column="0" />
+        <Entry Text="{Binding Library.TotalBooks, Mode=OneWay}"
+               IsReadOnly="True"
+               Grid.Row="2" Grid.Column="1" />
+
+        <Label Text="Description" Grid.Row="3" Grid.Column="0" />
+        <Frame Grid.Row="3" Grid.Column="1">
+            <Grid> <!-- TODO: Check necessary -->
+                <Editor Text="{Binding Library.Description}"
+                        IsEnabled="{Binding CanOperateWithBooks}"
+                        AutoSize="TextChanges"
+                        VerticalOptions="Start"
+                        FontSize="18"
+                        IsSpellCheckEnabled="True"
+                        IsTextPredictionEnabled="True">
+                    <Editor.Keyboard>
+                        <Keyboard x:FactoryMethod="Create">
+                            <x:Arguments>
+                                <KeyboardFlags>Suggestions,CapitalizeCharacter</KeyboardFlags>
+                            </x:Arguments>
+                        </Keyboard>
+                    </Editor.Keyboard>
+                </Editor>
+            </Grid>
+        </Frame>
+
+    </Grid>
+</ContentView>

@@ -4,7 +4,7 @@
 /// Represents a library interface that provides functionalities to add, remove, sort, and display Library.
 /// </summary>
 /// <author>YR 2025-01-09</author>
-public interface ILibraryManageable : ILoadable
+public interface ILibraryManageable 
 {
     public event EventHandler<ActionFinishedEventArgs> LoadingFinished;
 
@@ -21,8 +21,7 @@ public interface ILibraryManageable : ILoadable
     /// <summary>
     /// Creates a new library with the specified ID.
     /// </summary>
-    /// <param name="idLibrary">The ID of the new library.</param>
-    void CreateNewLibrary(int idLibrary);
+    void CreateNewLibrary();
 
     /// <summary>
     /// Loads a library from the specified path.

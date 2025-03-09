@@ -6,7 +6,7 @@ namespace LibraryManager.Models;
 /// Represents a library interface.
 /// </summary>
 /// <author>YR 2025-01-09</author>
-public interface ILibrary : ILoadable
+public interface ILibrary 
 {
     /// <summary>
     /// Sets the library.
@@ -26,6 +26,8 @@ public interface ILibrary : ILoadable
     /// Occurs when the library ID changes.
     /// </summary>
     event EventHandler<EventArgs> LibraryIdChanged;
+
+    public event EventHandler<TotalBooksEventArgs>? TotalBooksChanged;
 
     /// <summary>
     /// Library name.
@@ -49,6 +51,7 @@ public interface ILibrary : ILoadable
     int TotalBooks
     {
         get;
+        set;
     }
 
     /// <summary>

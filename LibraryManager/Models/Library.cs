@@ -10,7 +10,7 @@ using LibraryManager.Extensions;
 namespace LibraryManager.Models;
 
 [Serializable]
-public class Library: ILibrary, INotifyPropertyChanged, IXmlSerializable
+public class Library : ILibrary, INotifyPropertyChanged, IXmlSerializable
 {
     /// <summary>
     /// Sets the library.
@@ -70,12 +70,24 @@ public class Library: ILibrary, INotifyPropertyChanged, IXmlSerializable
     /// Total numbers of books in the <see cref="BookList"/> 
     /// </summary>
     [XmlIgnore]
-    public int TotalBooks => BookList.Count;
+    public int TotalBooks
+    {
+        get => _totalBooks;
+
+        set
+        {
+            _totalBooks = value;
+            TotalBooksChanged?.Invoke(this, new TotalBooksEventArgs { TotalBooks = value });
+        }
+    }
+
 
     /// <summary>
     /// Occurs when the library  <see cref="Id"/>  changes.
     /// </summary>
     public event EventHandler<EventArgs>? LibraryIdChanged;
+
+    public event EventHandler<TotalBooksEventArgs>? TotalBooksChanged;
 
     public override string ToString()
     {
@@ -151,8 +163,7 @@ public class Library: ILibrary, INotifyPropertyChanged, IXmlSerializable
                         break;
                 }
             }
-        }
-        while (!reader.EOF && reader.Read());
+        } while (!reader.EOF && reader.Read());
     }
 
     /// <summary>
@@ -173,7 +184,7 @@ public class Library: ILibrary, INotifyPropertyChanged, IXmlSerializable
     /// <returns>The PropertyInfo of the book property, or null if not found.</returns>
     public PropertyInfo FindBookPropertyInfo(string? name)
         => BookPropertiesInfo.FirstOrDefault(p => p.Name == (name ?? nameof(Book.None)))
-        ?? BookPropertiesInfo.FirstOrDefault(p => p.Name == nameof(Book.None));
+           ?? BookPropertiesInfo.FirstOrDefault(p => p.Name == nameof(Book.None));
 
 
     private PropertyInfo[] BookPropertiesInfo
@@ -185,6 +196,7 @@ public class Library: ILibrary, INotifyPropertyChanged, IXmlSerializable
                 lock (_locker)
                     _bookPropertiesInfo ??= BuildBookPropertiesArray();
             }
+
             return _bookPropertiesInfo;
         }
     }
@@ -201,6 +213,7 @@ public class Library: ILibrary, INotifyPropertyChanged, IXmlSerializable
                     _bookProperties ??= _bookPropertiesInfo.Select(p => p.Name).ToArray();
                 }
             }
+
             return _bookProperties;
         }
     }
@@ -215,14 +228,18 @@ public class Library: ILibrary, INotifyPropertyChanged, IXmlSerializable
 
 
     #region private fields
+
     private int _id;
+    private int _totalBooks;
     private string _name = string.Empty;
     private string _description = string.Empty;
     private ObservableCollection<Book> _bookList = new ObservableCollection<Book>();
     private PropertyInfo[] _bookPropertiesInfo;
     private string[] _bookProperties;
     private readonly object _locker = new();
+
     #endregion
+
     public event PropertyChangedEventHandler PropertyChanged;
 
     protected virtual void RaisePropertyChanged([CallerMemberName] string propertyName = null)

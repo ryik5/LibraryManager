@@ -31,6 +31,22 @@ public class LibraryManagerModel : AbstractBindableUiManager, ILibraryManageable
         switch (commandParameter)
         {
             case Constants.CREATE_NEW_LIBRARY:
+                
+                break;
+            
+            case Constants.LIBRARY_EDIT:
+                break;
+            
+            case Constants.LIBRARY_LOAD:
+                break;
+            
+            case Constants.LIBRARY_SAVE:
+                break;
+            
+            case Constants.LIBRARY_CLOSE:
+                break;
+            
+            case Constants.LIBRARY_SAVE_WITH_NEW_NAME:
                 break;
 
             default:
@@ -43,12 +59,11 @@ public class LibraryManagerModel : AbstractBindableUiManager, ILibraryManageable
     /// <summary>
     /// Creates a new library with the specified ID.
     /// </summary>
-    /// <param name="idLibrary">The ID of the new library.</param>
-    public void CreateNewLibrary(int idLibrary)
+    public void CreateNewLibrary()
     {
         TryCloseLibrary();
 
-        Library.Id = idLibrary;
+        Library.Id = new Random().Next();
     }
 
     /// <summary>

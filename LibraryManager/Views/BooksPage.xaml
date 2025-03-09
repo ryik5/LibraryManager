@@ -2,7 +2,7 @@
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:local="clr-namespace:LibraryManager.ViewModels"
+             xmlns:viewmodel="clr-namespace:LibraryManager.ViewModels"
              x:Class="LibraryManager.Views.BooksPage">
 
     <ContentPage.MenuBarItems>
@@ -90,4 +90,5 @@
             </CollectionView>
         </Grid>
     </ContentPage.Content>
+    
 </ContentPage>

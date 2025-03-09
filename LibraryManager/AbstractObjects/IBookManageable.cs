@@ -4,7 +4,7 @@
 /// Represents a Book interface that provides functionalities to add, remove, sort, and display books.
 /// </summary>
 /// <author>YR 2025-01-09</author>
-public interface IBookManageable : ILoadable
+public interface IBookManageable 
 {
     public event EventHandler<TotalBooksEventArgs> TotalBooksChanged;
     public event EventHandler<ActionFinishedEventArgs> LoadingFinished;

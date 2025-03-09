@@ -36,27 +36,27 @@ public class AboutViewModel : AbstractViewModel
 
     #region Public Methods
 
-    protected override async Task NavigateToPage(string? commandName)
+    protected override async Task PerformAction(string? commandParameter)
     {
-        Debug.WriteLine($"NavigateCommand triggered with commandName: {commandName}");
+        Debug.WriteLine($"NavigateCommand triggered with commandParameter: {commandParameter}");
 
-        if (string.IsNullOrWhiteSpace(commandName))
+        if (string.IsNullOrWhiteSpace(commandParameter))
             return;
 
         // Prevent navigation to the same page - 'Shell.Current.GoToAsync(...'
         var currentRoute = Shell.Current.CurrentState.Location.OriginalString;
         if (currentRoute == $"//{nameof(AboutPage)}")
         {
-            switch (commandName)
+            switch (commandParameter)
             {
                 case nameof(BooksPage):
                 case nameof(LibraryPage):
                 {
                     try
                     {
-                        // Dynamically navigate using the provided commandName
+                        // Dynamically navigate using the provided commandParameter
                         // begins '//' added in the beginning to switch a Menu as well as Page. without '//' it switch only Page
-                        Shell.Current.GoToAsync($"//{commandName}").ConfigureAwait(false);
+                        Shell.Current.GoToAsync($"//{commandParameter}").ConfigureAwait(false);
                     }
                     catch (Exception ex) // Handle any issues with navigation
                     {
@@ -68,10 +68,10 @@ public class AboutViewModel : AbstractViewModel
                 {
                     try
                     {
-                        if (!string.IsNullOrEmpty(commandName))
+                        if (!string.IsNullOrEmpty(commandParameter))
                         {
                             // Try opening the URL using the platform default browser
-                            await Browser.OpenAsync(commandName, BrowserLaunchMode.SystemPreferred);
+                            await Browser.OpenAsync(commandParameter, BrowserLaunchMode.SystemPreferred);
                         }
                     }
                     catch (Exception e)
@@ -86,7 +86,7 @@ public class AboutViewModel : AbstractViewModel
         {
 #if DEBUG
             Debug.WriteLine(
-                $"Navigation error path '{commandName}' in class '{nameof(AboutViewModel)}' by method '{nameof(NavigateToPage)}'");
+                $"Navigation error path '{commandParameter}' in class '{nameof(AboutViewModel)}' by method '{nameof(PerformAction)}'");
 #endif
         }
     }

@@ -11,10 +11,10 @@ public abstract class AbstractViewModel : AbstractBindableUiManager
     protected AbstractViewModel()
     {
         // Initialize the generic navigation command
-        NavigateCommand = new AsyncRelayCommand<string>(NavigateToPage);
+        NavigateCommand = new AsyncRelayCommand<string>(PerformAction);
     }
 
-    protected abstract Task NavigateToPage(string? arg);
+    protected abstract Task PerformAction(string? commandParameter);
 
     protected async Task ShowDisplayAlertAsync(string title, string message)
     {
@@ -52,5 +52,9 @@ public abstract class AbstractViewModel : AbstractBindableUiManager
 
     public ICommand NavigateCommand { get; set; }
 
+    /// <summary>
+    /// Returns Shell.Current.CurrentState.Location.OriginalString
+    /// </summary>
+    protected string CurrentRoute => Shell.Current.CurrentState.Location.OriginalString;
     #endregion
 }

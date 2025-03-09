@@ -34,26 +34,26 @@ public class BooksViewModel : AbstractViewModel, IDisposable
 
     
     #region Public Methods
-    protected override async Task NavigateToPage(string? commandName)
+    protected override async Task PerformAction(string? commandParameter)
     {
-        Debug.WriteLine($"NavigateCommand triggered with commandName: {commandName}");
+        Debug.WriteLine($"NavigateCommand triggered with commandParameter: {commandParameter}");
 
-        if (string.IsNullOrWhiteSpace(commandName))
+        if (string.IsNullOrWhiteSpace(commandParameter))
             return;
 
         // Prevent navigation to the same page - 'Shell.Current.GoToAsync(...'
-        var currentRoute = Shell.Current.CurrentState.Location.OriginalString;
-        if (currentRoute == $"//{nameof(BooksPage)}")
+        if (CurrentRoute == $"//{nameof(BooksPage)}")
         {
-            switch (commandName)
+            switch (commandParameter)
             {
+                case nameof(AboutPage):
                 case nameof(LibraryPage):
                 {
                     try
                     {
-                        // Dynamically navigate using the provided commandName
+                        // Dynamically navigate using the provided commandParameter
                         // begins '//' added in the beginning to switch a Menu as well as Page. without '//' it switch only Page
-                        await Shell.Current.GoToAsync($"//{commandName}").ConfigureAwait(false);
+                        await Shell.Current.GoToAsync($"//{commandParameter}").ConfigureAwait(false);
                     }
                     catch (Exception ex) // Handle any issues with navigation
                     {
@@ -66,11 +66,11 @@ public class BooksViewModel : AbstractViewModel, IDisposable
                 default: //jobs perform without creating views
                 {
 #if DEBUG
-                    Debug.WriteLine($"Commands {commandName} on {nameof(BooksPage)} page.");
+                    Debug.WriteLine($"Commands {commandParameter} on {nameof(BooksPage)} page.");
 #endif
-                    // TODO : performing actions at the BooksManager
-
-                    await _bookManageable.RunCommand(commandName, SelectedBooks);
+                    
+                    // Performing actions at the BooksManager
+                    await _bookManageable.RunCommand(commandParameter, SelectedBooks);
 
                     RunInMainThread(() =>
                         {
@@ -89,7 +89,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable
         {
 #if DEBUG
             Debug.WriteLine(
-                $"Navigation error path '{commandName}' in class '{nameof(BooksViewModel)}' by method '{nameof(NavigateToPage)}'");
+                $"Navigation error path '{commandParameter}' in class '{nameof(BooksViewModel)}' by method '{nameof(PerformAction)}'");
 #endif
         }
     }
@@ -135,6 +135,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable
          System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
      {
          TotalBooksChanged?.Invoke(this, new TotalBooksEventArgs { TotalBooks = Library.BookList.Count });
+         Library.TotalBooks= Library.BookList.Count;
      }
      
     

@@ -10,29 +10,41 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
     public LibraryViewModel(ILibrary library)
     {
         Library = library; // Constructor injection ensures proper dependency handling
-        Library.BookList.CollectionChanged += BookList_CollectionChanged;
-
+        Library.TotalBooksChanged += BookList_CollectionChanged;
         _libraryManageable = new LibraryManagerModel(Library);
 
         // Initialize the generic navigation command
-        NavigateCommand = new AsyncRelayCommand<string>(NavigateToPage);
+        NavigateCommand = new AsyncRelayCommand<string>(PerformAction);
 
         /*MessagingCenter.Subscribe<BooksViewModel>(this, "Navigate", async (sender) =>
         {
             Console.WriteLine("Received navigation request from BooksViewModel.");
-           // await NavigateToPage("CreateLibrary").ConfigureAwait(false);
+           // await PerformAction("CreateLibrary").ConfigureAwait(false);
         });*/
+    }
+
+    private void BookList_CollectionChanged(object? sender, TotalBooksEventArgs e)
+    {
+        RaisePropertyChanged(nameof(Library));
+        RaisePropertyChanged(nameof(Library.TotalBooks));
     }
 
 
     #region Public properties
 
-    public ILibrary? Library
+    public ILibrary Library
     {
         get => _library;
         set => SetProperty(ref _library, value);
     }
 
+    public bool CanOperateWithBooks
+    {
+        get => _canOperateWithBooks;
+        set => SetProperty(ref _canOperateWithBooks, value);
+    }
+
+    public Binding LibraryControlsView { get; }
     public event EventHandler<TotalBooksEventArgs> TotalBooksChanged;
 
     #endregion
@@ -40,25 +52,25 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
 
     #region Public Methods
 
-    protected override async Task NavigateToPage(string? commandName)
+    protected override async Task PerformAction(string? commandParameter)
     {
-        Debug.WriteLine($"NavigateCommand triggered with commandName: {commandName}");
+        Debug.WriteLine($"NavigateCommand triggered with commandParameter: {commandParameter}");
 
-        if (string.IsNullOrWhiteSpace(commandName))
+        if (string.IsNullOrWhiteSpace(commandParameter))
             return;
 
-        var currentRoute = Shell.Current.CurrentState.Location.OriginalString;
-        if (currentRoute == $"//{nameof(LibraryPage)}")
+        if (CurrentRoute == $"//{nameof(LibraryPage)}")
         {
-            switch (commandName)
+            switch (commandParameter)
             {
+                case nameof(AboutPage):
                 case nameof(BooksPage):
                 {
                     try
                     {
-                        // Dynamically navigate using the provided commandName
+                        // Dynamically navigate using the provided commandParameter
                         // begins '//' added in the beginning to switch a Menu as well as Page. without '//' it switch only Page
-                        await Shell.Current.GoToAsync($"//{commandName}").ConfigureAwait(false);
+                        await Shell.Current.GoToAsync($"//{commandParameter}").ConfigureAwait(false);
                     }
                     catch (Exception ex)
                     {
@@ -66,12 +78,23 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
                     }
                 }
                     break;
+                case Constants.CREATE_NEW_LIBRARY:
+                    _libraryManageable.CreateNewLibrary();
+                    break;
+
                 default:
                 {
 #if DEBUG
-                    Debug.WriteLine($"Commands {commandName} on {nameof(LibraryPage)} page.");
+                    Debug.WriteLine($"Commands {commandParameter} on {nameof(LibraryPage)} page.");
 #endif
-                    // TODO : performing actions at the LibraryManager
+                    // Performing actions at the LibraryManager
+                    await _libraryManageable.RunCommand(commandParameter);
+                    RunInMainThread(() =>
+                        {
+                            RaisePropertyChanged(nameof(Library));
+                            RaisePropertyChanged(nameof(Library.BookList));
+                        }
+                    );
                 }
                     break;
             }
@@ -80,7 +103,7 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
         {
 #if DEBUG
             Debug.WriteLine(
-                $"Navigation error path '{commandName}' in class '{nameof(BooksViewModel)}' by method '{nameof(NavigateToPage)}'");
+                $"Navigation error path '{commandParameter}' in class '{nameof(BooksViewModel)}' by method '{nameof(PerformAction)}'");
 #endif
         }
     }
@@ -96,8 +119,6 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
 #if DEBUG
         Console.WriteLine("Cleaning up MessagingCenter resources in LibraryViewModel.");
 #endif
-        if (Library != null)
-            Library.BookList.CollectionChanged -= BookList_CollectionChanged;
 
         MessagingCenter.Unsubscribe<BooksViewModel>(this, "Navigate");
     }
@@ -117,23 +138,13 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
         await ShowDisplayAlertAsync("Message", "Pressed - CreateNewLibrary");
     }
 
-    /// <summary>
-    /// Handles the CollectionChanged event of the BookList.
-    /// </summary>
-    /// <param name="sender">The source of the event.</param>
-    /// <param name="e">The NotifyCollectionChangedEventArgs instance containing the event data.</param>
-    private void BookList_CollectionChanged(object? sender,
-        System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-    {
-        TotalBooksChanged?.Invoke(this, new TotalBooksEventArgs { TotalBooks = Library?.BookList?.Count ?? 0 });
-    }
-
     #endregion
 
 
     #region Private fields
 
-    private ILibrary? _library;
+    private ILibrary _library;
+    private bool _canOperateWithBooks = true;
     private ILibraryManageable _libraryManageable;
     private bool _disposed; // Safeguard for multiple calls to Dispose.
 
