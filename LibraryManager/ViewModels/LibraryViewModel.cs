@@ -1,6 +1,8 @@
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.Input;
+using Foundation;
 using LibraryManager.Models;
+using LibraryManager.Utils;
 using LibraryManager.Views;
 
 namespace LibraryManager.ViewModels;
@@ -11,7 +13,8 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
     {
         Library = library; // Constructor injection ensures proper dependency handling
         Library.TotalBooksChanged += BookList_CollectionChanged;
-        _libraryManageable = new LibraryManagerModel(Library);
+        Library.LibraryIdChanged += Handle_LibraryIdChanged;
+        _libraryManager = new LibraryManagerModel(Library);
 
         // Initialize the generic navigation command
         NavigateCommand = new AsyncRelayCommand<string>(PerformAction);
@@ -22,6 +25,7 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
            // await PerformAction("CreateLibrary").ConfigureAwait(false);
         });*/
     }
+
 
     private void BookList_CollectionChanged(object? sender, TotalBooksEventArgs e)
     {
@@ -49,6 +53,31 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
 
     #endregion
 
+    /*    Match macOS behavior on Mac Catalyst
+       If you need to match macOS app behavior and use the same system paths on Mac Catalyst, the recommended way of obtaining such paths is shown below:
+           Environment.SpecialFolder.ApplicationData
+           Instead of Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData, Environment.SpecialFolderOption.None), use new NSFileManager().GetUrls(NSSearchPathDirectory.ApplicationSupportDirectory, NSSearchPathDomain.User)[0].Path.
+           Environment.SpecialFolder.Desktop
+           Instead of Environment.GetFolderPath(Environment.SpecialFolder.Desktop, Environment.SpecialFolderOption.None), use new NSFileManager().GetUrls(NSSearchPathDirectory.DesktopDirectory, NSSearchPathDomain.User)[0].Path.
+           Environment.SpecialFolder.DesktopDirectory
+           Instead of Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory, Environment.SpecialFolderOption.None), use new NSFileManager().GetUrls(NSSearchPathDirectory.DesktopDirectory, NSSearchPathDomain.User)[0].Path.
+           Environment.SpecialFolder.Fonts
+           Instead of Environment.GetFolderPath(Environment.SpecialFolder.Fonts, Environment.SpecialFolderOption.None), use Path.Combine(new NSFileManager().GetUrls(NSSearchPathDirectory.LibraryDirectory, NSSearchPathDomain.User)[0].Path, "Fonts").
+           Environment.SpecialFolder.LocalApplicationData
+           Instead of Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData, Environment.SpecialFolderOption.None), use new NSFileManager().GetUrls(NSSearchPathDirectory.ApplicationSupportDirectory, NSSearchPathDomain.User)[0].Path.
+           Environment.SpecialFolder.MyMusic
+           Instead of Environment.GetFolderPath(Environment.SpecialFolder.MyMusic, Environment.SpecialFolderOption.None), use new NSFileManager().GetUrls(NSSearchPathDirectory.MusicDirectory, NSSearchPathDomain.User)[0].Path.
+           Environment.SpecialFolder.MyPictures
+           Instead of Environment.GetFolderPath(Environment.SpecialFolder.MyPictures, Environment.SpecialFolderOption.None), use new NSFileManager().GetUrls(NSSearchPathDirectory.PicturesDirectory, NSSearchPathDomain.User)[0].Path.
+           Environment.SpecialFolder.MyVideos
+           Instead of Environment.GetFolderPath(Environment.SpecialFolder.MyVideos, Environment.SpecialFolderOption.None), use new NSFileManager().GetUrls(NSSearchPathDirectory.MoviesDirectory, NSSearchPathDomain.User)[0].Path.
+           Environment.SpecialFolder.ProgramFiles
+           Instead of Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles, Environment.SpecialFolderOption.None), use "/Applications".
+           Environment.SpecialFolder.System
+           Instead of Environment.GetFolderPath(Environment.SpecialFolder.System, Environment.SpecialFolderOption.None), use "/System".
+           Environment.SpecialFolder.Templates
+           Instead of Environment.GetFolderPath(Environment.SpecialFolder.Templates, Environment.SpecialFolderOption.None), use Path.Combine(NSFileManager.HomeDirectory, "Templates").
+     */
 
     #region Public Methods
 
@@ -61,6 +90,10 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
 
         if (CurrentRoute == $"//{nameof(LibraryPage)}")
         {
+#if DEBUG
+            Debug.WriteLine($"Commands {commandParameter} on {nameof(LibraryPage)} page.");
+#endif
+
             switch (commandParameter)
             {
                 case nameof(AboutPage):
@@ -76,28 +109,60 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
                     {
                         Debug.WriteLine($"Navigation error: {ex.Message}");
                     }
-                }
-                    break;
-                case Constants.CREATE_NEW_LIBRARY:
-                    _libraryManageable.CreateNewLibrary();
-                    break;
 
+                    break;
+                }
+                case Constants.CREATE_NEW_LIBRARY:
+                    //string targetFile = Path.Combine(FileSystem.Current.AppDataDirectory, filename);
+
+                    var folder =
+                        new NSFileManager().GetUrls(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomain.User)[0]
+                            .Path;
+                    var path = Path.Combine(folder, $"{Library.Id}.xml");
+                    if (await HasLibraryHashCodeChanged())
+                    {
+                        await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(), path);
+                    }
+
+                    var u = Environment.SpecialFolder.DesktopDirectory;
+                    // MyDocuments //  $HOME/Documents
+                    // CommonApplicationData // /usr/share
+                    // DesktopDirectory // $HOME/Desktop
+                    // Personal // $HOME/Documents
+                    // UserProfile // $HOME
+
+                    await _libraryManager.CreateNewLibrary();
+
+                    // await ShowDisplayAlertAsync(Constants.LIBRARY, Constants.CREATE_NEW_LIBRARY);
+
+                    _libraryHashCode = Library.GetHashCode();
+                    break;
+                case Constants.LIBRARY_SAVE:
+
+                    var folderSave =
+                        new NSFileManager().GetUrls(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomain.User)[0]
+                            .Path;
+                    var pathSave = Path.Combine(folderSave, $"{Library.Id}.xml");
+
+                    await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(), pathSave);
+
+                    _libraryHashCode = Library.GetHashCode();
+                    break;
                 default:
                 {
-#if DEBUG
-                    Debug.WriteLine($"Commands {commandParameter} on {nameof(LibraryPage)} page.");
-#endif
                     // Performing actions at the LibraryManager
-                    await _libraryManageable.RunCommand(commandParameter);
-                    RunInMainThread(() =>
-                        {
-                            RaisePropertyChanged(nameof(Library));
-                            RaisePropertyChanged(nameof(Library.BookList));
-                        }
-                    );
+                    await _libraryManager.RunCommand(commandParameter);
                 }
                     break;
             }
+
+            RunInMainThread(() =>
+                {
+                    CanOperateWithBooks = Library?.Id != 0;
+                    RaisePropertyChanged(nameof(Library));
+                    RaisePropertyChanged(nameof(Library.BookList));
+                }
+            );
         }
         else
         {
@@ -133,20 +198,53 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
 
     #region Private methods
 
-    private async Task LibraryCreateNewAsync()
+    /// <summary>
+    /// Handles the LibraryIdChanged event by updating the CanOperateWithBooks property.
+    /// </summary>
+    private void Handle_LibraryIdChanged(object? sender, EventArgs e)
     {
-        await ShowDisplayAlertAsync("Message", "Pressed - CreateNewLibrary");
+        CanOperateWithBooks = (sender as ILibrary)?.Id != 0;
+    }
+
+
+    /// <summary>
+    /// Updates the library state by raising a property changed event for the Library property
+    /// and setting the IsEnabled property based on whether the Library Id differs from the default value of 0.
+    /// </summary>
+    private void UpdateLibraryState()
+    {
+        RaisePropertyChanged(nameof(Library));
+
+        _libraryHashCode = Library.GetHashCode();
+    }
+
+    /// <summary>
+    /// Checks if the library hash code has changed and prompts the user to save changes if necessary.
+    /// </summary>
+    /// <returns>True if the user confirms saving changes, false otherwise.</returns>
+    private async Task<bool> HasLibraryHashCodeChanged()
+    {
+        var currentHash = Library.GetHashCode();
+        var libraryChanged = currentHash != 0 && currentHash != _libraryHashCode;
+
+        if (libraryChanged)
+        {
+            return await ShowCustomDialogPage(Constants.LIBRARY_SAVE, StringsHandler.LibraryChangedMessage());
+        }
+
+        return false;
     }
 
     #endregion
 
 
-    #region Private fields
+    #region Private Members
 
     private ILibrary _library;
     private bool _canOperateWithBooks = true;
-    private ILibraryManageable _libraryManageable;
+    private readonly ILibraryManageable _libraryManager;
     private bool _disposed; // Safeguard for multiple calls to Dispose.
+    private int _libraryHashCode;
 
     #endregion
 }

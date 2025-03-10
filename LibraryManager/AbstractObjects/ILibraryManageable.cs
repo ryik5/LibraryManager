@@ -21,7 +21,7 @@ public interface ILibraryManageable
     /// <summary>
     /// Creates a new library with the specified ID.
     /// </summary>
-    void CreateNewLibrary();
+    Task CreateNewLibrary();
 
     /// <summary>
     /// Loads a library from the specified path.
@@ -37,7 +37,7 @@ public interface ILibraryManageable
     /// <param name="keeper">The keeper responsible for saving the library.</param>
     /// <param name="pathToStorage">The path to the storage where the library will be saved.</param>
     /// <returns>True if the library was successfully saved; otherwise, false.</returns>
-    bool TrySaveLibrary(ILibraryKeeper keeper, string pathToStorage);
+    Task <bool> TrySaveLibrary(ILibraryKeeper keeper, string pathToStorage);
 
     /// <summary>
     /// Closes the library and clears the book list.

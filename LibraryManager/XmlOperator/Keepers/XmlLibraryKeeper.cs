@@ -11,16 +11,17 @@ public class XmlLibraryKeeper : ILibraryKeeper
     /// <param name="library">The instance of the library to save.</param>
     /// <param name="pathToFile">The path to the file where the library will be saved.</param>
     /// <returns>True if the library was saved successfully; otherwise, false.</returns>
-    public bool TrySaveLibrary(ILibrary? library, string pathToFile)
+    public Task <bool> TrySaveLibrary(ILibrary? library, string pathToFile)
     {
         try
         {
             XmlObjectSerializer.Save(library as Library, pathToFile);
-            return true;
+            
+            return Task.FromResult(true);
         }
         catch
         {
-            return false;
+            return Task.FromResult(false);
         }
     }
 }

@@ -59,11 +59,13 @@ public class LibraryManagerModel : AbstractBindableUiManager, ILibraryManageable
     /// <summary>
     /// Creates a new library with the specified ID.
     /// </summary>
-    public void CreateNewLibrary()
+    public Task CreateNewLibrary()
     {
         TryCloseLibrary();
 
         Library.Id = new Random().Next();
+        
+        return Task.CompletedTask;
     }
 
     /// <summary>
@@ -99,7 +101,7 @@ public class LibraryManagerModel : AbstractBindableUiManager, ILibraryManageable
     /// <param name="keeper">The keeper responsible for saving the library.</param>
     /// <param name="pathToStorage">The path to the storage where the library will be saved.</param>
     /// <returns>True if the library was successfully saved; otherwise, false.</returns>
-    public bool TrySaveLibrary(ILibraryKeeper keeper, string pathToStorage) =>
+    public Task <bool> TrySaveLibrary(ILibraryKeeper keeper, string pathToStorage) =>
         keeper.TrySaveLibrary(Library, pathToStorage);
 
     /// <summary>

@@ -12,5 +12,5 @@ public interface ILibraryKeeper
     /// <param name="library">The library to save.</param>
     /// <param name="selectedPlace">The place where the library will be saved.</param>
     /// <returns>true if the library was successfully saved; otherwise, false.</returns>
-    bool TrySaveLibrary(ILibrary? library, string selectedPlace);
+    Task <bool> TrySaveLibrary(ILibrary? library, string selectedPlace);
 }

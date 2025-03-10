@@ -35,7 +35,7 @@ public abstract class AbstractViewModel : AbstractBindableUiManager
         }
     }
 
-    protected async Task ShowCustomDialogPage(string title, string message)
+    protected async Task<bool> ShowCustomDialogPage(string title, string message)
     {
         var dialogPage = new CustomDialogPage(title, message);
         await Application.Current?.MainPage?.Navigation.PushModalAsync(dialogPage)!;
@@ -45,6 +45,8 @@ public abstract class AbstractViewModel : AbstractBindableUiManager
 #if DEBUG
         Debug.WriteLine(result ? "User pressed OK." : "User pressed Cancel.");
 #endif
+        
+        return result;
     }
 
 
