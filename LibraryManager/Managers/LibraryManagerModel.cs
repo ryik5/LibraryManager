@@ -1,4 +1,7 @@
-﻿using LibraryManager.AbstractObjects;
+﻿using System.Diagnostics;
+using System.Xml;
+using System.Xml.Serialization;
+using LibraryManager.AbstractObjects;
 
 namespace LibraryManager.Models;
 
@@ -26,35 +29,87 @@ public class LibraryManagerModel : AbstractBindableUiManager, ILibraryManageable
 
     #region public methods
 
-    public Task RunCommand(string commandParameter)
+    public async Task RunCommand(string commandParameter)
     {
         switch (commandParameter)
         {
             case Constants.CREATE_NEW_LIBRARY:
-                
                 break;
-            
+
             case Constants.LIBRARY_EDIT:
                 break;
-            
+
             case Constants.LIBRARY_LOAD:
+
                 break;
-            
+
             case Constants.LIBRARY_SAVE:
                 break;
-            
+
             case Constants.LIBRARY_CLOSE:
                 break;
-            
+
             case Constants.LIBRARY_SAVE_WITH_NEW_NAME:
                 break;
 
             default:
                 break;
         }
+    }
 
+    public async Task TryLoadLibrary()
+    {
+        var customFileType = new FilePickerFileType(
+            new Dictionary<DevicePlatform, IEnumerable<string>>
+            {
+                { DevicePlatform.iOS, new[] { "public.archive" } },
+                { DevicePlatform.Android, new[] { "application/xml" } },
+                { DevicePlatform.WinUI, new[] { ".xml", "xml" } },
+                { DevicePlatform.MacCatalyst, new[] { ".xml", "xml" } }
+            });
+
+        PickOptions options = new()
+        {
+            PickerTitle = "Please select a library file",
+            FileTypes = customFileType,
+        };
+        try
+        {
+            var result = await FilePicker.Default.PickAsync(options);
+            if (result != null)
+            {
+                if (result.FileName.EndsWith("xml", StringComparison.OrdinalIgnoreCase))
+                {
+                    using var fileStream = await result.OpenReadAsync();
+                    using var xmlReader = XmlReader.Create(fileStream, new XmlReaderSettings
+                    {
+                        IgnoreWhitespace = false,
+                        IgnoreComments = false
+                    });
+
+                    var lib = await Task.Run(() =>
+                        (Library)(new XmlSerializer(typeof(Library))).Deserialize(xmlReader));
+
+                    await SetLibrary(lib);
+
+                    await Task.Delay(500);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+#if DEBUG
+            Debug.WriteLine($"{ex.Message}");
+#endif
+        }
+    }
+
+    private Task SetLibrary(ILibrary lib)
+    {
+        RunInMainThread(() => Library.Set(lib));
         return Task.CompletedTask;
     }
+
 
     /// <summary>
     /// Creates a new library with the specified ID.
@@ -64,7 +119,7 @@ public class LibraryManagerModel : AbstractBindableUiManager, ILibraryManageable
         TryCloseLibrary();
 
         Library.Id = new Random().Next();
-        
+
         return Task.CompletedTask;
     }
 
@@ -83,11 +138,11 @@ public class LibraryManagerModel : AbstractBindableUiManager, ILibraryManageable
         var result = false;
         RunInMainThread(() =>
         {
-            result = libraryLoader.TryLoadLibrary(pathToLibrary, out var library);
+            /*result = libraryLoader.TryLoadLibrary(pathToLibrary, out var library);
             if (result)
             {
                 Library.Set(library);
-            }
+            }*/
         });
 
         libraryLoader.LoadingFinished -= LibraryLoader_LoadingLibraryFinished;
@@ -101,7 +156,7 @@ public class LibraryManagerModel : AbstractBindableUiManager, ILibraryManageable
     /// <param name="keeper">The keeper responsible for saving the library.</param>
     /// <param name="pathToStorage">The path to the storage where the library will be saved.</param>
     /// <returns>True if the library was successfully saved; otherwise, false.</returns>
-    public Task <bool> TrySaveLibrary(ILibraryKeeper keeper, string pathToStorage) =>
+    public Task<bool> TrySaveLibrary(ILibraryKeeper keeper, string pathToStorage) =>
         keeper.TrySaveLibrary(Library, pathToStorage);
 
     /// <summary>

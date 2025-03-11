@@ -32,6 +32,11 @@ public interface ILibraryManageable
     bool TryLoadLibrary(ILibraryLoader libraryLoader, string pathToLibrary);
 
     /// <summary>
+    /// Loads a library.
+    /// </summary>
+     Task TryLoadLibrary();
+     
+    /// <summary>
     /// Saves the specified library to the specified folder.
     /// </summary>
     /// <param name="keeper">The keeper responsible for saving the library.</param>

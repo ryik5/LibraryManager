@@ -113,18 +113,16 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
                     break;
                 }
                 case Constants.CREATE_NEW_LIBRARY:
-                    //string targetFile = Path.Combine(FileSystem.Current.AppDataDirectory, filename);
-
-                    var folder =
-                        new NSFileManager().GetUrls(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomain.User)[0]
-                            .Path;
-                    var path = Path.Combine(folder, $"{Library.Id}.xml");
+                {
                     if (await HasLibraryHashCodeChanged())
                     {
-                        await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(), path);
+                        var success =
+                            await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(), GetPathToCurrentLibrary());
+                        if (!success)
+                            return;
                     }
 
-                    var u = Environment.SpecialFolder.DesktopDirectory;
+                    //var u = Environment.SpecialFolder.DesktopDirectory;
                     // MyDocuments //  $HOME/Documents
                     // CommonApplicationData // /usr/share
                     // DesktopDirectory // $HOME/Desktop
@@ -135,34 +133,59 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
 
                     // await ShowDisplayAlertAsync(Constants.LIBRARY, Constants.CREATE_NEW_LIBRARY);
 
-                    _libraryHashCode = Library.GetHashCode();
+                    await UpdateLibraryHashCode();
+
+                    break;
+                }
+                case Constants.LIBRARY_LOAD:
+                    if (await HasLibraryHashCodeChanged())
+                    {
+                        var success =
+                            await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(), GetPathToCurrentLibrary());
+                        if (!success)
+                            return;
+                    }
+
+                    await _libraryManager.TryLoadLibrary();
+
+                    await UpdateLibraryHashCode();
                     break;
                 case Constants.LIBRARY_SAVE:
+                {
+                    await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(), GetPathToCurrentLibrary());
 
-                    var folderSave =
-                        new NSFileManager().GetUrls(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomain.User)[0]
-                            .Path;
-                    var pathSave = Path.Combine(folderSave, $"{Library.Id}.xml");
-
-                    await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(), pathSave);
-
-                    _libraryHashCode = Library.GetHashCode();
+                    await UpdateLibraryHashCode();
                     break;
+                }
+                case Constants.LIBRARY_CLOSE:
+                {
+                    if (await HasLibraryHashCodeChanged())
+                    {
+                        var success =
+                            await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(), GetPathToCurrentLibrary());
+                        if (!success)
+                            return;
+                    }
+
+                    _libraryManager.TryCloseLibrary();
+                    await UpdateLibraryHashCode();
+                    break;
+                }
                 default:
                 {
                     // Performing actions at the LibraryManager
                     await _libraryManager.RunCommand(commandParameter);
-                }
                     break;
+                }
             }
 
-            RunInMainThread(() =>
-                {
-                    CanOperateWithBooks = Library?.Id != 0;
-                    RaisePropertyChanged(nameof(Library));
-                    RaisePropertyChanged(nameof(Library.BookList));
-                }
-            );
+            await Task.Run(() => RunInMainThread(() =>
+            {
+                CanOperateWithBooks = Library.Id != 0;
+                Library.TotalBooks = Library.BookList.Count;
+                RaisePropertyChanged(nameof(Library));
+                RaisePropertyChanged(nameof(Library.BookList));
+            }));
         }
         else
         {
@@ -211,11 +234,11 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
     /// Updates the library state by raising a property changed event for the Library property
     /// and setting the IsEnabled property based on whether the Library Id differs from the default value of 0.
     /// </summary>
-    private void UpdateLibraryState()
+    private Task UpdateLibraryHashCode()
     {
-        RaisePropertyChanged(nameof(Library));
-
         _libraryHashCode = Library.GetHashCode();
+
+        return Task.CompletedTask;
     }
 
     /// <summary>
@@ -233,6 +256,14 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
         }
 
         return false;
+    }
+
+    private string GetPathToCurrentLibrary()
+    {
+        var folder =
+            new NSFileManager().GetUrls(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomain.User)[0]
+                .Path;
+        return Path.Combine(folder, $"{Library.Id}.xml");
     }
 
     #endregion
