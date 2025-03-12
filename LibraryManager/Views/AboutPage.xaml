@@ -24,7 +24,7 @@
         <Grid Padding="10">
             <!-- Row Definitions -->
             <Grid.RowDefinitions>
-                <RowDefinition Height="40" />
+                <RowDefinition Height="55" />
                 <RowDefinition />
                 <RowDefinition Height="40" />
             </Grid.RowDefinitions>

@@ -51,5 +51,18 @@
       <Folder Include="Managers\" />
       <Folder Include="XmlOperator\" />
     </ItemGroup>
+    
+    <ItemGroup>
+      <MauiXaml Update="Controls\CustomDialogPage.xaml">
+        <SubType>Designer</SubType>
+      </MauiXaml>
+    </ItemGroup>
+    
+    <ItemGroup>
+      <Compile Update="Controls\CustomDialogPage.xaml.cs">
+        <DependentUpon>CustomDialogPage.xaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+    </ItemGroup>
 
 </Project>

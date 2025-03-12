@@ -38,7 +38,7 @@
     </ContentPage.MenuBarItems>
 
     <ContentPage.Content>
-        <Grid BackgroundColor="{StaticResource Tertiary}" Padding="10">
+        <Grid BackgroundColor="{StaticResource White}" Padding="10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="55" />
                 <RowDefinition />

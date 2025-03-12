@@ -36,10 +36,66 @@
     </ContentPage.MenuBarItems>
 
     <ContentPage.Content>
-        <Grid>
+        <Grid BackgroundColor="{StaticResource White}" Padding="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="55" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            
+            <StackLayout Grid.Row="0"
+                         Orientation="Horizontal"
+                         FlowDirection="MatchParent"
+                         HorizontalOptions="Fill"
+                         Margin="10">
+                <StackLayout.Resources>
+                    <Style TargetType="Button">
+                        <Setter Property="FontSize" Value="18" />
+                        <Setter Property="BorderWidth" Value="1" />
+                        <Setter Property="Margin" Value="0,0,10,0" />
+                    </Style>
+                </StackLayout.Resources>
+
+                <Button Text="Add Book" 
+                        Command="{Binding NavigateCommand}"
+                        CommandParameter="Add Book" 
+                        IsEnabled="{Binding IsUnLocked}"
+                        ToolTipProperties.Text="{Binding AddBookTooltip, Mode=OneTime}"/>
+                <Button Text="Demo 'Add Books'" 
+                        Command="{Binding NavigateCommand}"
+                        CommandParameter="Demo add books" 
+                        IsEnabled="{Binding IsUnLocked}"
+                        ToolTipProperties.Text="{Binding DemoAddBooksTooltip, Mode=OneTime}"/>
+                <Button Text="Edit Book" 
+                        Command="{Binding NavigateCommand}"
+                        CommandParameter="Edit Book" 
+                        IsEnabled="{Binding CanEditBook}"
+                        ToolTipProperties.Text="{Binding EditBookTooltip, Mode=OneTime}"/>
+                <Button Text="Delete Book(s)" 
+                        Command="{Binding NavigateCommand}"
+                        CommandParameter="Delete the selected book" 
+                        IsEnabled="{Binding CanEditBook}"
+                        ToolTipProperties.Text="{Binding RemoveBookTooltip, Mode=OneTime}"/>
+                <Button Text="Import Book" 
+                        Command="{Binding NavigateCommand}"
+                        CommandParameter="ImportBook" 
+                        IsEnabled="{Binding IsUnLocked}"
+                        ToolTipProperties.Text="{Binding ImportBookTooltip, Mode=OneTime}"/>
+                <Button Text="Export Book" 
+                        Command="{Binding NavigateCommand}"
+                        CommandParameter="Export the selected book" 
+                        IsEnabled="{Binding CanEditBook}"
+                        ToolTipProperties.Text="{Binding ExportSelectedBookTooltip, Mode=OneTime}"/>
+
+                <Button Text="Sort Library"
+                        Command="{Binding NavigateCommand}"
+                        CommandParameter="Sort Books" 
+                        IsEnabled="{Binding IsUnLocked}"
+                        ToolTipProperties.Text="{Binding SortLibraryTooltip, Mode=OneTime}"/>
+
+            </StackLayout>
             
             <!--Displays Books-->
-            <CollectionView x:Name="BooksCollectionView"
+            <CollectionView Grid.Row="1" x:Name="BooksCollectionView"
                             ItemsSource="{Binding Library.BookList}"
                             SelectionMode="Multiple"
                             Margin="10, 30, 10, 10">
