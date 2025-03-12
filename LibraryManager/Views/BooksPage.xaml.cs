@@ -1,5 +1,3 @@
-using LibraryManager.Extensions;
-using LibraryManager.Models;
 using LibraryManager.ViewModels;
 
 namespace LibraryManager.Views;
@@ -26,7 +24,7 @@ public partial class BooksPage : ContentPage
         BindingContext ??= App.Services.GetService<BooksViewModel>();
 
         // Add event handlers
-        BooksCollectionView.SelectionChanged += SelectableItemsView_OnSelectionChanged;
+        BooksCollectionView.OnAppearing();
     }
 
     /// <summary>
@@ -34,27 +32,11 @@ public partial class BooksPage : ContentPage
     /// </summary>
     protected override void OnDisappearing()
     {
-        // prevention of hung up switching between pages after it has been done selection of the row 
-        BooksCollectionView.SelectedItems = null;
-
         base.OnDisappearing();
 
-        if (BooksCollectionView != null)
-            BooksCollectionView.SelectionChanged -= SelectableItemsView_OnSelectionChanged;
+        BooksCollectionView.OnDisappearing();
 
         if (BindingContext != null)
             BindingContext = null;
-    }
-
-
-    /// <summary>
-    /// Event handler for SelectionChanged event
-    /// </summary>
-    private void SelectableItemsView_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
-    {
-        if (BindingContext is BooksViewModel bvs)
-        {
-            bvs.SelectedBooks.ResetAndAddRange(e.CurrentSelection.Select((b => b as Book)));
-        }
     }
 }

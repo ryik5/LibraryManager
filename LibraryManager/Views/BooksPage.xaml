@@ -2,7 +2,7 @@
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:viewmodel="clr-namespace:LibraryManager.ViewModels"
+             xmlns:control="clr-namespace:LibraryManager.Controls"
              x:Class="LibraryManager.Views.BooksPage">
 
     <ContentPage.MenuBarItems>
@@ -42,6 +42,7 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
             
+            <!-- Controls -->
             <StackLayout Grid.Row="0"
                          Orientation="Horizontal"
                          FlowDirection="MatchParent"
@@ -95,55 +96,7 @@
             </StackLayout>
             
             <!--Displays Books-->
-            <CollectionView Grid.Row="1" x:Name="BooksCollectionView"
-                            ItemsSource="{Binding Library.BookList}"
-                            SelectionMode="Multiple"
-                            Margin="10, 30, 10, 10">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Padding="5">
-                            
-                            <!-- VisualStateManager to handle different states -->
-                            <VisualStateManager.VisualStateGroups>
-                                <VisualStateGroupList>
-                                    <VisualStateGroup x:Name="CommonStates">
-                                        <!-- Normal State -->
-                                        <VisualState x:Name="Normal">
-                                            <VisualState.Setters>
-                                                <!-- Default unselected and unpressed color -->
-                                                <Setter Property="BackgroundColor" Value="Transparent" />
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                        <!-- Selected State -->
-                                        <VisualState x:Name="Selected">
-                                            <VisualState.Setters>
-                                                <!-- Color when the row is selected -->
-                                                <Setter Property="BackgroundColor" Value="{StaticResource Tertiary}" />
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                    </VisualStateGroup>
-                                </VisualStateGroupList>
-                            </VisualStateManager.VisualStateGroups>
-
-                            <!-- Grid Layout for Row Content -->
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="2*" />
-                                <ColumnDefinition Width="4*" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Label FontSize="18"
-                                   Text="{Binding Author}"
-                                   Grid.Column="0" />
-                            <Label FontSize="18" HorizontalTextAlignment="Start"
-                                   Text="{Binding Title}"
-                                   Grid.Column="1" />
-                            <Label FontSize="18" HorizontalTextAlignment="Start"
-                                   Text="{Binding Year}"
-                                   Grid.Column="2" />
-                        </Grid>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+            <control:BookCollectionView x:Name="BooksCollectionView" Grid.Row="1"/>
         </Grid>
     </ContentPage.Content>
     
