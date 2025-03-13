@@ -13,7 +13,6 @@ public class BooksViewModel : AbstractViewModel, IDisposable
     {
         Library = library;
         Library.BookList.CollectionChanged += BookList_CollectionChanged;
-        ExtendedCommand = new AsyncRelayCommand<string>(PerformExtendedAction);
         _bookManageable = new BookManagerModel(Library);
 
         IsBooksCollectionViewVisible = true;
@@ -22,8 +21,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable
 
 
     #region Public properties
-    public ICommand ExtendedCommand { get; }
-
+ 
     public ILibrary Library
     {
         get => _library;
@@ -40,6 +38,12 @@ public class BooksViewModel : AbstractViewModel, IDisposable
     {
         get => _book;
         set => SetProperty(ref _book, value);
+    }
+
+    public string LoadingState
+    {
+        get => _loadingState;
+        set => SetProperty(ref _loadingState, value);
     }
 
     public bool IsBooksCollectionViewVisible
@@ -89,8 +93,13 @@ public class BooksViewModel : AbstractViewModel, IDisposable
                 }
                     break;
                 case Constants.EDIT_BOOK:
-                    if (RunEditSelectedBook())
+                    if (StartEditSelectedBook())
+                    {
+                        LoadingState = Book.Content is null ? Constants.LOAD_CONTENT : Constants.CONTENT_WAS_LOADED;
+
                         SwitchViewsVisibilityWithinAction(true);
+                    }
+
                     break;
                 case Constants.SORT_BOOKS:
                     // _bookManageable.SafetySortBooks();
@@ -119,7 +128,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable
         }
     }
 
-    protected async Task PerformExtendedAction(string? commandParameter)
+    protected async override Task PerformExtendedAction(string? commandParameter)
     {
         #if DEBUG
         Debug.WriteLine($"ExtendedCommand triggered with commandParameter: {commandParameter}");
@@ -131,12 +140,18 @@ public class BooksViewModel : AbstractViewModel, IDisposable
         switch (commandParameter)
         {
             case Constants.SAVE_CHANGES:
-                // TODO : Save
+                if (CanEditSelectedBook())
+                    SelectedBooks[0].Set(Book);
+
+                Book = null;
                 SwitchViewsVisibilityWithinAction(false);
                 break;
+
             case Constants.EDITING_BOOK_WAS_CANCELLED:
+                Book = null;
                 SwitchViewsVisibilityWithinAction(false);
                 break;
+
             default:
             {
                 break;
@@ -183,15 +198,26 @@ public class BooksViewModel : AbstractViewModel, IDisposable
         System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
         TotalBooksChanged?.Invoke(this, new TotalBooksEventArgs { TotalBooks = Library.BookList.Count });
+        SelectedBooks.Clear();
+        Book = null;
         Library.TotalBooks = Library.BookList.Count;
     }
 
-    private bool RunEditSelectedBook()
+    private bool StartEditSelectedBook()
+    {
+        if (!CanEditSelectedBook())
+            return false;
+
+        Book = SelectedBooks[0].Clone() as Book;
+
+        return true;
+    }
+
+    private bool CanEditSelectedBook()
     {
         if (SelectedBooks.Count == 0)
             return false;
 
-        Book = SelectedBooks[0];
         return true;
     }
 
@@ -211,5 +237,6 @@ public class BooksViewModel : AbstractViewModel, IDisposable
     private bool _isBooksCollectionViewVisible;
     private bool _isEditBookViewVisible;
     private bool _disposed; // Safeguard for multiple calls to Dispose.
+    private string _loadingState;
     #endregion
 }

@@ -9,15 +9,37 @@ namespace LibraryManager.Models;
 [Serializable]
 public class Book : ICloneable, INotifyPropertyChanged, IXmlSerializable
 {
-     /// <summary>
+    /// <summary>
+    /// Sets the properties of the current <see cref="Book"/> based on the values of the specified <see cref="Book"/>.
+    /// </summary>
+    /// <param name="book">The book to copy the properties from.</param>
+    /// <exception cref="ArgumentNullException">The <paramref name="book"/> parameter is <see langword="null"/>.</exception>
+    public void Set(Book book)
+    {
+        Author = book?.Author;
+        Title = book?.Title;
+        Year = book?.Year ?? 1500;
+        TotalPages = book?.TotalPages ?? 0;
+        Description = book?.Description;
+        Genre = book?.Genre;
+        ISBN = book?.ISBN;
+        if (book?.Content is null)
+        {
+            Content = null;
+        }
+        else
+        {
+            Content = new();
+            Content.Set(book.Content);
+        }
+    }
+
+    /// <summary>
     /// Dump property to sort nothing
     /// </summary>
     [XmlIgnore]
     [BookProperty]
-    public string None
-    {
-        get;
-    }
+    public string None { get; }
 
     /// <summary>
     /// Gets or sets the unique identifier for the <see cref="Book"/>.
@@ -28,6 +50,7 @@ public class Book : ICloneable, INotifyPropertyChanged, IXmlSerializable
         get => _id;
         set => SetProperty(ref _id, value);
     }
+
     private int _id;
 
     /// <summary>
@@ -39,6 +62,7 @@ public class Book : ICloneable, INotifyPropertyChanged, IXmlSerializable
         get => _author;
         set => SetProperty(ref _author, value);
     }
+
     private string _author;
 
     /// <summary>
@@ -50,6 +74,7 @@ public class Book : ICloneable, INotifyPropertyChanged, IXmlSerializable
         get => _title;
         set => SetProperty(ref _title, value);
     }
+
     private string _title;
 
     /// <summary>
@@ -61,6 +86,7 @@ public class Book : ICloneable, INotifyPropertyChanged, IXmlSerializable
         get => _year;
         set => SetProperty(ref _year, value);
     }
+
     private int _year;
 
     /// <summary>
@@ -72,6 +98,7 @@ public class Book : ICloneable, INotifyPropertyChanged, IXmlSerializable
         get => _totalPages;
         set => SetProperty(ref _totalPages, value);
     }
+
     private int _totalPages;
 
     /// <summary>
@@ -83,6 +110,7 @@ public class Book : ICloneable, INotifyPropertyChanged, IXmlSerializable
         get => _description;
         set => SetProperty(ref _description, value);
     }
+
     private string _description;
 
     /// <summary>
@@ -94,6 +122,7 @@ public class Book : ICloneable, INotifyPropertyChanged, IXmlSerializable
         get => _genre;
         set => SetProperty(ref _genre, value);
     }
+
     private string _genre;
 
     /// <summary>
@@ -105,6 +134,7 @@ public class Book : ICloneable, INotifyPropertyChanged, IXmlSerializable
         get => _isbn;
         set => SetProperty(ref _isbn, value);
     }
+
     private string _isbn;
 
     /// <summary>
@@ -115,6 +145,7 @@ public class Book : ICloneable, INotifyPropertyChanged, IXmlSerializable
         get => _content;
         set => SetProperty(ref _content, value);
     }
+
     private MediaData _content;
 
     /// <summary>
@@ -133,6 +164,12 @@ public class Book : ICloneable, INotifyPropertyChanged, IXmlSerializable
     /// <returns>A new <see cref="Book"/> object that is a copy of the current object.</returns>
     public object Clone()
     {
+        var content = new MediaData();
+        if (Content is null)
+            content = null;
+        else
+            content.Set(Content);
+        
         Book clone = new()
         {
             Id = Id,
@@ -141,13 +178,7 @@ public class Book : ICloneable, INotifyPropertyChanged, IXmlSerializable
             TotalPages = TotalPages,
             Year = Year,
             Description = Description,
-            Content = Content is null ? null : new()
-            {
-                Name = Content.Name,
-                Ext = Content.Ext,
-                OriginalPath = Content.OriginalPath,
-                ObjectByteArray = Content.ObjectByteArray
-            },
+            Content = content,
             Genre = Genre,
             ISBN = ISBN
         };
@@ -183,7 +214,7 @@ public class Book : ICloneable, INotifyPropertyChanged, IXmlSerializable
                         case "TotalPages":
                             TotalPages = reader.ReadElementContentAsInt();
                             break;
-                        case "PublishDate":
+                        case "Year":
                             Year = reader.ReadElementContentAsInt();
                             break;
                         case "Description":
@@ -206,10 +237,12 @@ public class Book : ICloneable, INotifyPropertyChanged, IXmlSerializable
                                 Content = new MediaData();
                                 Content.ReadXml(reader);
                             }
+
                             isRead = false;
                             reader.ReadEndElement(); // Added to ensure proper reading of the 'Source' element
                             break;
                     }
+
                     break;
             }
         }
@@ -226,13 +259,20 @@ public class Book : ICloneable, INotifyPropertyChanged, IXmlSerializable
         writer.WriteElementString("Author", Author);
         writer.WriteElementString("Title", Title);
         writer.WriteElementString("TotalPages", TotalPages.ToString());
-        writer.WriteElementString("PublishDate", Year.ToString());
+        writer.WriteElementString("Year", Year.ToString());
         writer.WriteElementString("Description", Description);
         writer.WriteElementString("Genre", Genre);
         writer.WriteElementString("ISBN", ISBN);
 
         writer.WriteStartElement("Content");
-        try { Content?.WriteXml(writer); } catch { }
+        try
+        {
+            Content?.WriteXml(writer);
+        }
+        catch
+        {
+        }
+
         writer.WriteEndElement();
 
         writer.WriteEndElement();
@@ -252,13 +292,4 @@ public class Book : ICloneable, INotifyPropertyChanged, IXmlSerializable
         RaisePropertyChanged(propertyName);
         return true;
     }
-}
-
-/// <summary>
-/// Custom attribute to mark properties that should be included in the book properties list.
-/// </summary>
-/// <author>YR 2025-02-24</author>
-[AttributeUsage(AttributeTargets.Property)]
-public class BookPropertyAttribute : Attribute
-{
 }

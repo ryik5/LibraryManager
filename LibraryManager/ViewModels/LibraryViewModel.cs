@@ -15,10 +15,7 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
         Library.TotalBooksChanged += BookList_CollectionChanged;
         Library.LibraryIdChanged += Handle_LibraryIdChanged;
         _libraryManager = new LibraryManagerModel(Library);
-
-        // Initialize the generic navigation command
-        NavigateCommand = new AsyncRelayCommand<string>(PerformAction);
-
+        
         /*MessagingCenter.Subscribe<BooksViewModel>(this, "Navigate", async (sender) =>
         {
             Console.WriteLine("Received navigation request from BooksViewModel.");
@@ -53,6 +50,8 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
 
     #endregion
 
+
+    #region Public Methods
     /*    Match macOS behavior on Mac Catalyst
        If you need to match macOS app behavior and use the same system paths on Mac Catalyst, the recommended way of obtaining such paths is shown below:
            Environment.SpecialFolder.ApplicationData
@@ -78,8 +77,6 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
            Environment.SpecialFolder.Templates
            Instead of Environment.GetFolderPath(Environment.SpecialFolder.Templates, Environment.SpecialFolderOption.None), use Path.Combine(NSFileManager.HomeDirectory, "Templates").
      */
-
-    #region Public Methods
 
     protected override async Task PerformAction(string? commandParameter)
     {
@@ -193,7 +190,6 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
 #endif
         }
     }
-
 
     // Dispose method for external calls
     public void Dispose()

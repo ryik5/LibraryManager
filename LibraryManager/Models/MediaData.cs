@@ -7,55 +7,63 @@ using System.Xml.Serialization;
 namespace LibraryManager.Models;
 
 [Serializable]
-public class MediaData:INotifyPropertyChanged, IXmlSerializable
+public class MediaData : INotifyPropertyChanged, IXmlSerializable
 {
+    /// <summary>
+    /// Sets properties of the current object with the values from the specified <paramref name="mediaData"/>.
+    /// </summary>
+    /// <param name="mediaData">The source of the values.</param>
+    public void Set(MediaData mediaData)
+    {
+        if (mediaData is null)
+        {
+            Name = null;
+            OriginalPath = null;
+            Ext = null;
+            IsContentStoredSeparately = false;
+            IsLoaded = false;
+            ObjectByteArray = null;
+
+            return;
+        }
+
+        Name = mediaData.Name;
+        OriginalPath = mediaData.OriginalPath;
+        Ext = mediaData.Ext;
+        IsContentStoredSeparately = mediaData.IsContentStoredSeparately;
+        IsLoaded = mediaData.IsLoaded;
+        ObjectByteArray = mediaData.ObjectByteArray;
+    }
+
     /// <summary>
     /// Gets or sets the name of the file.
     /// </summary>
-    public string Name
-    {
-        get; set;
-    }
+    public string Name { get; set; }
 
     /// <summary>
     /// Gets or sets the original path of the file.
     /// </summary>
-    public string OriginalPath
-    {
-        get; set;
-    }
+    public string OriginalPath { get; set; }
 
     /// <summary>
     /// Gets or sets the Extension of the file.
     /// </summary>
-    public string Ext
-    {
-        get; set;
-    }
+    public string Ext { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether the content is stored separately.
     /// </summary>
-    public bool IsContentStoredSeparately
-    {
-        get; set;
-    }
+    public bool IsContentStoredSeparately { get; set; }
 
     /// <summary>
     /// Gets or sets the IsLoaded state of the file.
     /// </summary>
-    public bool IsLoaded
-    {
-        get; set;
-    }
+    public bool IsLoaded { get; set; }
 
     /// <summary>
     /// Gets or sets the byte array of the file.
     /// </summary>
-    public byte[] ObjectByteArray
-    {
-        get; set;
-    }
+    public byte[] ObjectByteArray { get; set; }
 
     public override string ToString()
     {
@@ -76,7 +84,7 @@ public class MediaData:INotifyPropertyChanged, IXmlSerializable
         RaisePropertyChanged(propertyName);
         return true;
     }
-    
+
     public XmlSchema? GetSchema() => throw new NotImplementedException();
 
     /// <summary>
@@ -84,7 +92,9 @@ public class MediaData:INotifyPropertyChanged, IXmlSerializable
     /// </summary>
     public void ReadXml(XmlReader reader)
     {
-        var isRead = true; bool isParsed; bool result;
+        var isRead = true;
+        bool isParsed;
+        bool result;
         while (reader.Read() && isRead)
         {
             switch (reader.NodeType)
@@ -128,7 +138,6 @@ public class MediaData:INotifyPropertyChanged, IXmlSerializable
                                     {
                                         break;
                                     }
-
                                 } while (reader.Read() && reader.NodeType != XmlNodeType.EndElement);
 
                                 ms.Position = 0;
@@ -139,6 +148,7 @@ public class MediaData:INotifyPropertyChanged, IXmlSerializable
                             reader.ReadEndElement(); // Added to ensure proper reading of the 'Source' element
                             break;
                     }
+
                     break;
             }
         }
