@@ -83,17 +83,15 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
 
     protected override async Task PerformAction(string? commandParameter)
     {
-        Debug.WriteLine($"NavigateCommand triggered with commandParameter: {commandParameter}");
+        #if DEBUG
+        Debug.WriteLine($"NavigateCommand on {nameof(LibraryPage)} triggered with commandParameter: {commandParameter}");
+        #endif
 
         if (string.IsNullOrWhiteSpace(commandParameter))
             return;
 
         if (CurrentRoute == $"//{nameof(LibraryPage)}")
         {
-#if DEBUG
-            Debug.WriteLine($"Commands {commandParameter} on {nameof(LibraryPage)} page.");
-#endif
-
             switch (commandParameter)
             {
                 case nameof(AboutPage):

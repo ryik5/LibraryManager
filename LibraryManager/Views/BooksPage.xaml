@@ -39,23 +39,23 @@
         <Grid BackgroundColor="{StaticResource White}" Padding="10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="55" />
-                <RowDefinition />
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            
-            <!-- Controls -->
-            <StackLayout Grid.Row="0"
-                         Orientation="Horizontal"
-                         FlowDirection="MatchParent"
-                         HorizontalOptions="Fill"
-                         Margin="10">
-                <StackLayout.Resources>
+                <Grid.Resources>
                     <Style TargetType="Button">
                         <Setter Property="FontSize" Value="18" />
                         <Setter Property="BorderWidth" Value="1" />
                         <Setter Property="Margin" Value="0,0,10,0" />
                     </Style>
-                </StackLayout.Resources>
-
+                </Grid.Resources>            
+            
+            <!-- General Controls -->
+            <StackLayout Grid.Row="0"
+                         Orientation="Horizontal"
+                         HorizontalOptions="Fill"
+                         Margin="10">
                 <Button Text="Add Book" 
                         Command="{Binding NavigateCommand}"
                         CommandParameter="Add Book" 
@@ -95,8 +95,56 @@
 
             </StackLayout>
             
-            <!--Displays Books-->
-            <control:BookCollectionView x:Name="BooksCollectionView" Grid.Row="1"/>
+            <!-- Displays Books-->
+            <control:BookCollectionView x:Name="BooksCollectionView" Grid.Row="1" 
+                                        IsVisible="{Binding IsBooksCollectionViewVisible, Mode=OneWay}"/>
+            
+            <!-- Edit selected book-->
+            <control:EditBookView x:Name="EditBookView" Grid.Row="1" Margin="5,20,5,20"
+                                  IsVisible="{Binding IsEditBookViewVisible, Mode=OneWay}"/>
+            
+            <!-- Load content Controls -->
+            <StackLayout Grid.Row="2" Grid.ColumnSpan="2"
+                         IsVisible="{Binding IsEditBookViewVisible, Mode=OneWay}"
+                         Orientation="Horizontal"
+                         HorizontalOptions="Center"
+                         VerticalOptions="Start"
+                         Margin="10">
+
+                <Button Text="{Binding LoadingState}"
+                        Command="{Binding ExtendedCommand}"
+                        CommandParameter="Load Content" 
+                        IsEnabled="{Binding IsLoadEnabled}"/>
+
+                <Button Text="Save on disk"
+                        Command="{Binding ExtendedCommand}"
+                        CommandParameter="Save content" 
+                        IsEnabled="{Binding IsSaveEnabled}"/>
+
+                <Button Text="Clear Content"
+                        Command="{Binding ExtendedCommand}"
+                        CommandParameter="Load Content" 
+                        IsEnabled="{Binding IsSaveEnabled}"/>
+
+            </StackLayout>
+            
+            <!-- Book Finish Edit Controls -->
+            <StackLayout Grid.Row="3"
+                         IsVisible="{Binding IsEditBookViewVisible, Mode=OneWay}"
+                         Orientation="Horizontal"
+                         HorizontalOptions="Center"
+                         Margin="10">
+
+                <Button Text="Save changes" 
+                        Command="{Binding ExtendedCommand}"
+                        CommandParameter="Save changes" 
+                        ToolTipProperties.Text="{Binding AddBookTooltip, Mode=OneTime}"/>
+                <Button Text="Cancel Edit" 
+                        Command="{Binding ExtendedCommand}"
+                        CommandParameter="Editing book was canceled" 
+                        ToolTipProperties.Text="{Binding DemoAddBooksTooltip, Mode=OneTime}"/>
+
+            </StackLayout>
         </Grid>
     </ContentPage.Content>
     

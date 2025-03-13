@@ -24,7 +24,7 @@ public partial class BooksPage : ContentPage
         BindingContext ??= App.Services.GetService<BooksViewModel>();
 
         // Add event handlers
-        BooksCollectionView.OnAppearing();
+        BooksCollectionView?.OnAppearing();
     }
 
     /// <summary>
@@ -34,9 +34,8 @@ public partial class BooksPage : ContentPage
     {
         base.OnDisappearing();
 
-        BooksCollectionView.OnDisappearing();
+        BooksCollectionView?.OnDisappearing();
 
-        if (BindingContext != null)
-            BindingContext = null;
+        BindingContext = null;
     }
 }

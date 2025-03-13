@@ -1,5 +1,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Windows.Input;
+using CommunityToolkit.Mvvm.Input;
 using LibraryManager.Models;
 using LibraryManager.Views;
 
@@ -11,12 +13,17 @@ public class BooksViewModel : AbstractViewModel, IDisposable
     {
         Library = library;
         Library.BookList.CollectionChanged += BookList_CollectionChanged;
-
+        ExtendedCommand = new AsyncRelayCommand<string>(PerformExtendedAction);
         _bookManageable = new BookManagerModel(Library);
-     }
 
-    
+        IsBooksCollectionViewVisible = true;
+        IsEditBookViewVisible = false;
+    }
+
+
     #region Public properties
+    public ICommand ExtendedCommand { get; }
+
     public ILibrary Library
     {
         get => _library;
@@ -29,14 +36,34 @@ public class BooksViewModel : AbstractViewModel, IDisposable
         set => SetProperty(ref _selectedBooks, value);
     }
 
+    public Book Book
+    {
+        get => _book;
+        set => SetProperty(ref _book, value);
+    }
+
+    public bool IsBooksCollectionViewVisible
+    {
+        get => _isBooksCollectionViewVisible;
+        set => SetProperty(ref _isBooksCollectionViewVisible, value);
+    }
+
+    public bool IsEditBookViewVisible
+    {
+        get => _isEditBookViewVisible;
+        set => SetProperty(ref _isEditBookViewVisible, value);
+    }
+
     public event EventHandler<TotalBooksEventArgs> TotalBooksChanged;
     #endregion
 
-    
+
     #region Public Methods
     protected override async Task PerformAction(string? commandParameter)
     {
-        Debug.WriteLine($"NavigateCommand triggered with commandParameter: {commandParameter}");
+        #if DEBUG
+        Debug.WriteLine($"NavigateCommand on {nameof(BooksPage)} triggered with commandParameter: {commandParameter}");
+        #endif
 
         if (string.IsNullOrWhiteSpace(commandParameter))
             return;
@@ -62,13 +89,14 @@ public class BooksViewModel : AbstractViewModel, IDisposable
                 }
                     break;
                 case Constants.EDIT_BOOK:
+                    if (RunEditSelectedBook())
+                        SwitchViewsVisibilityWithinAction(true);
+                    break;
+                case Constants.SORT_BOOKS:
+                    // _bookManageable.SafetySortBooks();
                     break;
                 default: //jobs perform without creating views
                 {
-#if DEBUG
-                    Debug.WriteLine($"Commands {commandParameter} on {nameof(BooksPage)} page.");
-#endif
-                    
                     // Performing actions at the BooksManager
                     await _bookManageable.RunCommand(commandParameter, SelectedBooks);
 
@@ -78,87 +106,110 @@ public class BooksViewModel : AbstractViewModel, IDisposable
                             RaisePropertyChanged(nameof(Library.BookList));
                         }
                     );
-
-
-                    //  await AddBook(); //Test only
-                }
                     break;
+                }
             }
         }
         else
         {
-#if DEBUG
+            #if DEBUG
             Debug.WriteLine(
                 $"Navigation error path '{commandParameter}' in class '{nameof(BooksViewModel)}' by method '{nameof(PerformAction)}'");
-#endif
+            #endif
         }
     }
 
-    
-     // Dispose method for external calls
-     public void Dispose()
-     {
-         if (_disposed) return; // Safeguard against multiple Dispose calls.
-         _disposed = true;
-         Library.BookList.CollectionChanged -= BookList_CollectionChanged;
- 
-         // Perform cleanup: Unsubscribe from any events
-         SelectedBooks = null;
-         if (_library is INotifyPropertyChanged notifyLibrary)
-         {
-             notifyLibrary.PropertyChanged -= OnLibraryChanged;
-         }
- 
-         Debug.WriteLine("BooksViewModel disposed successfully.");
-     }
- 
-     ~BooksViewModel()
-     {
-         Dispose(); // Safeguard cleanup in destructor (if proper disposal is skipped)
-     }
-   #endregion
-
-
-   #region Private methods
-
-     private void OnLibraryChanged(object sender, PropertyChangedEventArgs e)
-     {
-         Debug.WriteLine($"Library property changed: {e.PropertyName}");
-     }
- 
-     /// <summary>
-     /// Handles the CollectionChanged event of the BookList.
-     /// </summary>
-     /// <param name="sender">The source of the event.</param>
-     /// <param name="e">The NotifyCollectionChangedEventArgs instance containing the event data.</param>
-     private void BookList_CollectionChanged(object? sender,
-         System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-     {
-         TotalBooksChanged?.Invoke(this, new TotalBooksEventArgs { TotalBooks = Library.BookList.Count });
-         Library.TotalBooks= Library.BookList.Count;
-     }
-     
-    
-
-    private Task AddBook()
+    protected async Task PerformExtendedAction(string? commandParameter)
     {
-        RunInPageThread(() =>
-            Library.BookList.Add(
-                new Book { Id = 0, Title = "1984", Author = "George Orwell", Year = 1949, TotalPages = 1 }
-            ));
+        #if DEBUG
+        Debug.WriteLine($"ExtendedCommand triggered with commandParameter: {commandParameter}");
+        #endif
 
-        return Task.CompletedTask;
+        if (string.IsNullOrWhiteSpace(commandParameter))
+            return;
+
+        switch (commandParameter)
+        {
+            case Constants.SAVE_CHANGES:
+                // TODO : Save
+                SwitchViewsVisibilityWithinAction(false);
+                break;
+            case Constants.EDITING_BOOK_WAS_CANCELLED:
+                SwitchViewsVisibilityWithinAction(false);
+                break;
+            default:
+            {
+                break;
+            }
+        }
     }
 
+    // Dispose method for external calls
+    public void Dispose()
+    {
+        if (_disposed) return; // Safeguard against multiple Dispose calls.
+        _disposed = true;
+        Library.BookList.CollectionChanged -= BookList_CollectionChanged;
+
+        // Perform cleanup: Unsubscribe from any events
+        SelectedBooks = null;
+        if (_library is INotifyPropertyChanged notifyLibrary)
+        {
+            notifyLibrary.PropertyChanged -= OnLibraryChanged;
+        }
+
+        Debug.WriteLine("BooksViewModel disposed successfully.");
+    }
+
+    ~BooksViewModel()
+    {
+        Dispose(); // Safeguard cleanup in destructor (if proper disposal is skipped)
+    }
     #endregion
 
-    
-    #region Private fields
 
+    #region Private methods
+    private void OnLibraryChanged(object sender, PropertyChangedEventArgs e)
+    {
+        Debug.WriteLine($"Library property changed: {e.PropertyName}");
+    }
+
+    /// <summary>
+    /// Handles the CollectionChanged event of the BookList.
+    /// </summary>
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="e">The NotifyCollectionChangedEventArgs instance containing the event data.</param>
+    private void BookList_CollectionChanged(object? sender,
+        System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+        TotalBooksChanged?.Invoke(this, new TotalBooksEventArgs { TotalBooks = Library.BookList.Count });
+        Library.TotalBooks = Library.BookList.Count;
+    }
+
+    private bool RunEditSelectedBook()
+    {
+        if (SelectedBooks.Count == 0)
+            return false;
+
+        Book = SelectedBooks[0];
+        return true;
+    }
+
+    private void SwitchViewsVisibilityWithinAction(bool isSwitchOff)
+    {
+        IsBooksCollectionViewVisible = !isSwitchOff;
+        IsEditBookViewVisible = isSwitchOff;
+    }
+    #endregion
+
+
+    #region Private fields
     private readonly IBookManageable _bookManageable;
     private ILibrary _library;
     private IList<Book> _selectedBooks = new List<Book>();
+    private Book _book;
+    private bool _isBooksCollectionViewVisible;
+    private bool _isEditBookViewVisible;
     private bool _disposed; // Safeguard for multiple calls to Dispose.
-
     #endregion
 }
