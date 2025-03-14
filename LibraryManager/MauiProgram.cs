@@ -37,7 +37,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<AboutViewModel>();
         builder.Services.AddSingleton<ToolsViewModel>();
         builder.Services.AddSingleton<FindBooksViewModel>();
-
+        builder.Services.AddSingleton<Book>();
 
         #if DEBUG
         builder.Logging.AddDebug();

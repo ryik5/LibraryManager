@@ -19,9 +19,12 @@ public partial class FindBooksPage : ContentPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
-        
-        // Ensure BindingContext is assigned only if not already set
+
+        // Avoid assigning a new instance unnecessarily
         BindingContext ??= App.Services.GetService<FindBooksViewModel>();
+
+        // Add event handlers
+        BooksCollectionView?.OnAppearing();
     }
 
     /// <summary>
@@ -31,9 +34,8 @@ public partial class FindBooksPage : ContentPage
     {
         base.OnDisappearing();
 
-        if (BindingContext != null)
-        {
-            BindingContext = null;
-        }
+        BooksCollectionView?.OnDisappearing();
+
+        BindingContext = null;
     }
 }

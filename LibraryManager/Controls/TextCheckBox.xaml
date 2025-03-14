@@ -3,16 +3,30 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="LibraryManager.Controls.TextCheckBox">
-    <HorizontalStackLayout>
-        <CheckBox x:Name="CheckBox"
+    <Grid MinimumWidthRequest="50">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        
+        <CheckBox Grid.Column="0" 
+                  x:Name="CheckBox"
                   IsChecked="False"
-                  CheckedChanged="OnCheckedChanged"/>
-        <Label x:Name="Label"
+                  CheckedChanged="OnCheckedChanged"
+                  VerticalOptions="Center"
+                  Margin="0"/>
+        
+        <Label Grid.Column="1" 
+               x:Name="Label"
+               FontSize="18"
                Text="CheckBox in StackLayout"
-               VerticalTextAlignment="Center">
+               VerticalTextAlignment="Center"
+               VerticalOptions="Center"
+               Margin="0">
             <Label.GestureRecognizers>
-                <TapGestureRecognizer Tapped="OnTextTapped"/>
+                <TapGestureRecognizer Tapped="OnTextTapped" />
             </Label.GestureRecognizers>
         </Label>
-    </HorizontalStackLayout>
+
+    </Grid>
 </ContentView>

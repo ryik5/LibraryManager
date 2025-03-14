@@ -3,16 +3,20 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:control="clr-namespace:LibraryManager.Controls"
-             x:Class="LibraryManager.Controls.BookCollectionView">
-
+             xmlns:viewmodel="clr-namespace:LibraryManager.ViewModels"
+             x:Class="LibraryManager.Controls.FoundCollectionView"
+             x:DataType="viewmodel:FindBooksViewModel">
+    
     <Grid>
         <CollectionView x:Name="BooksCollectionView"
-                        ItemsSource="{Binding Library.BookList}"
+                        ItemsSource="{Binding FoundBookList}"
                         SelectionMode="Multiple"
                         Margin="10, 30, 10, 10">
+            
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <control:BookGridView BindingContext="{Binding self}">
+                    
+                    <control:BookGridView BindingContext="{Binding}">
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroupList>
                                 <VisualStateGroup x:Name="CommonStates">
@@ -34,9 +38,10 @@
                             </VisualStateGroupList>
                         </VisualStateManager.VisualStateGroups>
                     </control:BookGridView>
+                    
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
     </Grid>
-    
+
 </ContentView>

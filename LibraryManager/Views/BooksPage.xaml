@@ -29,7 +29,6 @@
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Sort Books" />
         </MenuBarItem>
-        
         <MenuBarItem  Text="Navigate">
              <MenuFlyoutItem Text="Library"
                               Command="{Binding NavigateCommand}"
@@ -111,8 +110,9 @@
             </StackLayout>
 
             <!-- Displays Books-->
-            <control:BookCollectionView x:Name="BooksCollectionView" Grid.Row="1"
-                                        IsVisible="{Binding IsBooksCollectionViewVisible, Mode=OneWay}" />
+            <control:BookCollectionView 
+                x:Name="BooksCollectionView" Grid.Row="1"
+                IsVisible="{Binding IsBooksCollectionViewVisible, Mode=OneWay}" />
 
             <!-- Edit selected book-->
             <control:EditBookView x:Name="EditBookView" Grid.Row="1" Margin="5,20,5,20"

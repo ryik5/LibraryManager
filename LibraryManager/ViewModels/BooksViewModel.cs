@@ -55,7 +55,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable
         set => SetProperty(ref _isEditBookViewVisible, value);
     }
 
-    public event EventHandler<TotalBooksEventArgs> TotalBooksChanged;
+    public event EventHandler<TotalBooksEventArgs>? TotalBooksChanged;
     #endregion
 
 
@@ -127,7 +127,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable
         }
     }
 
-    protected async override Task PerformExtendedAction(string? commandParameter)
+    protected  override async Task PerformExtendedAction(string? commandParameter)
     {
         #if DEBUG
         Debug.WriteLine($"ExtendedCommand triggered with commandParameter: {commandParameter}");
