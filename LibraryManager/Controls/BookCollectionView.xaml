@@ -12,7 +12,7 @@
                         Margin="10, 30, 10, 10">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <control:BookGridView BindingContext="{Binding self}">
+                    <control:BookGridView BindingContext="{Binding}">
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroupList>
                                 <VisualStateGroup x:Name="CommonStates">

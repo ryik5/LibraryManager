@@ -38,4 +38,9 @@ public partial class FindBooksPage : ContentPage
 
         BindingContext = null;
     }
+
+    private void OnTextTapped(object? sender, TappedEventArgs e)
+    {
+        CheckBox.IsChecked = !CheckBox.IsChecked;
+    }
 }

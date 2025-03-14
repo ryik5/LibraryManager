@@ -22,8 +22,9 @@ public partial class TextCheckBox : ContentView
     public TextCheckBox()
     {
         InitializeComponent();
+        
     }
-
+    
     private static void OnTextChanged(BindableObject bindable, object oldValue, object newValue)
     {
         if (!(bindable is TextCheckBox textCheckBox))

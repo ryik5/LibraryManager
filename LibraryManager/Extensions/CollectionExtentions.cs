@@ -17,7 +17,7 @@ internal static class CollectionExtentions
     /// <returns>True if the item was removed, false otherwise.</returns>
     public static bool RemoveItem<T>(this ObservableCollection<T> target, T item)
     {
-        if (target is null || item is null) 
+        if (target is null || item is null)
             return false;
 
         var index = target.IndexOf(item);
@@ -27,6 +27,7 @@ internal static class CollectionExtentions
             target.RemoveAt(index);
             return true;
         }
+
         return false;
     }
 
@@ -38,9 +39,9 @@ internal static class CollectionExtentions
     /// <param name="sourceNewItems">The IEnumerable of items to add.</param>
     public static void ResetAndAddRange<T>(this ICollection<T> collection, IEnumerable<T> sourceNewItems)
     {
-        if (collection is null || sourceNewItems?.Any() != true) 
+        if (collection is null || sourceNewItems == null)
             return;
-        var list = sourceNewItems.ToList();
+        var list = sourceNewItems?.ToList() ?? new List<T>(0);
         collection.Clear();
         list.ForEach(item =>
         {

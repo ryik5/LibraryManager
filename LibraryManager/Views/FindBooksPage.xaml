@@ -66,12 +66,33 @@
                         MinimumWidthRequest="85" 
                         Margin="10,0,0,0"/>
 
-                <control:TextCheckBox 
-                    Text="Search-on-fly"
-                    IsChecked="{Binding SearchOnFly}"
+                <Grid 
                     MinimumWidthRequest="100"
-                    VerticalOptions="Center"
-                    Margin="10,0,10,0"/>
+                      VerticalOptions="Center"
+                      Margin="10,0,10,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+        
+                    <CheckBox Grid.Column="0" 
+                              x:Name="CheckBox"
+                              IsChecked="{Binding SearchOnFly, Mode=TwoWay}"
+                              VerticalOptions="Center"
+                              Margin="0"/>
+        
+                    <Label Grid.Column="1" 
+                           FontSize="18"
+                           Text="Search-on-fly"
+                           VerticalTextAlignment="Center"
+                           VerticalOptions="Center"
+                           Margin="0">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnTextTapped" />
+                        </Label.GestureRecognizers>
+                    </Label>
+
+                </Grid>
 
                 <Picker ItemsSource="{Binding SearchFields}"
                         SelectedItem="{Binding SelectedSearchField}"
