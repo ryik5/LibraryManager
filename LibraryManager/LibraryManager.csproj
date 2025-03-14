@@ -49,7 +49,6 @@
     <ItemGroup>
       <Folder Include="Events\" />
       <Folder Include="Managers\" />
-      <Folder Include="XmlOperator\" />
     </ItemGroup>
     
     <ItemGroup>

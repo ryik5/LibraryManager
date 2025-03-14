@@ -21,7 +21,6 @@ public class BookManagerModel : AbstractBindableUiManager, IBookManageable
 
 
     #region public methods
-
     public Task RunCommand(string commandParameter, IList<Book>? selectedBooks)
     {
         switch (commandParameter)
@@ -29,12 +28,12 @@ public class BookManagerModel : AbstractBindableUiManager, IBookManageable
             case Constants.ADD_BOOK:
                 AddBook(DemoBookMaker.GenerateBook());
                 break;
-            
+
             case Constants.DEMO_ADD_BOOKS:
                 for (var b = 0; b < 10; b++)
-                   AddBook(DemoBookMaker.GenerateBook());
+                    AddBook(DemoBookMaker.GenerateBook());
                 break;
-            
+
             case Constants.DELETE_BOOK:
                 if (selectedBooks is not null && 0 < selectedBooks.Count)
                 {
@@ -140,12 +139,10 @@ public class BookManagerModel : AbstractBindableUiManager, IBookManageable
 
         return tmpResult?.ToList() ?? new List<Book>(0);
     }
-
     #endregion
 
 
     #region Properties
-
     /// <summary>
     /// Gets or sets a library.
     /// </summary>
@@ -157,12 +154,10 @@ public class BookManagerModel : AbstractBindableUiManager, IBookManageable
 
     public event EventHandler<ActionFinishedEventArgs> LoadingFinished;
     public event EventHandler<TotalBooksEventArgs> TotalBooksChanged;
-
     #endregion
 
 
     #region private methods
-
     /// <summary>
     /// Returns a sorted list of books based on the provided properties.
     /// </summary>
@@ -320,6 +315,5 @@ public class BookManagerModel : AbstractBindableUiManager, IBookManageable
     private const StringComparison CurrentComparisionRule = StringComparison.OrdinalIgnoreCase;
 
     private ILibrary _library;
-
     #endregion
 }

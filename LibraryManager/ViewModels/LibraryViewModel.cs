@@ -15,7 +15,7 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
         Library.TotalBooksChanged += BookList_CollectionChanged;
         Library.LibraryIdChanged += Handle_LibraryIdChanged;
         _libraryManager = new LibraryManagerModel(Library);
-        
+
         /*MessagingCenter.Subscribe<BooksViewModel>(this, "Navigate", async (sender) =>
         {
             Console.WriteLine("Received navigation request from BooksViewModel.");
@@ -24,15 +24,7 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
     }
 
 
-    private void BookList_CollectionChanged(object? sender, TotalBooksEventArgs e)
-    {
-        RaisePropertyChanged(nameof(Library));
-        RaisePropertyChanged(nameof(Library.TotalBooks));
-    }
-
-
     #region Public properties
-
     public ILibrary Library
     {
         get => _library;
@@ -47,7 +39,6 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
 
     public Binding LibraryControlsView { get; }
     public event EventHandler<TotalBooksEventArgs> TotalBooksChanged;
-
     #endregion
 
 
@@ -81,18 +72,21 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
     protected override async Task PerformAction(string? commandParameter)
     {
         #if DEBUG
-        Debug.WriteLine($"NavigateCommand on {nameof(LibraryPage)} triggered with commandParameter: {commandParameter}");
+        Debug.WriteLine(
+            $"NavigateCommand on {nameof(LibraryPage)} triggered with commandParameter: {commandParameter}");
         #endif
 
         if (string.IsNullOrWhiteSpace(commandParameter))
             return;
 
-        if (CurrentRoute == $"//{nameof(LibraryPage)}")
+        if (IsCurrentRoute(nameof(LibraryPage)))
         {
             switch (commandParameter)
             {
                 case nameof(AboutPage):
                 case nameof(BooksPage):
+                case nameof(FindBooksPage):
+                case nameof(ToolsPage):
                 {
                     try
                     {
@@ -184,10 +178,10 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
         }
         else
         {
-#if DEBUG
+            #if DEBUG
             Debug.WriteLine(
-                $"Navigation error path '{commandParameter}' in class '{nameof(BooksViewModel)}' by method '{nameof(PerformAction)}'");
-#endif
+                $"Navigation error path '{commandParameter}' in class '{nameof(LibraryViewModel)}' by method '{nameof(PerformAction)}'");
+            #endif
         }
     }
 
@@ -198,9 +192,9 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
         _disposed = true;
 
         // MessagingCenter cleanup
-#if DEBUG
+        #if DEBUG
         Console.WriteLine("Cleaning up MessagingCenter resources in LibraryViewModel.");
-#endif
+        #endif
 
         MessagingCenter.Unsubscribe<BooksViewModel>(this, "Navigate");
     }
@@ -209,12 +203,10 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
     {
         Dispose(); // Safeguard cleanup in destructor (if proper disposal is skipped)
     }
-
     #endregion
 
 
     #region Private methods
-
     /// <summary>
     /// Handles the LibraryIdChanged event by updating the CanOperateWithBooks property.
     /// </summary>
@@ -223,6 +215,11 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
         CanOperateWithBooks = (sender as ILibrary)?.Id != 0;
     }
 
+    private void BookList_CollectionChanged(object? sender, TotalBooksEventArgs e)
+    {
+        RaisePropertyChanged(nameof(Library));
+        RaisePropertyChanged(nameof(Library.TotalBooks));
+    }
 
     /// <summary>
     /// Updates the library state by raising a property changed event for the Library property
@@ -259,17 +256,14 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
                 .Path;
         return Path.Combine(folder, $"{Library.Id}.xml");
     }
-
     #endregion
 
 
     #region Private Members
-
     private ILibrary _library;
     private bool _canOperateWithBooks = true;
     private readonly ILibraryManageable _libraryManager;
     private bool _disposed; // Safeguard for multiple calls to Dispose.
     private int _libraryHashCode;
-
     #endregion
 }

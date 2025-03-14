@@ -89,8 +89,11 @@ public abstract class AbstractViewModel : AbstractBindableUiManager
 
 
     /// <summary>
-    /// Returns Shell.Current.CurrentState.Location.OriginalString
+    /// Checks if the current route is equal to the provided page.
     /// </summary>
-    protected string CurrentRoute => Shell.Current.CurrentState.Location.OriginalString;
+    /// <param name="page">The page to compare the current route with.</param>
+    /// <returns>true if the current route is equal to the provided page, false otherwise.</returns>
+    protected bool IsCurrentRoute(string page) =>
+        Shell.Current.CurrentState.Location.OriginalString == $"//{page}";
     #endregion
 }

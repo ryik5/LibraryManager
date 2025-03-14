@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.Xml;
-using System.Xml.Serialization;
 using LibraryManager.AbstractObjects;
 
 namespace LibraryManager.Models;
@@ -28,7 +27,6 @@ public class LibraryManagerModel : AbstractBindableUiManager, ILibraryManageable
 
 
     #region public methods
-
     public async Task RunCommand(string commandParameter)
     {
         switch (commandParameter)
@@ -88,7 +86,7 @@ public class LibraryManagerModel : AbstractBindableUiManager, ILibraryManageable
                     });
 
                     var lib = await Task.Run(() =>
-                        (Library)(new XmlSerializer(typeof(Library))).Deserialize(xmlReader));
+                        (Library)(new System.Xml.Serialization.XmlSerializer(typeof(Library))).Deserialize(xmlReader));
 
                     await SetLibrary(lib);
 
@@ -98,9 +96,9 @@ public class LibraryManagerModel : AbstractBindableUiManager, ILibraryManageable
         }
         catch (Exception ex)
         {
-#if DEBUG
+            #if DEBUG
             Debug.WriteLine($"{ex.Message}");
-#endif
+            #endif
         }
     }
 
@@ -171,12 +169,10 @@ public class LibraryManagerModel : AbstractBindableUiManager, ILibraryManageable
         Library.Description = string.Empty;
         Library.Id = 0;
     }
-
     #endregion
 
 
     #region Properties
-
     /// <summary>
     /// Gets or sets a library.
     /// </summary>
@@ -187,12 +183,10 @@ public class LibraryManagerModel : AbstractBindableUiManager, ILibraryManageable
     }
 
     public event EventHandler<ActionFinishedEventArgs> LoadingFinished;
-
     #endregion
 
 
     #region private methods
-
     /// <summary>
     /// Handles the LoadingFinished event of the LibraryLoader.
     /// </summary>
@@ -202,12 +196,10 @@ public class LibraryManagerModel : AbstractBindableUiManager, ILibraryManageable
     {
         LoadingFinished?.Invoke(this, new ActionFinishedEventArgs { Message = e.Message, IsFinished = e.IsFinished });
     }
-
     #endregion
 
+
     #region Private fields
-
     private ILibrary? _library;
-
     #endregion
 }

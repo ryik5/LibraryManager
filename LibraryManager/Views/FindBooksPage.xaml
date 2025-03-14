@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel="clr-namespace:LibraryManager.ViewModels"
+             x:Class="LibraryManager.Views.FindBooksPage"
+             x:DataType="viewmodel:FindBooksViewModel">
+    
+    <ContentPage.MenuBarItems>
+        <MenuBarItem Text="Navigate">
+            <!--  To make menu like menu with SubMenu -->
+            <!--<MenuFlyoutSubItem Text="Library">-->
+
+            <MenuFlyoutItem Text="Library"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="LibraryPage" />
+
+            <MenuFlyoutItem Text="Books"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="BooksPage" />
+            
+            <MenuFlyoutItem Text="Tools"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="ToolsPage" />
+            
+            <MenuFlyoutItem Text="About"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="AboutPage" />
+            
+            <!--</MenuFlyoutSubItem>-->
+        </MenuBarItem>
+    </ContentPage.MenuBarItems>
+    
+    <ContentPage.Content>
+        
+    </ContentPage.Content>
+</ContentPage>

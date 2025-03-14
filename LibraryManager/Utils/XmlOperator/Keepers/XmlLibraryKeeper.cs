@@ -15,7 +15,7 @@ public class XmlLibraryKeeper : ILibraryKeeper
     {
         try
         {
-            XmlObjectSerializer.Save(library as Library, pathToFile);
+            XmlSerializer.Save(library as Library, pathToFile);
             
             return Task.FromResult(true);
         }

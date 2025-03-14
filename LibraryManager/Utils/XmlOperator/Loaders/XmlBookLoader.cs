@@ -15,7 +15,7 @@ public class XmlBookLoader : IBookLoader
 
         try
         {
-            book = XmlObjectSerializer.Load<Book>(pathToBook);
+            book = XmlSerializer.Load<Book>(pathToBook);
             result = true;
             msg = "Book loaded";
         }

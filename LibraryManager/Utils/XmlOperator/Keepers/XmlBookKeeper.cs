@@ -14,7 +14,7 @@ public class XmlBookKeeper : IBookKeeper
     {
         try
         {
-            XmlObjectSerializer.Save(book, pathToFile);
+            XmlSerializer.Save(book, pathToFile);
             return true;
         }
         catch

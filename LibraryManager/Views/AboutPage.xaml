@@ -7,15 +7,24 @@
              x:DataType="viewmodel:AboutViewModel">
     
     <ContentPage.MenuBarItems>
-        <MenuBarItem Text="Go to">
-            <MenuFlyoutSeparator />
-            <MenuFlyoutItem Text="Go To Books"
-                            Command="{Binding NavigateCommand}"
-                            CommandParameter="BooksPage" />
-            <MenuFlyoutSeparator />
-            <MenuFlyoutItem Text="Go To Library"
+        <MenuBarItem Text="Navigate">
+
+            <MenuFlyoutItem Text="Library"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="LibraryPage" />
+            
+            <MenuFlyoutItem Text="Books"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="BooksPage" />
+
+            <MenuFlyoutItem Text="Find Books"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="FindBooksPage" />
+
+            <MenuFlyoutItem Text="Tools"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="ToolsPage" />
+            
             <MenuFlyoutSeparator />
         </MenuBarItem>
     </ContentPage.MenuBarItems>

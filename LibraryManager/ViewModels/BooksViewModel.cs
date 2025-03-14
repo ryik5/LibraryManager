@@ -1,7 +1,5 @@
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Windows.Input;
-using CommunityToolkit.Mvvm.Input;
 using LibraryManager.Models;
 using LibraryManager.Views;
 
@@ -21,7 +19,6 @@ public class BooksViewModel : AbstractViewModel, IDisposable
 
 
     #region Public properties
- 
     public ILibrary Library
     {
         get => _library;
@@ -73,12 +70,14 @@ public class BooksViewModel : AbstractViewModel, IDisposable
             return;
 
         // Prevent navigation to the same page - 'Shell.Current.GoToAsync(...'
-        if (CurrentRoute == $"//{nameof(BooksPage)}")
+        if (IsCurrentRoute(nameof(BooksPage)))
         {
             switch (commandParameter)
             {
                 case nameof(AboutPage):
                 case nameof(LibraryPage):
+                case nameof(FindBooksPage):
+                case nameof(ToolsPage):
                 {
                     try
                     {

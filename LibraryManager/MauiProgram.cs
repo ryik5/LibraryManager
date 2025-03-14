@@ -35,11 +35,13 @@ public static class MauiProgram
         builder.Services.AddSingleton<LibraryViewModel>();
         builder.Services.AddSingleton<BooksViewModel>();
         builder.Services.AddSingleton<AboutViewModel>();
+        builder.Services.AddSingleton<ToolsViewModel>();
+        builder.Services.AddSingleton<FindBooksViewModel>();
 
 
-#if DEBUG
+        #if DEBUG
         builder.Logging.AddDebug();
-#endif
+        #endif
 
         return builder.Build();
     }

@@ -20,7 +20,7 @@ public class XmlLibraryLoader : ILibraryLoader
         LoadingFinished?.Invoke(this, new ActionFinishedEventArgs { Message = "Loading started", IsFinished = false });
         try
         {
-            library = XmlObjectSerializer.Load<ILibrary>(pathToLibrary);
+            library = XmlSerializer.Load<ILibrary>(pathToLibrary);
             result = true;
             msg = "Library loaded";
         }

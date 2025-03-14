@@ -28,10 +28,24 @@
             <MenuFlyoutItem Text="Sort Books"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Sort Books" />
-            <MenuFlyoutSeparator />
-            <MenuFlyoutItem Text="Go To Library"
-                            Command="{Binding NavigateCommand}"
-                            CommandParameter="LibraryPage" />
+        </MenuBarItem>
+        
+        <MenuBarItem  Text="Navigate">
+             <MenuFlyoutItem Text="Library"
+                              Command="{Binding NavigateCommand}"
+                              CommandParameter="LibraryPage" />
+              
+              <MenuFlyoutItem Text="Find Books"
+                              Command="{Binding NavigateCommand}"
+                              CommandParameter="FindBooksPage" />
+  
+              <MenuFlyoutItem Text="Tools"
+                              Command="{Binding NavigateCommand}"
+                              CommandParameter="ToolsPage" />
+                  
+             <MenuFlyoutItem Text="About"
+                             Command="{Binding NavigateCommand}"
+                             CommandParameter="AboutPage" />
         </MenuBarItem>
     </ContentPage.MenuBarItems>
 

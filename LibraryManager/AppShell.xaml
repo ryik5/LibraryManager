@@ -146,7 +146,16 @@
         <ShellContent Route="BooksPage" ContentTemplate="{DataTemplate view:BooksPage}" />
     </FlyoutItem>
 
+    <FlyoutItem Title="Find Books" Shell.TabBarIsVisible="False">
+        <ShellContent Route="FindBooksPage" ContentTemplate="{DataTemplate view:FindBooksPage}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Tools" Shell.TabBarIsVisible="False">
+        <ShellContent Route="ToolsPage" ContentTemplate="{DataTemplate view:ToolsPage}" />
+    </FlyoutItem>
+
     <FlyoutItem Title="About" Shell.TabBarIsVisible="False">
         <ShellContent Route="AboutPage" ContentTemplate="{DataTemplate view:AboutPage}" />
     </FlyoutItem>
+    
 </Shell>
