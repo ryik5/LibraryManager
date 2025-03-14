@@ -1,5 +1,4 @@
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+using LibraryManager.AbstractObjects;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
@@ -7,7 +6,7 @@ using System.Xml.Serialization;
 namespace LibraryManager.Models;
 
 [Serializable]
-public class Book : ICloneable, INotifyPropertyChanged, IXmlSerializable
+public class Book : AbstractBindableModel, ICloneable, IXmlSerializable
 {
     /// <summary>
     /// Sets the properties of the current <see cref="Book"/> based on the values of the specified <see cref="Book"/>.
@@ -18,7 +17,7 @@ public class Book : ICloneable, INotifyPropertyChanged, IXmlSerializable
     {
         Author = book?.Author;
         Title = book?.Title;
-        Year = book?.Year ?? 1500;
+        Year = book?.Year ?? 1971;
         TotalPages = book?.TotalPages ?? 0;
         Description = book?.Description;
         Genre = book?.Genre;
@@ -84,7 +83,13 @@ public class Book : ICloneable, INotifyPropertyChanged, IXmlSerializable
     public int Year
     {
         get => _year;
-        set => SetProperty(ref _year, value);
+        set
+        {
+            if (value is > 450 and < 2030)
+                SetProperty(ref _year, value);
+            else
+                SetProperty(ref _year, 1971);
+        }
     }
 
     private int _year;
@@ -96,7 +101,13 @@ public class Book : ICloneable, INotifyPropertyChanged, IXmlSerializable
     public required int TotalPages
     {
         get => _totalPages;
-        set => SetProperty(ref _totalPages, value);
+        set
+        {
+            if (value is >= 0 and <= 10000)
+                SetProperty(ref _totalPages, value);
+            else
+                SetProperty(ref _totalPages, 1);
+        }
     }
 
     private int _totalPages;
@@ -169,7 +180,7 @@ public class Book : ICloneable, INotifyPropertyChanged, IXmlSerializable
             content = null;
         else
             content.Set(Content);
-        
+
         Book clone = new()
         {
             Id = Id,
@@ -276,20 +287,5 @@ public class Book : ICloneable, INotifyPropertyChanged, IXmlSerializable
         writer.WriteEndElement();
 
         writer.WriteEndElement();
-    }
-
-    public event PropertyChangedEventHandler PropertyChanged;
-
-    protected virtual void RaisePropertyChanged([CallerMemberName] string propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-
-    protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
-    {
-        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-        field = value;
-        RaisePropertyChanged(propertyName);
-        return true;
     }
 }

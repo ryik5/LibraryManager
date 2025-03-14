@@ -1,5 +1,4 @@
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+using LibraryManager.AbstractObjects;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
@@ -7,7 +6,7 @@ using System.Xml.Serialization;
 namespace LibraryManager.Models;
 
 [Serializable]
-public class MediaData : INotifyPropertyChanged, IXmlSerializable
+public class MediaData : AbstractBindableModel, IXmlSerializable
 {
     /// <summary>
     /// Sets properties of the current object with the values from the specified <paramref name="mediaData"/>.
@@ -70,20 +69,6 @@ public class MediaData : INotifyPropertyChanged, IXmlSerializable
         return $"{Name},{OriginalPath},{Ext},{IsContentStoredSeparately},{IsLoaded}";
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    protected virtual void RaisePropertyChanged([CallerMemberName] string? propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-
-    protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
-    {
-        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-        field = value;
-        RaisePropertyChanged(propertyName);
-        return true;
-    }
 
     public XmlSchema? GetSchema() => throw new NotImplementedException();
 

@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace LibraryManager.AbstractObjects;
 
-public abstract class AbstractBindableUiManager: INotifyPropertyChanged
+public abstract class AbstractBindableModel: INotifyPropertyChanged
 {
     /// <summary>
     /// Invokes the specified action on the UI thread.

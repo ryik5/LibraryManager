@@ -1,7 +1,6 @@
+using LibraryManager.AbstractObjects;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
@@ -10,7 +9,7 @@ using LibraryManager.Extensions;
 namespace LibraryManager.Models;
 
 [Serializable]
-public class Library : ILibrary, INotifyPropertyChanged, IXmlSerializable
+public class Library : AbstractBindableModel, ILibrary, IXmlSerializable
 {
     /// <summary>
     /// Sets the library.
@@ -228,7 +227,6 @@ public class Library : ILibrary, INotifyPropertyChanged, IXmlSerializable
 
 
     #region private fields
-
     private int _id;
     private int _totalBooks;
     private string _name = string.Empty;
@@ -237,21 +235,5 @@ public class Library : ILibrary, INotifyPropertyChanged, IXmlSerializable
     private PropertyInfo[] _bookPropertiesInfo;
     private string[] _bookProperties;
     private readonly object _locker = new();
-
     #endregion
-
-    public event PropertyChangedEventHandler PropertyChanged;
-
-    protected virtual void RaisePropertyChanged([CallerMemberName] string propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-
-    protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
-    {
-        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-        field = value;
-        RaisePropertyChanged(propertyName);
-        return true;
-    }
 }

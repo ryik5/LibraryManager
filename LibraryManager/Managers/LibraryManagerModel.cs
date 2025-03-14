@@ -8,7 +8,7 @@ namespace LibraryManager.Models;
 /// Represents a model for managing a library of books.
 /// </summary>
 /// <author>YR 2025-01-09</author>
-public class LibraryManagerModel : AbstractBindableUiManager, ILibraryManageable
+public class LibraryManagerModel : AbstractBindableModel, ILibraryManageable
 {
     public LibraryManagerModel(ILibrary? library)
     {

@@ -6,7 +6,7 @@ using LibraryManager.Views;
 
 namespace LibraryManager.ViewModels;
 
-public abstract class AbstractViewModel : AbstractBindableUiManager
+public abstract class AbstractViewModel : AbstractBindableModel
 {
     protected AbstractViewModel()
     {

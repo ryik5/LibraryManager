@@ -42,20 +42,10 @@ public class FindBooksViewModel: AbstractViewModel
                     }
                 }
                     break;
-                default: //jobs perform without creating views
+                default:
                 {
-                    try
-                    {
-                        // Try opening the URL using the platform default browser
-                        await Browser.OpenAsync(commandParameter, BrowserLaunchMode.SystemPreferred);
-                    }
-                    catch (Exception e)
-                    {
-                        #if DEBUG
-                        Debug.WriteLine(e.Message);
-                        #endif
-                    }
-
+                    // Settings view
+                    // Debug view
                     break;
                 }
             }
