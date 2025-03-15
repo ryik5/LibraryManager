@@ -2,10 +2,8 @@
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:viewmodel="clr-namespace:LibraryManager.ViewModels"
-             xmlns:control="clr-namespace:LibraryManager.Controls"
-             x:Class="LibraryManager.Views.FindBooksPage"
-             x:DataType="viewmodel:FindBooksViewModel">
+              xmlns:control="clr-namespace:LibraryManager.Controls"
+             x:Class="LibraryManager.Views.FindBooksPage">
 
     <ContentPage.MenuBarItems>
         <MenuBarItem Text="Find Books">
@@ -46,6 +44,8 @@
                     <Setter Property="FontSize" Value="18" />
                     <Setter Property="BorderWidth" Value="1" />
                     <Setter Property="Margin" Value="0,0,10,0" />
+                    <Setter Property="Background"
+                            Value="{AppThemeBinding Light={StaticResource Tertiary}, Dark={StaticResource White}}" />
                 </Style>
             </Grid.Resources>
 
@@ -54,71 +54,50 @@
                          Orientation="Horizontal"
                          HorizontalOptions="Fill"
                          Margin="10,10,10,0" HeightRequest="35">
- 
-                <Entry Text="{Binding SearchText}" 
-                       Margin="10,0,10,0" 
+
+                <Entry Text="{Binding SearchText}"
+                       Margin="10,0,10,0"
                        FontSize="18"
-                       MinimumWidthRequest="150"/>
+                       MinimumWidthRequest="150" />
 
                 <Button Text="Find"
                         Command="{Binding NavigateCommand}"
                         CommandParameter="Find Books"
-                        MinimumWidthRequest="85" 
-                        Margin="10,0,0,0"/>
+                        MinimumWidthRequest="85"
+                        Margin="10,0,0,0" />
 
-                <Grid 
-                    MinimumWidthRequest="100"
-                      VerticalOptions="Center"
-                      Margin="10,0,10,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-        
-                    <CheckBox Grid.Column="0" 
-                              x:Name="CheckBox"
-                              IsChecked="{Binding SearchOnFly, Mode=TwoWay}"
-                              VerticalOptions="Center"
-                              Margin="0"/>
-        
-                    <Label Grid.Column="1" 
-                           FontSize="18"
-                           Text="Search-on-fly"
-                           VerticalTextAlignment="Center"
-                           VerticalOptions="Center"
-                           Margin="0">
-                        <Label.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnTextTapped" />
-                        </Label.GestureRecognizers>
-                    </Label>
-
-                </Grid>
+                <control:TextCheckBox MinimumWidthRequest="100"
+                                      VerticalOptions="Center"
+                                      Margin="10,0,10,0"
+                                      IsChecked="{Binding SearchOnFly, Mode=TwoWay}"
+                                      Text="Search-on-fly" />
 
                 <Picker ItemsSource="{Binding SearchFields}"
                         SelectedItem="{Binding SelectedSearchField}"
-                        MinimumWidthRequest="100" 
+                        MinimumWidthRequest="100"
                         FontSize="18"
-                        Margin="10,0,10,0"/>
+                        Margin="10,0,10,0" />
 
                 <Button Text="Edit Book"
                         Command="{Binding NavigateCommand}"
                         CommandParameter="Edit Book"
                         IsEnabled="{Binding CanEditBook}"
-                        MinimumWidthRequest="100" 
-                        Margin="10,0,20,0"/>
-               
+                        MinimumWidthRequest="100"
+                        Margin="10,0,20,0" />
+
                 <Button Text="Delete Book(s)"
                         Command="{Binding NavigateCommand}"
                         CommandParameter="Delete the selected book"
                         IsEnabled="{Binding CanEditBook}"
                         MinimumWidthRequest="100" />
-                
+
             </StackLayout>
 
             <!-- Displays Found Books-->
             <control:FoundCollectionView
                 BindingContext="{Binding}"
-                x:Name="BooksCollectionView" Grid.Row="1" />
+                x:Name="BooksCollectionView"
+                Grid.Row="1" />
 
         </Grid>
     </ContentPage.Content>

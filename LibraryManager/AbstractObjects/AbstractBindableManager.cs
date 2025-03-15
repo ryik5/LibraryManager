@@ -10,6 +10,7 @@ public abstract class AbstractBindableModel: INotifyPropertyChanged
     /// </summary>
     /// <param name="action">The action to invoke.</param>
     protected void RunInMainThread(Action action) => MainThread.BeginInvokeOnMainThread(action);
+   
     // Run code in the UI thread
     // Platform-agnostic, works anywhere in MAUI
     // Slightly slower due to abstraction (but negligible)

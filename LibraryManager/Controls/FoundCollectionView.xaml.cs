@@ -9,8 +9,6 @@ public partial class FoundCollectionView : ContentView
     public FoundCollectionView()
     {
         InitializeComponent();
-        // Fetch the singleton instance of FindBooksViewModel
-        BindingContext ??= App.Services.GetService<FindBooksViewModel>();
     }
 
     /// <summary>
@@ -48,7 +46,7 @@ public partial class FoundCollectionView : ContentView
     {
         if (BindingContext is FindBooksViewModel findBooksViewModel)
         {
-            findBooksViewModel.SelectedBooks.ResetAndAddRange(e.CurrentSelection.Select((b => b as Book)));
+            findBooksViewModel.SelectedBooks.ResetAndAddRange(e.CurrentSelection.Select(b => b as Book));
         }
     }
 }

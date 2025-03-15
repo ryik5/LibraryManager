@@ -7,9 +7,6 @@ public partial class FindBooksPage : ContentPage
     public FindBooksPage()
     {
         InitializeComponent();
-        
-        // Fetch the singleton instance of FindBooksViewModel
-        BindingContext ??= App.Services.GetService<FindBooksViewModel>();
     }
     
     
@@ -37,10 +34,5 @@ public partial class FindBooksPage : ContentPage
         BooksCollectionView?.OnDisappearing();
 
         BindingContext = null;
-    }
-
-    private void OnTextTapped(object? sender, TappedEventArgs e)
-    {
-        CheckBox.IsChecked = !CheckBox.IsChecked;
     }
 }

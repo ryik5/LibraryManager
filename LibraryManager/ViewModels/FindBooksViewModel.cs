@@ -11,12 +11,14 @@ public class FindBooksViewModel : AbstractViewModel
     public FindBooksViewModel(ILibrary library)
     {
         Library = library;
+        Library.TotalBooksChanged += BookList_CollectionChanged;
         SearchFields = Enum.GetValues(typeof(EBibliographicKindInformation)).Cast<EBibliographicKindInformation>()
             .ToList();
-        FoundBookList.CollectionChanged += HandleFoundBookListChanged;
-
+         FoundBookList.CollectionChanged += HandleFoundBookListChanged;
+        CanEditBook = true;
         _bookManageable = new BookManagerModel(Library);
     }
+
 
     #region Public Properties
     public ILibrary Library { get; set; }
@@ -27,7 +29,7 @@ public class FindBooksViewModel : AbstractViewModel
         set => SetProperty(ref _foundBookList, value);
     }
 
-    public IList<Book> SelectedBooks
+    public ObservableCollection<Book> SelectedBooks
     {
         get => _selectedBooks;
         set => SetProperty(ref _selectedBooks, value);
@@ -126,17 +128,27 @@ public class FindBooksViewModel : AbstractViewModel
                 case Constants.FIND_BOOKS:
                     if (!ValidLibary())
                         return;
-                    
+
                     Book = null;
-                    FindBooks();
+                    await FindBooks();
+
                     break;
 
                 case Constants.EDIT_BOOK:
-                     if (!ValidSelectedBooks())
-                         return;
-                     
-                   Book = SelectFirstFoundBook();
-                    //TODO : Edit Book
+                    if (!ValidSelectedBooks())
+                        return;
+                    RunInMainThread(() => Book = SelectFirstFoundBook());
+
+                    var editBookVM = new EditBookViewModel((Book)Book.Clone());
+                    var editBookPage = new EditBookPage() { BindingContext = editBookVM };
+                    await Application.Current?.MainPage?.Navigation.PushModalAsync(editBookPage)!;
+
+                    // var result = await editBookPage.DialogResultTask.Task; // Await the user's response
+                    if (await editBookPage.DialogResultTask.Task) //TODO : Edit Book
+                    {
+                        Book.Set(editBookVM.Book);
+                    }
+
                     break;
 
                 case Constants.DELETE_BOOK:
@@ -165,7 +177,7 @@ public class FindBooksViewModel : AbstractViewModel
 
 
     #region Private methods
-    private bool ValidSelectedBooks()=> MoreZero(SelectedBooks.Count);
+    private bool ValidSelectedBooks() => MoreZero(SelectedBooks?.Count ?? 0);
 
     private bool ValidLibary() => MoreZero(Library.TotalBooks);
 
@@ -178,12 +190,16 @@ public class FindBooksViewModel : AbstractViewModel
     }
 
     /// <summary>
-    /// Finds books based on the search text. Updates <see cref="BookList"/>.
+    /// Finds books based on the search text. Updates <see cref="FoundBookList"/>.
     /// </summary>
-    private void FindBooks()
+    private Task FindBooks()
     {
-        FoundBookList.ResetAndAddRange(_bookManageable.FindBooksByKind(SelectedSearchField, SearchText));
-        var foundBooks = FoundBookList.Count;
+        RunInMainThread(() =>
+        {
+            var foundBooks = _bookManageable.FindBooksByKind(SelectedSearchField, SearchText);
+            FoundBookList.ResetAndAddRange(foundBooks);
+        });
+        return Task.CompletedTask;
     }
 
     /// <summary>
@@ -194,14 +210,24 @@ public class FindBooksViewModel : AbstractViewModel
     private void HandleFoundBookListChanged(object? sender,
         System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
-        CanEditBook = 0 < FoundBookList.Count;
+        RunInMainThread(() =>
+        {
+            SelectedBooks.Clear();
+            CanEditBook = 0 < SelectedBooks?.Count;
+        });
+      
     }
 
-    private Book? SelectFirstFoundBook() => ValidSelectedBooks() ? FoundBookList[0] : null;
+    private Book? SelectFirstFoundBook() => ValidSelectedBooks() ? SelectedBooks[0] : null;
+
+    private async void BookList_CollectionChanged(object? sender, TotalBooksEventArgs e)
+    {
+        await FindBooks();
+    }
     #endregion
 
     #region Private fields
-    private IList<Book> _selectedBooks;
+    private ObservableCollection<Book> _selectedBooks = new();
     private Book _book;
     private ObservableCollection<Book> _foundBookList = new();
     private readonly BookManagerModel _bookManageable;

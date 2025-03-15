@@ -10,9 +10,6 @@ public partial class BookCollectionView : ContentView
     public BookCollectionView()
     {
         InitializeComponent();
-
-        // Fetch the singleton instance of BooksViewModel
-        BindingContext ??= App.Services.GetService<BooksViewModel>();
     }
 
     /// <summary>
@@ -50,7 +47,7 @@ public partial class BookCollectionView : ContentView
     {
         if (BindingContext is BooksViewModel bvs)
         {
-            bvs.SelectedBooks.ResetAndAddRange(e.CurrentSelection.Select((b => b as Book)));
+            bvs.SelectedBooks.ResetAndAddRange(e.CurrentSelection.Select(b => b as Book));
         }
     }
 }

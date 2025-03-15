@@ -8,9 +8,6 @@ public partial class BooksPage : ContentPage
     public BooksPage()
     {
         InitializeComponent();
-
-        // Fetch the singleton instance of BooksViewModel
-        BindingContext ??= App.Services.GetService<BooksViewModel>();
     }
 
     /// <summary>

@@ -3,7 +3,9 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:control="clr-namespace:LibraryManager.Controls"
-             x:Class="LibraryManager.Views.BooksPage">
+
+             x:Class="LibraryManager.Views.BooksPage"
+             >
 
     <ContentPage.MenuBarItems>
         <MenuBarItem Text="Books">
@@ -72,51 +74,46 @@
                          IsVisible="{Binding IsBooksCollectionViewVisible, Mode=OneWay}">
                 <Button Text="Add Book"
                         Command="{Binding NavigateCommand}"
-                        CommandParameter="Add Book"
-                        IsEnabled="{Binding IsUnLocked}"
-                        ToolTipProperties.Text="{Binding AddBookTooltip, Mode=OneTime}" />
+                        CommandParameter="Add Book"/>
                 <Button Text="Demo 'Add Books'"
                         Command="{Binding NavigateCommand}"
-                        CommandParameter="Demo add books"
-                        IsEnabled="{Binding IsUnLocked}"
-                        ToolTipProperties.Text="{Binding DemoAddBooksTooltip, Mode=OneTime}" />
+                        CommandParameter="Demo add books"/>
                 <Button Text="Edit Book"
                         Command="{Binding NavigateCommand}"
                         CommandParameter="Edit Book"
-                        IsEnabled="{Binding CanEditBook}"
-                        ToolTipProperties.Text="{Binding EditBookTooltip, Mode=OneTime}" />
+                        IsEnabled="{Binding CanEditBook}"/>
                 <Button Text="Delete Book(s)"
                         Command="{Binding NavigateCommand}"
                         CommandParameter="Delete the selected book"
-                        IsEnabled="{Binding CanEditBook}"
-                        ToolTipProperties.Text="{Binding RemoveBookTooltip, Mode=OneTime}" />
+                        IsEnabled="{Binding CanEditBook}"/>
                 <Button Text="Import Book"
                         Command="{Binding NavigateCommand}"
-                        CommandParameter="ImportBook"
-                        IsEnabled="{Binding IsUnLocked}"
-                        ToolTipProperties.Text="{Binding ImportBookTooltip, Mode=OneTime}" />
+                        CommandParameter="Import Book"/>
                 <Button Text="Export Book"
                         Command="{Binding NavigateCommand}"
                         CommandParameter="Export the selected book"
-                        IsEnabled="{Binding CanEditBook}"
-                        ToolTipProperties.Text="{Binding ExportSelectedBookTooltip, Mode=OneTime}" />
+                        IsEnabled="{Binding CanEditBook}"/>
 
                 <Button Text="Sort Library"
                         Command="{Binding NavigateCommand}"
-                        CommandParameter="Sort Books"
-                        IsEnabled="{Binding IsUnLocked}"
-                        ToolTipProperties.Text="{Binding SortLibraryTooltip, Mode=OneTime}" />
+                        CommandParameter="Sort Books"/>
 
             </StackLayout>
 
             <!-- Displays Books-->
             <control:BookCollectionView 
-                x:Name="BooksCollectionView" Grid.Row="1"
-                IsVisible="{Binding IsBooksCollectionViewVisible, Mode=OneWay}" />
+                x:Name="BooksCollectionView" 
+                Grid.Row="1"
+                Margin="10,10,5,30"
+                IsVisible="{Binding IsBooksCollectionViewVisible, Mode=OneWay}" 
+                />
 
             <!-- Edit selected book-->
-            <control:EditBookView x:Name="EditBookView" Grid.Row="1" Margin="5,20,5,20"
-                                  IsVisible="{Binding IsEditBookViewVisible, Mode=OneWay}" />
+            <control:EditBookView 
+                x:Name="EditBookView" 
+                IsVisible="{Binding IsEditBookViewVisible, Mode=OneWay}"     
+                Grid.Row="1" 
+                Margin="5,20,5,20"/>
 
             <Line Grid.Row="2" 
                   IsVisible="{Binding IsEditBookViewVisible, Mode=OneWay}"
@@ -137,17 +134,17 @@
                 <Button Text="{Binding LoadingState, Mode=OneWay}"
                         Command="{Binding ExtendedCommand}"
                         CommandParameter="Load Content"
-                        IsEnabled="{Binding IsLoadEnabled}" />
+                      />  <!--IsEnabled="{Binding IsLoadEnabled}" -->
 
                 <Button Text="Save on disk"
                         Command="{Binding ExtendedCommand}"
                         CommandParameter="Save content"
-                        IsEnabled="{Binding IsSaveEnabled}" />
+                         /><!--IsEnabled="{Binding IsSaveEnabled}"-->
 
                 <Button Text="Clear Content"
                         Command="{Binding ExtendedCommand}"
                         CommandParameter="Load Content"
-                        IsEnabled="{Binding IsSaveEnabled}" />
+                        /><!--IsEnabled="{Binding IsSaveEnabled}" -->
 
             </StackLayout>
 
@@ -161,12 +158,10 @@
 
                 <Button Text="Save changes"
                         Command="{Binding ExtendedCommand}"
-                        CommandParameter="Save changes"
-                        ToolTipProperties.Text="{Binding AddBookTooltip, Mode=OneTime}" />
+                        CommandParameter="Save changes"/>
                 <Button Text="Cancel Edit"
                         Command="{Binding ExtendedCommand}"
-                        CommandParameter="Editing book was canceled"
-                        ToolTipProperties.Text="{Binding DemoAddBooksTooltip, Mode=OneTime}" />
+                        CommandParameter="Editing book was canceled"/>
 
             </StackLayout>
         </Grid>

@@ -7,9 +7,6 @@ public partial class ToolsPage : ContentPage
     public ToolsPage()
     {
         InitializeComponent();
-        
-        // Fetch the singleton instance of ToolsViewModel
-        BindingContext ??= App.Services.GetService<ToolsViewModel>();
     }
     
     /// <summary>

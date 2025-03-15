@@ -7,9 +7,6 @@ public partial class AboutPage : ContentPage
     public AboutPage()
     {
         InitializeComponent();
-        
-        // Ensure BindingContext is assigned only if not already set
-        BindingContext ??= App.Services.GetService<AboutViewModel>();
     }
    
     /// <summary>

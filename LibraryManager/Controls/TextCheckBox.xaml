@@ -3,30 +3,33 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="LibraryManager.Controls.TextCheckBox">
-    <Grid MinimumWidthRequest="50">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        
-        <CheckBox Grid.Column="0" 
-                  x:Name="CheckBox"
-                  IsChecked="False"
-                  CheckedChanged="OnCheckedChanged"
-                  VerticalOptions="Center"
-                  Margin="0"/>
-        
-        <Label Grid.Column="1" 
-               x:Name="Label"
-               FontSize="18"
-               Text="CheckBox in StackLayout"
-               VerticalTextAlignment="Center"
-               VerticalOptions="Center"
-               Margin="0">
-            <Label.GestureRecognizers>
-                <TapGestureRecognizer Tapped="OnTextTapped" />
-            </Label.GestureRecognizers>
-        </Label>
 
-    </Grid>
+    <ContentView.ControlTemplate>
+        <ControlTemplate>
+            <Grid MinimumWidthRequest="50">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <CheckBox Grid.Column="0"
+                          IsChecked="{Binding Source={RelativeSource TemplatedParent}, Path=IsChecked}"
+                          CheckedChanged="OnCheckedChanged"
+                          VerticalOptions="Center"
+                          Margin="0" />
+
+                <Label Grid.Column="1"
+                       FontSize="18"
+                       Text="{Binding Source={RelativeSource TemplatedParent}, Path=Text}"
+                       VerticalTextAlignment="Center"
+                       VerticalOptions="Center"
+                       Margin="0">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnTextTapped" />
+                    </Label.GestureRecognizers>
+                </Label>
+
+            </Grid>
+        </ControlTemplate>
+    </ContentView.ControlTemplate>
 </ContentView>
