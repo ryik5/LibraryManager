@@ -11,7 +11,7 @@ public class FindBooksViewModel : AbstractViewModel
     public FindBooksViewModel(ILibrary library)
     {
         Library = library;
-        // Library.TotalBooksChanged += BookList_CollectionChanged;
+       //  Library.TotalBooksChanged += BookList_CollectionChanged;
         SearchFields = Enum.GetValues(typeof(EBibliographicKindInformation)).Cast<EBibliographicKindInformation>()
             .ToList();
         FoundBookList.CollectionChanged += HandleFoundBookListChanged;
@@ -151,15 +151,34 @@ public class FindBooksViewModel : AbstractViewModel
                     break;
 
                 case Constants.DELETE_BOOK:
-                    if (!ValidSelectedBooks())
-                        return;
-
-                    // TODO : Delete book
+                    List<Book> selectedBooks=null;
+                    RunInMainThread(() => selectedBooks = SelectedBooks.ToList() );
+                    // Performing actions by the BooksManager
+                    await _bookManageable.RunCommand(commandParameter, SelectedBooks);
+                    
+                    RunInMainThread(() =>
+                        {
+                            foreach (var selectedBook in selectedBooks)
+                            {
+                                FoundBookList.Remove(selectedBook);
+                            }
+                        }
+                    );
                     break;
-                default:
+                
+                default: //jobs perform without creating views
                 {
-                    // Settings view
-                    // Debug view
+                    // Performing actions by the BooksManager
+                    await _bookManageable.RunCommand(commandParameter, SelectedBooks);
+
+                   // await FindBooksTask();
+                    
+                    RunInMainThread(() =>
+                        {
+                            RaisePropertyChanged(nameof(Library));
+                            RaisePropertyChanged(nameof(Library.BookList));
+                        }
+                    );
                     break;
                 }
             }

@@ -36,8 +36,7 @@
         <Grid BackgroundColor="{StaticResource White}" Padding="10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Grid.Resources>
                 <Style TargetType="Button">
@@ -95,6 +94,7 @@
             <control:FoundCollectionView
                 BindingContext="{Binding}"
                 x:Name="BooksCollectionView"
+                Margin="10,10,5,30"
                 Grid.Row="1" />
 
         </Grid>
