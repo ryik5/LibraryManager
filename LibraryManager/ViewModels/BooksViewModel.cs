@@ -104,14 +104,21 @@ public class BooksViewModel : AbstractViewModel, IDisposable
                 }
                     break;
                 case Constants.EDIT_BOOK:
-                    if (StartEditSelectedBook())
-                    {
-                        LoadingState = Book.Content is null ? Constants.LOAD_CONTENT : Constants.CONTENT_WAS_LOADED;
+                    if (!ValidSelectedBooks())
+                        return;
+                    RunInMainThread(() => Book = SelectFirstFoundBook());
 
-                        SwitchViewsVisibilityWithinAction(true);
+                    var editBookVM = new EditBookViewModel((Book)Book.Clone());
+                    var editBookPage = new EditBookPage() { BindingContext = editBookVM };
+                    await Application.Current?.MainPage?.Navigation.PushModalAsync(editBookPage)!;
+
+                    if (await editBookPage.DialogResultTask.Task)
+                    {
+                        Book.Set(editBookVM.Book);
                     }
 
                     break;
+                  
                 case Constants.SORT_BOOKS:
                     // TODO :
                     // _bookManageable.SafetySortBooks();
@@ -140,53 +147,23 @@ public class BooksViewModel : AbstractViewModel, IDisposable
             #endif
         }
     }
-
-    protected override async Task PerformExtendedAction(string? commandParameter)
-    {
-        #if DEBUG
-        Debug.WriteLine($"ExtendedCommand triggered with commandParameter: {commandParameter}");
-        #endif
-
-        if (string.IsNullOrWhiteSpace(commandParameter))
-            return;
-
-        switch (commandParameter)
-        {
-            case Constants.SAVE_CHANGES:
-                if (CanEditSelectedBook())
-                    SelectedBooks[0].Set(Book);
-
-                Book = null;
-                SwitchViewsVisibilityWithinAction(false);
-                break;
-
-            case Constants.EDITING_BOOK_WAS_CANCELLED:
-                Book = null;
-                SwitchViewsVisibilityWithinAction(false);
-                break;
-
-            default:
-            {
-                break;
-            }
-        }
-    }
-
+    
     // Dispose method for external calls
     public void Dispose()
     {
-        if (_disposed) return; // Safeguard against multiple Dispose calls.
+        if (_disposed) 
+            return; // Safeguard against multiple Dispose calls.
+        
         _disposed = true;
+        
+       // Perform cleanup: Unsubscribe from any events
         Library.BookList.CollectionChanged -= BookList_CollectionChanged;
-
-        // Perform cleanup: Unsubscribe from any events
-        SelectedBooks = null;
-        if (_library is INotifyPropertyChanged notifyLibrary)
-        {
-            notifyLibrary.PropertyChanged -= OnLibraryChanged;
-        }
-
+         SelectedBooks.CollectionChanged -= Handle_SelectedBooks_CollectionChanged;
+        SelectedBooks .Clear();
+        
+        #if DEBUG
         Debug.WriteLine("BooksViewModel disposed successfully.");
+        #endif
     }
 
     ~BooksViewModel()
@@ -197,18 +174,12 @@ public class BooksViewModel : AbstractViewModel, IDisposable
 
 
     #region Private methods
-    private void OnLibraryChanged(object sender, PropertyChangedEventArgs e)
-    {
-        Debug.WriteLine($"Library property changed: {e.PropertyName}");
-    }
-
     /// <summary>
     /// Handles the CollectionChanged event of the BookList.
     /// </summary>
     /// <param name="sender">The source of the event.</param>
     /// <param name="e">The NotifyCollectionChangedEventArgs instance containing the event data.</param>
-    private void BookList_CollectionChanged(object? sender,
-        System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    private void BookList_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         TotalBooksChanged?.Invoke(this, new TotalBooksEventArgs { TotalBooks = Library.BookList.Count });
         SelectedBooks.Clear();
@@ -250,6 +221,19 @@ public class BooksViewModel : AbstractViewModel, IDisposable
         CanEditBook = 0 < SelectedBooks?.Count;
         return Task.CompletedTask;
     }
+    private bool ValidSelectedBooks() => MoreZero(SelectedBooks?.Count ?? 0);
+
+    private bool ValidLibary() => MoreZero(Library.TotalBooks);
+
+    private bool MoreZero(int number)
+    {
+        if (number == 0)
+            return false;
+
+        return true;
+    }
+    private Book? SelectFirstFoundBook() => ValidSelectedBooks() ? SelectedBooks[0] : null;
+
     #endregion
 
     

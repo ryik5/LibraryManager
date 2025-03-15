@@ -81,14 +81,12 @@
                 <Button Text="Edit Book"
                         Command="{Binding NavigateCommand}"
                         CommandParameter="Edit Book"
-                        IsEnabled="{Binding CanEditBook}"
                         MinimumWidthRequest="100"
                         Margin="10,0,20,0" />
 
                 <Button Text="Delete Book(s)"
                         Command="{Binding NavigateCommand}"
                         CommandParameter="Delete the selected book"
-                        IsEnabled="{Binding CanEditBook}"
                         MinimumWidthRequest="100" />
 
             </StackLayout>

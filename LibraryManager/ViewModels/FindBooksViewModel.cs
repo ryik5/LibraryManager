@@ -11,10 +11,10 @@ public class FindBooksViewModel : AbstractViewModel
     public FindBooksViewModel(ILibrary library)
     {
         Library = library;
-        Library.TotalBooksChanged += BookList_CollectionChanged;
+        // Library.TotalBooksChanged += BookList_CollectionChanged;
         SearchFields = Enum.GetValues(typeof(EBibliographicKindInformation)).Cast<EBibliographicKindInformation>()
             .ToList();
-         FoundBookList.CollectionChanged += HandleFoundBookListChanged;
+        FoundBookList.CollectionChanged += HandleFoundBookListChanged;
         CanEditBook = true;
         _bookManageable = new BookManagerModel(Library);
     }
@@ -130,7 +130,7 @@ public class FindBooksViewModel : AbstractViewModel
                         return;
 
                     Book = null;
-                    await FindBooks();
+                    await FindBooksTask();
 
                     break;
 
@@ -143,8 +143,7 @@ public class FindBooksViewModel : AbstractViewModel
                     var editBookPage = new EditBookPage() { BindingContext = editBookVM };
                     await Application.Current?.MainPage?.Navigation.PushModalAsync(editBookPage)!;
 
-                    // var result = await editBookPage.DialogResultTask.Task; // Await the user's response
-                    if (await editBookPage.DialogResultTask.Task) //TODO : Edit Book
+                    if (await editBookPage.DialogResultTask.Task)
                     {
                         Book.Set(editBookVM.Book);
                     }
@@ -192,14 +191,17 @@ public class FindBooksViewModel : AbstractViewModel
     /// <summary>
     /// Finds books based on the search text. Updates <see cref="FoundBookList"/>.
     /// </summary>
-    private Task FindBooks()
+    private Task FindBooksTask()
     {
-        RunInMainThread(() =>
-        {
-            var foundBooks = _bookManageable.FindBooksByKind(SelectedSearchField, SearchText);
-            FoundBookList.ResetAndAddRange(foundBooks);
-        });
+        RunInMainThread(FindBooks);
+
         return Task.CompletedTask;
+    }
+
+    private void FindBooks()
+    {
+        var foundBooks = _bookManageable.FindBooksByKind(SelectedSearchField, SearchText);
+        FoundBookList.ResetAndAddRange(foundBooks);
     }
 
     /// <summary>
@@ -215,14 +217,13 @@ public class FindBooksViewModel : AbstractViewModel
             SelectedBooks.Clear();
             CanEditBook = 0 < SelectedBooks?.Count;
         });
-      
     }
 
     private Book? SelectFirstFoundBook() => ValidSelectedBooks() ? SelectedBooks[0] : null;
 
     private async void BookList_CollectionChanged(object? sender, TotalBooksEventArgs e)
     {
-        await FindBooks();
+        await FindBooksTask();
     }
     #endregion
 

@@ -3,9 +3,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:control="clr-namespace:LibraryManager.Controls"
-
-             x:Class="LibraryManager.Views.BooksPage"
-             >
+             x:Class="LibraryManager.Views.BooksPage">
 
     <ContentPage.MenuBarItems>
         <MenuBarItem Text="Books">
@@ -80,19 +78,16 @@
                         CommandParameter="Demo add books"/>
                 <Button Text="Edit Book"
                         Command="{Binding NavigateCommand}"
-                        CommandParameter="Edit Book"
-                        IsEnabled="{Binding CanEditBook}"/>
+                        CommandParameter="Edit Book"/>
                 <Button Text="Delete Book(s)"
                         Command="{Binding NavigateCommand}"
-                        CommandParameter="Delete the selected book"
-                        IsEnabled="{Binding CanEditBook}"/>
+                        CommandParameter="Delete the selected book"/>
                 <Button Text="Import Book"
                         Command="{Binding NavigateCommand}"
                         CommandParameter="Import Book"/>
                 <Button Text="Export Book"
                         Command="{Binding NavigateCommand}"
-                        CommandParameter="Export the selected book"
-                        IsEnabled="{Binding CanEditBook}"/>
+                        CommandParameter="Export the selected book"/>
 
                 <Button Text="Sort Library"
                         Command="{Binding NavigateCommand}"
@@ -107,63 +102,7 @@
                 Margin="10,10,5,30"
                 IsVisible="{Binding IsBooksCollectionViewVisible, Mode=OneWay}" 
                 />
-
-            <!-- Edit selected book-->
-            <control:EditBookView 
-                x:Name="EditBookView" 
-                IsVisible="{Binding IsEditBookViewVisible, Mode=OneWay}"     
-                Grid.Row="1" 
-                Margin="5,20,5,20"/>
-
-            <Line Grid.Row="2" 
-                  IsVisible="{Binding IsEditBookViewVisible, Mode=OneWay}"
-                  VerticalOptions="End"
-                  HeightRequest="2" 
-                  BackgroundColor="{StaticResource Primary}" 
-                  Margin="5,0,5,0" />
             
-            <!-- Load content Controls -->
-            <StackLayout Grid.Row="2"
-                         IsVisible="{Binding IsEditBookViewVisible, Mode=OneWay}"
-                         Orientation="Horizontal"
-                         HorizontalOptions="Start"
-                         VerticalOptions="Start"
-                         HeightRequest="35"
-                         Margin="150,20,10,20">
-
-                <Button Text="{Binding LoadingState, Mode=OneWay}"
-                        Command="{Binding ExtendedCommand}"
-                        CommandParameter="Load Content"
-                      />  <!--IsEnabled="{Binding IsLoadEnabled}" -->
-
-                <Button Text="Save on disk"
-                        Command="{Binding ExtendedCommand}"
-                        CommandParameter="Save content"
-                         /><!--IsEnabled="{Binding IsSaveEnabled}"-->
-
-                <Button Text="Clear Content"
-                        Command="{Binding ExtendedCommand}"
-                        CommandParameter="Load Content"
-                        /><!--IsEnabled="{Binding IsSaveEnabled}" -->
-
-            </StackLayout>
-
-            <!-- Book Finish Edit Controls -->
-            <StackLayout Grid.Row="3"
-                         IsVisible="{Binding IsEditBookViewVisible, Mode=OneWay}"
-                         Orientation="Horizontal"
-                         HorizontalOptions="Center"
-                         VerticalOptions="End"
-                         Margin="10" HeightRequest="35">
-
-                <Button Text="Save changes"
-                        Command="{Binding ExtendedCommand}"
-                        CommandParameter="Save changes"/>
-                <Button Text="Cancel Edit"
-                        Command="{Binding ExtendedCommand}"
-                        CommandParameter="Editing book was canceled"/>
-
-            </StackLayout>
         </Grid>
     </ContentPage.Content>
 
