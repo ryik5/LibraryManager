@@ -171,15 +171,7 @@ public class FindBooksViewModel : AbstractViewModel
                     // Performing actions by the BooksManager
                     await _bookManageable.RunCommand(commandParameter, SelectedBooks);
 
-                   // await FindBooksTask();
-                    
-                    RunInMainThread(() =>
-                        {
-                            RaisePropertyChanged(nameof(Library));
-                            RaisePropertyChanged(nameof(Library.BookList));
-                        }
-                    );
-                    break;
+                     break;
                 }
             }
         }
@@ -190,6 +182,12 @@ public class FindBooksViewModel : AbstractViewModel
                 $"Navigation error path '{commandParameter}' in class '{nameof(FindBooksViewModel)}' by method '{nameof(PerformAction)}'");
             #endif
         }
+        RunInMainThread(() =>
+            {
+                RaisePropertyChanged(nameof(Library));
+                RaisePropertyChanged(nameof(Library.BookList));
+            }
+        );
     }
     #endregion
 

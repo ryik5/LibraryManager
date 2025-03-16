@@ -1,5 +1,4 @@
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+using LibraryManager.AbstractObjects;
 using LibraryManager.Extensions;
 using LibraryManager.Models;
 
@@ -9,23 +8,23 @@ namespace LibraryManager.ViewModels;
 /// View model for managing application settings.
 /// </summary>
 /// <author>YR 2025-02-14</author>
-public class SettingsViewModel: INotifyPropertyChanged
+public class SettingsViewModel : AbstractBindableModel
 {
     private readonly Dictionary<string, object> DefaultSettings = new() // Default values for preferences
     {
-        { nameof(MessageBox_FontSize), 12.0 },
-       // { nameof(FindBooks_LastSearchField), string.Empty },
+        { nameof(MessageBox_FontSize), 18.0 },
+        { nameof(SearchField), EBibliographicKindInformation.All },
         { nameof(SearchOnFly), false },
-        { nameof(Debug_TextFontSize), 14.0 },
-        
-        { nameof(FirstSortBookProperty), string.Empty },
-        { nameof(FirstSortProperty_ByDescend), false },
-        { nameof(SecondSortBookProperty), string.Empty },
+        { nameof(Debug_TextFontSize), 16.0 },
+
+        { nameof(FirstSortBookProperty), nameof(Book.Year) },
+        { nameof(FirstSortProperty_ByDescend), true },
+        { nameof(SecondSortBookProperty), nameof(Book.Author) },
         { nameof(SecondSortProperty_ByDescend), false },
-        { nameof(ThirdSortBookProperty), string.Empty },
+        { nameof(ThirdSortBookProperty), nameof(Book.Title) },
         { nameof(ThirdSortProperty_ByDescend), false },
-        
-        { nameof(Book_MaxContentLength), 0L }
+        { nameof(Book_MaxContentLength), 0L },
+        { nameof(Book_MaxContentLength_ToolTip), string.Empty },
     };
 
     /// <summary>
@@ -33,11 +32,16 @@ public class SettingsViewModel: INotifyPropertyChanged
     /// </summary>
     public SettingsViewModel()
     {
+        _searchFields = Enum.GetValues(typeof(EBibliographicKindInformation)).Cast<EBibliographicKindInformation>()
+            .ToArray();
+        _booleans = new[] { true, false };
+        _bookProperties = new Library().GetBookProperties();
+        _sortingDirections = new[] { Constants.SORTING_ASCENDING, Constants.SORTING_DESCENDING };
+
         LoadAllSettings();
     }
 
     #region Reset, Load, and Save Settings
-
     /// <summary>
     /// Resets all application settings to their default values.
     /// </summary>
@@ -47,6 +51,7 @@ public class SettingsViewModel: INotifyPropertyChanged
         {
             PreferencesExtensions.SetPreference(setting.Key, setting.Value); // Use static method
         }
+
         LoadAllSettings(); // Refresh view model properties
     }
 
@@ -55,19 +60,34 @@ public class SettingsViewModel: INotifyPropertyChanged
     /// </summary>
     public void LoadAllSettings()
     {
-        MessageBox_FontSize = Preferences.Get(nameof(MessageBox_FontSize), (double)DefaultSettings[nameof(MessageBox_FontSize)]);
-       // SearchField = Preferences.Get(nameof(FindBooks_LastSearchField), (string)DefaultSettings[nameof(FindBooks_LastSearchField)]);
+        MessageBox_FontSize = Preferences.Get(nameof(MessageBox_FontSize),
+            (double)DefaultSettings[nameof(MessageBox_FontSize)]);
+
+        SearchField =
+            (EBibliographicKindInformation)Preferences.Get(nameof(SearchField),
+                (int)DefaultSettings[nameof(SearchField)]);
+
         SearchOnFly = Preferences.Get(nameof(SearchOnFly), (bool)DefaultSettings[nameof(SearchOnFly)]);
-        Debug_TextFontSize = Preferences.Get(nameof(Debug_TextFontSize), (double)DefaultSettings[nameof(Debug_TextFontSize)]);
+        Debug_TextFontSize =
+            Preferences.Get(nameof(Debug_TextFontSize), (double)DefaultSettings[nameof(Debug_TextFontSize)]);
 
-        FirstSortBookProperty = Preferences.Get(nameof(FirstSortBookProperty), (string)DefaultSettings[nameof(FirstSortBookProperty)]);
-        FirstSortProperty_ByDescend = Preferences.Get(nameof(FirstSortProperty_ByDescend), (bool)DefaultSettings[nameof(FirstSortProperty_ByDescend)]);
-        SecondSortBookProperty = Preferences.Get(nameof(SecondSortBookProperty), (string)DefaultSettings[nameof(SecondSortBookProperty)]);
-        SecondSortProperty_ByDescend = Preferences.Get(nameof(SecondSortProperty_ByDescend), (bool)DefaultSettings[nameof(SecondSortProperty_ByDescend)]);
-        ThirdSortBookProperty = Preferences.Get(nameof(ThirdSortBookProperty), (string)DefaultSettings[nameof(ThirdSortBookProperty)]);
-        ThirdSortProperty_ByDescend = Preferences.Get(nameof(ThirdSortProperty_ByDescend), (bool)DefaultSettings[nameof(ThirdSortProperty_ByDescend)]);
+        FirstSortBookProperty = Preferences.Get(nameof(FirstSortBookProperty),
+            (string)DefaultSettings[nameof(FirstSortBookProperty)]);
+        FirstSortProperty_ByDescend = Preferences.Get(nameof(FirstSortProperty_ByDescend),
+            (bool)DefaultSettings[nameof(FirstSortProperty_ByDescend)]);
+        SecondSortBookProperty = Preferences.Get(nameof(SecondSortBookProperty),
+            (string)DefaultSettings[nameof(SecondSortBookProperty)]);
+        SecondSortProperty_ByDescend = Preferences.Get(nameof(SecondSortProperty_ByDescend),
+            (bool)DefaultSettings[nameof(SecondSortProperty_ByDescend)]);
+        ThirdSortBookProperty = Preferences.Get(nameof(ThirdSortBookProperty),
+            (string)DefaultSettings[nameof(ThirdSortBookProperty)]);
+        ThirdSortProperty_ByDescend = Preferences.Get(nameof(ThirdSortProperty_ByDescend),
+            (bool)DefaultSettings[nameof(ThirdSortProperty_ByDescend)]);
 
-        Book_MaxContentLength = Preferences.Get(nameof(Book_MaxContentLength), (long)DefaultSettings[nameof(Book_MaxContentLength)]);
+        Book_MaxContentLength = Preferences.Get(nameof(Book_MaxContentLength),
+            (long)DefaultSettings[nameof(Book_MaxContentLength)]);
+        Book_MaxContentLength_ToolTip = Preferences.Get(nameof(Book_MaxContentLength_ToolTip),
+            (string)DefaultSettings[nameof(Book_MaxContentLength_ToolTip)]);
     }
 
     /// <summary>
@@ -76,7 +96,7 @@ public class SettingsViewModel: INotifyPropertyChanged
     public void SaveSettings()
     {
         Preferences.Set(nameof(MessageBox_FontSize), MessageBox_FontSize);
-       // Preferences.Set(nameof(FindBooks_LastSearchField), SearchField);
+        Preferences.Set(nameof(SearchField), (int)SearchField);
         Preferences.Set(nameof(SearchOnFly), SearchOnFly);
         Preferences.Set(nameof(Debug_TextFontSize), Debug_TextFontSize);
 
@@ -88,109 +108,292 @@ public class SettingsViewModel: INotifyPropertyChanged
         Preferences.Set(nameof(ThirdSortProperty_ByDescend), ThirdSortProperty_ByDescend);
 
         Preferences.Set(nameof(Book_MaxContentLength), Book_MaxContentLength);
+        Preferences.Set(nameof(Book_MaxContentLength_ToolTip), Book_MaxContentLength_ToolTip);
     }
-
     #endregion
 
-    #region Properties for Binding
+    #region Dictionaries
+    /// <summary>
+    /// Gets an array of search fields available for the FindBooks page.
+    /// </summary>
+    public EBibliographicKindInformation[] SearchFields => _searchFields;
 
-    // Example ViewModel Properties
-    private double _messageBoxFontSize;
+    /// <summary>
+    /// Gets an array of boolean values representing the state of various settings.
+    /// </summary>
+    public bool[] Booleans => _booleans;
+
+    public string[] SortingDirections => _sortingDirections;
+
+    /// <summary>
+    /// Gets an array of boolean values representing the state of various settings.
+    /// </summary>
+    public string[] BookProperties => _bookProperties;
+    #endregion
+
+
+    #region Properties for Binding
     public double MessageBox_FontSize
     {
         get => _messageBoxFontSize;
         set => SetProperty(ref _messageBoxFontSize, value);
     }
 
-    private string _searchField;
-    public string SearchField
+    public EBibliographicKindInformation SearchField
     {
         get => _searchField;
         set => SetProperty(ref _searchField, value);
     }
 
-    private bool _searchOnFly;
     public bool SearchOnFly
     {
         get => _searchOnFly;
         set => SetProperty(ref _searchOnFly, value);
     }
 
-    private double _debugTextFontSize;
     public double Debug_TextFontSize
     {
         get => _debugTextFontSize;
         set => SetProperty(ref _debugTextFontSize, value);
     }
 
-    private string _firstSortBookProperty;
     public string FirstSortBookProperty
     {
         get => _firstSortBookProperty;
-        set => SetProperty(ref _firstSortBookProperty, value);
+        set
+        {
+            if (SetProperty(ref _firstSortBookProperty, value) && value != nameof(Book.None))
+            {
+                if (value == SecondSortBookProperty)
+                {
+                    SecondSortBookProperty = nameof(Book.None);
+                }
+                else if (value == ThirdSortBookProperty)
+                {
+                    ThirdSortBookProperty = nameof(Book.None);
+                }
+            }
+        }
     }
 
-    private bool _firstSortPropertyByDescend;
     public bool FirstSortProperty_ByDescend
     {
         get => _firstSortPropertyByDescend;
-        set => SetProperty(ref _firstSortPropertyByDescend, value);
+        set
+        {
+            if (SetProperty(ref _firstSortPropertyByDescend, value))
+                SetStringProperty(value, ref _firstSortProperty_SortingDirection, FirstSortProperty_SortingDirection);
+        }
     }
 
-    private string _secondSortBookProperty;
+    public string FirstSortProperty_SortingDirection
+    {
+        get => _firstSortProperty_SortingDirection;
+        set
+        {
+            if (SetProperty(ref _firstSortProperty_SortingDirection, value))
+                SetBooleanProperty(value, ref _firstSortPropertyByDescend, FirstSortProperty_ByDescend);
+        }
+    }
+
     public string SecondSortBookProperty
     {
         get => _secondSortBookProperty;
-        set => SetProperty(ref _secondSortBookProperty, value);
+        set
+        {
+            if (SetProperty(ref _secondSortBookProperty, value) && value != nameof(Book.None))
+            {
+                if (value == FirstSortBookProperty)
+                    FirstSortBookProperty = nameof(Book.None);
+                else if (value == ThirdSortBookProperty)
+                    ThirdSortBookProperty = nameof(Book.None);
+            }
+        }
     }
 
-    private bool _secondSortPropertyByDescend;
     public bool SecondSortProperty_ByDescend
     {
         get => _secondSortPropertyByDescend;
-        set => SetProperty(ref _secondSortPropertyByDescend, value);
+        set
+        {
+            if (SetProperty(ref _secondSortPropertyByDescend, value))
+                SetStringProperty(value, ref _secondSortProperty_SortingDirection, SecondSortProperty_SortingDirection);
+        }
     }
 
-    private string _thirdSortBookProperty;
+    public string SecondSortProperty_SortingDirection
+    {
+        get => _secondSortProperty_SortingDirection;
+        set
+        {
+            if (SetProperty(ref _secondSortProperty_SortingDirection, value))
+                SetBooleanProperty(value, ref _secondSortPropertyByDescend, SecondSortProperty_ByDescend);
+        }
+    }
+
     public string ThirdSortBookProperty
     {
         get => _thirdSortBookProperty;
-        set => SetProperty(ref _thirdSortBookProperty, value);
+        set
+        {
+            if (SetProperty(ref _thirdSortBookProperty, value) && value != nameof(Book.None))
+            {
+                if (value == FirstSortBookProperty)
+                    FirstSortBookProperty = nameof(Book.None);
+                else if (value == SecondSortBookProperty)
+                    SecondSortBookProperty = nameof(Book.None);
+            }
+        }
     }
 
-    private bool _thirdSortPropertyByDescend;
     public bool ThirdSortProperty_ByDescend
     {
         get => _thirdSortPropertyByDescend;
-        set => SetProperty(ref _thirdSortPropertyByDescend, value);
+        set
+        {
+            if (SetProperty(ref _thirdSortPropertyByDescend, value))
+                SetStringProperty(value, ref _thirdSortProperty_SortingDirection, ThirdSortProperty_SortingDirection);
+        }
     }
 
-    private long _bookMaxContentLength;
+    public string ThirdSortProperty_SortingDirection
+    {
+        get => _thirdSortProperty_SortingDirection;
+        set
+        {
+            if (SetProperty(ref _thirdSortProperty_SortingDirection, value))
+                SetBooleanProperty(value, ref _thirdSortPropertyByDescend, ThirdSortProperty_ByDescend);
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets the maximum content length for a book.
+    /// </summary>
     public long Book_MaxContentLength
     {
         get => _bookMaxContentLength;
-        set => SetProperty(ref _bookMaxContentLength, value);
+        set
+        {
+            Book_MaxContentLength_ToolTip = string.Empty;
+            if (value < 0)
+            {
+                Book_MaxContentLength = 0;
+                Book_MaxContentLength_ToolTip = "0";
+            }
+            else if (SetProperty(ref _bookMaxContentLength, value))
+            {
+                Book_MaxContentLength_ToolTip = GetFileSizeTooltip(value);
+            }
+        }
     }
 
+    /// <summary>
+    /// Gets or sets the tooltip for the maximum content length for a book.
+    /// </summary>
+    public string Book_MaxContentLength_ToolTip
+    {
+        get => _book_MaxContentLength_ToolTip;
+        set => SetProperty(ref _book_MaxContentLength_ToolTip, value);
+    }
     #endregion
 
-    #region Private Helper Methods
-
-    private bool SetProperty<T>(ref T backingStore, T value, [CallerMemberName] string propertyName = "")
+    #region Private methods
+    private void SetStringProperty(bool key, ref string _propertyValue, string PropertyName)
     {
-        if (EqualityComparer<T>.Default.Equals(backingStore, value))
-            return false;
+        switch (key)
+        {
+            case true:
+                _propertyValue = Constants.SORTING_DESCENDING;
+                break;
+            default:
+                _propertyValue = Constants.SORTING_ASCENDING;
+                break;
+        }
 
-        backingStore = value;
-        RaisePropertyChanged(propertyName);
-        return true;
+        RaisePropertyChanged(nameof(PropertyName));
     }
 
-    public event PropertyChangedEventHandler PropertyChanged;
-    private void RaisePropertyChanged([CallerMemberName] string propertyName = "")
+    private void SetBooleanProperty(string key, ref bool _propertyValue, bool PropertyName)
     {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        switch (key)
+        {
+            case Constants.SORTING_DESCENDING:
+                _propertyValue = true;
+                break;
+            default:
+                _propertyValue = false;
+                break;
+        }
+
+        RaisePropertyChanged(nameof(PropertyName));
     }
 
+
+    /// <summary>
+    /// Returns a tooltip text describing the file size.
+    /// </summary>
+    /// <param name="fileSize">The size of the file in bytes.</param>
+    /// <returns>A tooltip text describing the file size.</returns>
+    private string GetFileSizeTooltip(long fileSize)
+    {
+        var tooltip = string.Empty;
+
+        if (1_000_000_000 < fileSize)
+        {
+            var fileSizeInGigabytes = fileSize / 1_000_000_000;
+            tooltip = $"The set file size enormous ({fileSizeInGigabytes} GB). This may cause storage issues.";
+        }
+        else
+        {
+            // Convert the file size to a human-readable format
+            ConvertToHumanReadableFileSize(fileSize, EFileLengthUnit.Byte, out var fileSizeInUnits, out var unit);
+
+            tooltip = $"The loaded file size can be maiximum as {fileSizeInUnits} {unit}";
+        }
+
+        return tooltip;
+    }
+
+    /// <summary>
+    /// Converts a file size in bytes to a human-readable format.
+    /// </summary>
+    /// <param name="number">The file size in bytes.</param>
+    /// <param name="startLength">The starting unit of measurement (e.g. Byte, KB, MB, GB).</param>
+    /// <param name="result">The converted file size.</param>
+    /// <param name="length">The unit of measurement for the converted file size.</param>
+    private void ConvertToHumanReadableFileSize(long number, EFileLengthUnit startLength, out long result,
+        out EFileLengthUnit length)
+    {
+        result = number;
+        length = startLength;
+        if (1024 < number && (int)startLength < (int)EFileLengthUnit.GB)
+        {
+            length = startLength.Next();
+            result = number / 1024;
+            ConvertToHumanReadableFileSize(result, length, out result, out length);
+        }
+    }
+    #endregion
+
+    #region Private fields
+    private long _bookMaxContentLength;
+    private double _messageBoxFontSize;
+    private EBibliographicKindInformation _searchField;
+    private bool _searchOnFly;
+    private double _debugTextFontSize;
+    private string _firstSortBookProperty;
+    private bool _firstSortPropertyByDescend;
+    private string _firstSortProperty_SortingDirection;
+    private string _secondSortBookProperty;
+    private bool _secondSortPropertyByDescend;
+    private string _secondSortProperty_SortingDirection;
+    private string _thirdSortBookProperty;
+    private bool _thirdSortPropertyByDescend;
+    private string _thirdSortProperty_SortingDirection;
+    private string _book_MaxContentLength_ToolTip;
+    private EBibliographicKindInformation[] _searchFields;
+    private string[] _bookProperties;
+    private string[] _sortingDirections;
+    private bool[] _booleans;
     #endregion
 }
