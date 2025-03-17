@@ -35,14 +35,11 @@ public class EditBookViewModel :AbstractViewModel
             switch (commandParameter)
             {
                 case Constants.SAVE_CONTENT:
-                    
                     break;
                 
                 case Constants.LOAD_CONTENT:
-                    
                     break;
-
-
+                
                 default:
                 {
                     // Settings view
@@ -53,10 +50,7 @@ public class EditBookViewModel :AbstractViewModel
         }
         else
         {
-            #if DEBUG
-            Debug.WriteLine(
-                $"Navigation error path '{commandParameter}' in class '{nameof(EditBookViewModel)}' by method '{nameof(PerformAction)}'");
-            #endif
+            await ShowDebugNavigationError(commandParameter,nameof(EditBookViewModel));
         }
     }
     #endregion

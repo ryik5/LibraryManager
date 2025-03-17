@@ -109,33 +109,20 @@ public class FindBooksViewModel : AbstractViewModel
                 case nameof(BooksPage):
                 case nameof(AboutPage):
                 case nameof(ToolsPage):
-                {
-                    try
-                    {
-                        // Dynamically navigate using the provided commandParameter
-                        // begins '//' added in the beginning to switch a Menu as well as Page. without '//' it switch only Page
-                        Shell.Current.GoToAsync($"//{commandParameter}").ConfigureAwait(false);
-                    }
-                    catch (Exception ex) // Handle any issues with navigation
-                    {
-                        #if DEBUG
-                        Debug.WriteLine($"Navigation error: {ex.Message}");
-                        #endif
-                    }
-
+                    await TryGoToPage(commandParameter);
                     break;
-                }
+                
                 case Constants.FIND_BOOKS:
-                    if (!ValidLibary())
+                { if (!ValidLibary())
                         return;
 
                     Book = null;
                     await FindBooksTask();
 
-                    break;
+                    break;}
 
                 case Constants.EDIT_BOOK:
-                    if (!ValidSelectedBooks())
+                { if (!ValidSelectedBooks())
                         return;
                     RunInMainThread(() => Book = SelectFirstFoundBook());
 
@@ -148,10 +135,10 @@ public class FindBooksViewModel : AbstractViewModel
                         Book.Set(editBookVM.Book);
                     }
 
-                    break;
+                    break;}
 
                 case Constants.DELETE_BOOK:
-                    List<Book> selectedBooks=null;
+                { List<Book> selectedBooks=null;
                     RunInMainThread(() => selectedBooks = SelectedBooks.ToList() );
                     // Performing actions by the BooksManager
                     await _bookManageable.RunCommand(commandParameter, SelectedBooks);
@@ -164,7 +151,7 @@ public class FindBooksViewModel : AbstractViewModel
                             }
                         }
                     );
-                    break;
+                    break;}
                 
                 default: //jobs perform without creating views
                 {
@@ -177,10 +164,7 @@ public class FindBooksViewModel : AbstractViewModel
         }
         else
         {
-            #if DEBUG
-            Debug.WriteLine(
-                $"Navigation error path '{commandParameter}' in class '{nameof(FindBooksViewModel)}' by method '{nameof(PerformAction)}'");
-            #endif
+            await ShowDebugNavigationError(commandParameter,nameof(FindBooksViewModel));
         }
         RunInMainThread(() =>
             {

@@ -31,7 +31,7 @@ public class LibraryManagerModel : AbstractBindableModel, ILibraryManageable
     {
         switch (commandParameter)
         {
-            case Constants.CREATE_NEW_LIBRARY:
+            case Constants.LIBRARY_NEW:
                 break;
 
             case Constants.LIBRARY_EDIT:

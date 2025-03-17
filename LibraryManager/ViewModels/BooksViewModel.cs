@@ -90,21 +90,11 @@ public class BooksViewModel : AbstractViewModel, IDisposable
                 case nameof(LibraryPage):
                 case nameof(FindBooksPage):
                 case nameof(ToolsPage):
-                {
-                    try
-                    {
-                        // Dynamically navigate using the provided commandParameter
-                        // begins '//' added in the beginning to switch a Menu as well as Page. without '//' it switch only Page
-                        await Shell.Current.GoToAsync($"//{commandParameter}").ConfigureAwait(false);
-                    }
-                    catch (Exception ex) // Handle any issues with navigation
-                    {
-                        Debug.WriteLine($"Navigation error: {ex.Message}");
-                    }
-                }
+                    await TryGoToPage(commandParameter);
                     break;
+                
                 case Constants.EDIT_BOOK:
-                    if (!ValidSelectedBooks())
+                { if (!ValidSelectedBooks())
                         return;
                     RunInMainThread(() => Book = SelectFirstFoundBook());
 
@@ -117,7 +107,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable
                         Book.Set(editBookVM.Book);
                     }
 
-                    break;
+                    break;}
 
                 case Constants.SORT_BOOKS:
                     if (await MakeSortingList() is { Count: > 0 } props)
@@ -136,10 +126,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable
         }
         else
         {
-            #if DEBUG
-            Debug.WriteLine(
-                $"Navigation error path '{commandParameter}' in class '{nameof(BooksViewModel)}' by method '{nameof(PerformAction)}'");
-            #endif
+            await ShowDebugNavigationError(commandParameter,nameof(BooksViewModel));
         }
 
         RunInMainThread(() =>

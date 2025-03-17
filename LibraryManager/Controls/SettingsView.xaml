@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="LibraryManager.Controls.SettingsView">
+
+    <VerticalStackLayout HorizontalOptions="Fill" >
+        <Border HorizontalOptions="Center"
+                StrokeThickness="0" 
+                Stroke="{StaticResource Primary}"
+                Margin="10">
+            <Label Text="Settings" FontSize="32" />
+        </Border>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.4*" />
+                <ColumnDefinition Width="0.6*" />
+            </Grid.ColumnDefinitions>
+
+            <VerticalStackLayout Grid.Column="0"  Margin="10">
+
+                <StackLayout Margin="10">
+                    <Label Text="MessageBox" FontSize="18"  Margin="0,0,0,10"/>
+                    <Frame CornerRadius="10" BorderColor="{StaticResource Primary}" Padding="10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <Label Text="Text's font size" Grid.Row="0" Grid.Column="0" />
+                            <Entry Text="{Binding MessageBox_FontSize}"
+                                   Grid.Row="0" Grid.Column="1" />
+                        </Grid>
+                    </Frame>
+                </StackLayout>
+
+                <StackLayout Margin="10">
+                    <Label Text="'Find Books' Page" FontSize="18" Margin="0,0,0,10" />
+                    <Frame CornerRadius="10" BorderColor="{StaticResource Primary}" Padding="10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <Label Text="Search Fields" Grid.Row="0" Grid.Column="0" />
+                            <Picker ItemsSource="{Binding SearchFields, Mode=OneWay}"
+                                    SelectedItem="{Binding SearchField}"
+                                    Grid.Row="0" Grid.Column="1"  Margin="0,0,0,10"/>
+
+                            <Label Text="Search-On-Fly" Grid.Row="1" Grid.Column="0" />
+                            <Picker ItemsSource="{Binding Booleans, Mode=OneWay}"
+                                    SelectedItem="{Binding SearchOnFly}"
+                                    Grid.Row="1" Grid.Column="1" Margin="0"/>
+                        </Grid>
+                    </Frame>
+                </StackLayout>
+
+                <StackLayout Margin="10">
+                    <Label Text="'Debug' Page" FontSize="18" Margin="0,0,0,10" />
+                    <Frame CornerRadius="10" BorderColor="{StaticResource Primary}" Padding="10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <Label Text="Text's font size" Grid.Row="0" Grid.Column="0" />
+                            <Entry Text="{Binding Debug_TextFontSize}"
+                                   Grid.Row="0" Grid.Column="1" />
+                        </Grid>
+                    </Frame>
+                </StackLayout>
+
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Grid.Column="1" Margin="10">
+
+                <StackLayout Margin="10">
+                    <Label Text="'Create and Edit Book' Pages" FontSize="18" Margin="0,0,0,10" />
+                    <Frame CornerRadius="10" BorderColor="{StaticResource Primary}" Padding="10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <Label Grid.Row="0" Grid.Column="0"
+                                   Text="Max content length, byte" />
+                            <Entry Grid.Row="0" Grid.Column="1"
+                                   Text="{Binding Book_MaxContentLength}" />
+
+                        </Grid>
+                    </Frame>
+                </StackLayout>
+
+                <StackLayout Margin="10">
+                    <Label Text="'Books' Page. Sort"  FontSize="18" Margin="0,0,0,10" />
+                    <Frame CornerRadius="10" BorderColor="{StaticResource Primary}" Padding="10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="0.45*" />
+                                <ColumnDefinition Width="0.25*" />
+                                <ColumnDefinition Width="0.4*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <Label Grid.Row="0" Grid.Column="0"
+                                   Text="First Property" />
+                            <Picker Grid.Row="0" Grid.Column="1"
+                                    ItemsSource="{Binding SortingDirections, Mode=OneWay}"
+                                    SelectedItem="{Binding FirstSortProperty_SortingDirection}" 
+                                    Margin="0,0,0,10"/>
+                            <Picker Grid.Row="0" Grid.Column="2"
+                                    ItemsSource="{Binding BookProperties, Mode=OneWay}"
+                                    SelectedItem="{Binding FirstSortBookProperty}" 
+                                    Margin="10,0,0,10"/>
+
+                            <Label Grid.Row="1" Grid.Column="0"
+                                   Text="Second Property" />
+                            <Picker Grid.Row="1" Grid.Column="1"
+                                    ItemsSource="{Binding SortingDirections, Mode=OneWay}"
+                                    SelectedItem="{Binding SecondSortProperty_SortingDirection}" 
+                                    Margin="0,0,0,10"/>
+                            <Picker Grid.Row="1" Grid.Column="2"
+                                    ItemsSource="{Binding BookProperties, Mode=OneWay}"
+                                    SelectedItem="{Binding SecondSortBookProperty}"
+                                    Margin="10,0,0,10"/>
+
+                            <Label Grid.Row="2" Grid.Column="0"
+                                   Text="Third Property" />
+                            <Picker Grid.Row="2" Grid.Column="1"
+                                    ItemsSource="{Binding SortingDirections, Mode=OneWay}"
+                                    SelectedItem="{Binding ThirdSortProperty_SortingDirection}" 
+                                    Margin="0,0,0,0"/>
+                            <Picker Grid.Row="2" Grid.Column="2"
+                                    ItemsSource="{Binding BookProperties, Mode=OneWay}"
+                                    SelectedItem="{Binding ThirdSortBookProperty,Mode=TwoWay}" 
+                                    Margin="10,0,0,0"/>
+
+                        </Grid>
+                    </Frame>
+                </StackLayout>
+
+            </VerticalStackLayout>
+
+        </Grid>
+    </VerticalStackLayout>
+
+</ContentView>

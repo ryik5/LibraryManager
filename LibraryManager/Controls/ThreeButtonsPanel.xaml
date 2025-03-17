@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="LibraryManager.Controls.ThreeButtonsPanel">
+    
+    <ContentView.ControlTemplate>
+        <ControlTemplate>
+            <HorizontalStackLayout>
+
+                <Button
+                    Command="{Binding Source={RelativeSource TemplatedParent}, Path=NavigateCommand}"
+                    CommandParameter="{Binding Source={RelativeSource TemplatedParent}, Path=OkText}"
+                    Text="{Binding Source={RelativeSource TemplatedParent}, Path=OkText}"
+                    IsVisible="{Binding Source={RelativeSource TemplatedParent}, Path=IsOkButtonVisible}"
+                    MinimumWidthRequest="70"
+                    Margin="5" />
+                
+                <Button
+                    Command="{Binding Source={RelativeSource TemplatedParent}, Path=NavigateCommand}"
+                    CommandParameter="{Binding Source={RelativeSource TemplatedParent}, Path=NoText}"
+                    Text="{Binding Source={RelativeSource TemplatedParent}, Path=NoText}"
+                    IsVisible="{Binding Source={RelativeSource TemplatedParent}, Path=IsNoVisibile}"
+                    MinimumWidthRequest="70"
+                    Margin="5" />
+                
+                <Button
+                    Command="{Binding Source={RelativeSource TemplatedParent}, Path=NavigateCommand}"
+                    CommandParameter="{Binding Source={RelativeSource TemplatedParent}, Path=CancelText}"
+                    Text="{Binding Source={RelativeSource TemplatedParent}, Path=CancelText}"
+                    IsVisible="{Binding Source={RelativeSource TemplatedParent}, Path=IsCancelVisibile}"
+                    MinimumWidthRequest="70"
+                    Margin="5" />
+
+            </HorizontalStackLayout>
+        </ControlTemplate>
+    </ContentView.ControlTemplate>
+
+</ContentView>

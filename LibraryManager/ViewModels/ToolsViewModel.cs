@@ -5,9 +5,24 @@ namespace LibraryManager.ViewModels;
 
 public class ToolsViewModel : AbstractViewModel
 {
+    private SettingsViewModel _settings;
+
     public ToolsViewModel()
     {
+        Settings = new SettingsViewModel();
     }
+
+
+    #region Public properties
+    public SettingsViewModel Settings
+    {
+        get => _settings;
+        set => SetProperty(ref _settings, value);
+    }
+
+    public string Save => Constants.SAVE;
+    public string Cancel => Constants.CANCEL;
+    #endregion
 
     #region Public Methods
     protected override async Task PerformAction(string? commandParameter)
@@ -28,35 +43,28 @@ public class ToolsViewModel : AbstractViewModel
                 case nameof(FindBooksPage):
                 case nameof(AboutPage):
                 {
-                    try
-                    {
-                        // Dynamically navigate using the provided commandParameter
-                        // begins '//' added in the beginning to switch a Menu as well as Page. without '//' it switch only Page
-                        Shell.Current.GoToAsync($"//{commandParameter}").ConfigureAwait(false);
-                    }
-                    catch (Exception ex) // Handle any issues with navigation
-                    {
-                        #if DEBUG
-                        Debug.WriteLine($"Navigation error: {ex.Message}");
-                        #endif
-                    }
+                   await TryGoToPage(commandParameter);
+                    break;
                 }
+
+                case Constants.SAVE:
+                    Settings.SaveSettings();
+                    break;
+                case Constants.CANCEL:
+                    Settings.LoadAllSettings();
                     break;
                 default:
                 {
-                    // Settings view
-                    // Debug view
+                    await ShowCustomDialogPage(Constants.FOLDER_WAS_NOT_SELECTED, $"{commandParameter}"); //Ok, Cancel
                     break;
                 }
             }
         }
         else
         {
-            #if DEBUG
-            Debug.WriteLine(
-                $"Navigation error path '{commandParameter}' in class '{nameof(ToolsViewModel)}' by method '{nameof(PerformAction)}'");
-            #endif
+            await ShowDebugNavigationError(commandParameter,nameof(ToolsViewModel));
         }
     }
     #endregion
+    
 }

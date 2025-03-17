@@ -3,6 +3,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodel="clr-namespace:LibraryManager.ViewModels"
+             xmlns:control="clr-namespace:LibraryManager.Controls"
              x:Class="LibraryManager.Views.ToolsPage"
              x:DataType="viewmodel:ToolsViewModel">
 
@@ -42,6 +43,23 @@
     </ContentPage.MenuBarItems>
 
     <ContentPage.Content>
-
+<VerticalStackLayout>
+    
+        <control:SettingsView BindingContext="{Binding Settings}"/>
+        
+        <control:ThreeButtonsPanel 
+            BindingContext="{Binding}" 
+            HorizontalOptions="Center"
+            
+            NavigateCommand="{Binding NavigateCommand, Mode=OneTime}"
+            OkText="{Binding Save, Mode=OneTime}"
+            
+            IsNoVisibile="False"
+            
+            CancelText="{Binding Cancel, Mode=OneTime}"
+            IsCancelVisibile="True"
+            />
+        
+ </VerticalStackLayout>       
     </ContentPage.Content>
 </ContentPage>

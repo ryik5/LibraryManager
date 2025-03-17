@@ -7,6 +7,12 @@ namespace LibraryManager;
 public static class Constants
 {
     #region General
+    public const string OK = "Ok";
+    public const string YES = "Yes";
+    public const string NO = "No";
+    public const string SAVE = "Save";
+    public const string CANCEL = "Cancel";
+    
     public const string ID = "ID";
     public const string LIBRARY_MANAGER = "LibraryManager";
     public const string LIBRARY_MANAGER_PIPE_SERVER = "LibraryManagerPipeServer";
@@ -27,7 +33,7 @@ public static class Constants
 
     #region LibraryViewModel
     public const string LIBRARY = "Library";
-    public const string CREATE_NEW_LIBRARY = "Create a new library";
+    public const string LIBRARY_NEW = "Create a new library";
     public const string LIBRARY_WAS_CREATED_SUCCESSFULLY = "Library was created successfully";
     public const string LIBRARY_LOAD = "Load the library";
     public const string LOADING_LIBRARY_FROM_XML = "Loading library from the XML file...";

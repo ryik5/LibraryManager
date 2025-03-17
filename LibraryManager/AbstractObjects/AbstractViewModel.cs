@@ -15,6 +15,8 @@ public abstract class AbstractViewModel : AbstractBindableModel
         ExtendedCommand = new AsyncRelayCommand<string>(PerformExtendedAction);
     }
 
+
+    #region Public Methods
     /// <summary>
     /// Performs an action based on the provided command parameter.
     /// This is a method and should be overridden by derived classes to implement specific actions.
@@ -25,7 +27,7 @@ public abstract class AbstractViewModel : AbstractBindableModel
 
     /// <summary>
     /// Performs an extended action based on the provided command parameter.
-    /// This is a virtual method and can be overridden by derived classes to implement specific extended actions.
+    /// This is a virtual empty method and can be overridden by derived classes to implement specific extended actions.
     /// </summary>
     /// <param name="commandParameter">The command parameter specifying the action to be performed.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
@@ -67,6 +69,12 @@ public abstract class AbstractViewModel : AbstractBindableModel
         return result;
     }
 
+    // <summary>
+    /// Displays a custom dialog page with a title and message, and returns a boolean indicating whether the user pressed OK or Cancel.
+    /// </summary>
+    /// <param name="title">The title of the dialog page.</param>
+    /// <param name="message">The message to display on the dialog page.</param>
+    /// <returns>A boolean indicating whether the user pressed OK or Cancel.</returns>
     protected async Task<bool> ShowCustomDialogPage(string title, string message)
     {
         var dialogPage = new CustomDialogPage(title, message);
@@ -81,12 +89,55 @@ public abstract class AbstractViewModel : AbstractBindableModel
         return result;
     }
 
+    /// <summary>
+    /// Attempts to navigate to an application's page specified by a command parameter, handling any navigation errors that may occur.
+    /// </summary>
+    /// <param name="commandParameter">The command parameter specifying the page to navigate to.</param>
+    protected async Task TryGoToPage(string commandParameter)
+    {
+        try
+        {
+            // Dynamically navigate using the provided commandParameter
+            // begins '//' added in the beginning to switch a Menu as well as Page. without '//' it switch only Page
+            await Shell.Current.GoToAsync($"//{commandParameter}").ConfigureAwait(false);
+        }
+        catch (Exception ex) // Handle any issues with navigation
+        {
+            #if DEBUG
+            Debug.WriteLine($"Navigation error: {ex.Message}");
+            #endif
+        }
+    }
 
-    #region Public Properties
-    public ICommand NavigateCommand { get; set; }
+    /// <summary>
+    /// Attempts to open a URL in the platform's default web browser, handling any errors that may occur.
+    /// </summary>
+    /// <param name="url">The URL to open in the browser.</param>
+    protected async Task TryOpenBrowser(string url)
+    {
+        try
+        {
+            // Try opening the URL using the platform default browser
+            await Browser.OpenAsync(url, BrowserLaunchMode.SystemPreferred);
+        }
+        catch (Exception e)
+        {
+            #if DEBUG
+            Debug.WriteLine(e.Message);
+            #endif
+        }
 
-    public ICommand ExtendedCommand { get; }
-
+        /*try
+        {
+            await Launcher.OpenAsync(url);
+        }
+        catch (Exception ex) // Handle any issues with navigation
+        {
+            #if DEBUG
+            Debug.WriteLine($"Navigation error: {ex.Message}");
+            #endif
+        }*/
+    }
 
     /// <summary>
     /// Checks if the current route is equal to the provided page.
@@ -95,5 +146,28 @@ public abstract class AbstractViewModel : AbstractBindableModel
     /// <returns>true if the current route is equal to the provided page, false otherwise.</returns>
     protected bool IsCurrentRoute(string page) =>
         Shell.Current.CurrentState.Location.OriginalString == $"//{page}";
+
+    protected Task ShowDebugNavigationError(string commandParameter, string className)
+    {
+        #if DEBUG
+        Debug.WriteLine(
+            $"Navigation error path '{commandParameter}' in class '{className}' by method '{nameof(PerformAction)}'");
+        #endif
+
+        return Task.CompletedTask;
+    }
+    #endregion
+
+
+    #region Public Properties
+    /// <summary>
+    /// Command to perform an action, such as navigate to a different page or view or other actions.
+    /// </summary>
+    public ICommand NavigateCommand { get; set; }
+
+    /// <summary>
+    /// Command to perform an extra actions.
+    /// </summary>
+    public ICommand ExtendedCommand { get; }
     #endregion
 }

@@ -87,21 +87,10 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
                 case nameof(BooksPage):
                 case nameof(FindBooksPage):
                 case nameof(ToolsPage):
-                {
-                    try
-                    {
-                        // Dynamically navigate using the provided commandParameter
-                        // begins '//' added in the beginning to switch a Menu as well as Page. without '//' it switch only Page
-                        await Shell.Current.GoToAsync($"//{commandParameter}").ConfigureAwait(false);
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine($"Navigation error: {ex.Message}");
-                    }
-
+                    await TryGoToPage(commandParameter);
                     break;
-                }
-                case Constants.CREATE_NEW_LIBRARY:
+                
+                case Constants.LIBRARY_NEW:
                 {
                     if (await HasLibraryHashCodeChanged())
                     {
@@ -110,24 +99,14 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
                         if (!success)
                             return;
                     }
-
-                    //var u = Environment.SpecialFolder.DesktopDirectory;
-                    // MyDocuments //  $HOME/Documents
-                    // CommonApplicationData // /usr/share
-                    // DesktopDirectory // $HOME/Desktop
-                    // Personal // $HOME/Documents
-                    // UserProfile // $HOME
-
+                    
                     await _libraryManager.CreateNewLibrary();
-
-                    // await ShowDisplayAlertAsync(Constants.LIBRARY, Constants.CREATE_NEW_LIBRARY);
-
                     await UpdateLibraryHashCode();
-
                     break;
                 }
+                
                 case Constants.LIBRARY_LOAD:
-                    if (await HasLibraryHashCodeChanged())
+                { if (await HasLibraryHashCodeChanged())
                     {
                         var success =
                             await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(), GetPathToCurrentLibrary());
@@ -136,16 +115,17 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
                     }
 
                     await _libraryManager.TryLoadLibrary();
-
-                    await UpdateLibraryHashCode();
-                    break;
-                case Constants.LIBRARY_SAVE:
-                {
-                    await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(), GetPathToCurrentLibrary());
-
                     await UpdateLibraryHashCode();
                     break;
                 }
+                
+                case Constants.LIBRARY_SAVE:
+                {
+                    await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(), GetPathToCurrentLibrary());
+                    await UpdateLibraryHashCode();
+                    break;
+                }
+                
                 case Constants.LIBRARY_CLOSE:
                 {
                     if (await HasLibraryHashCodeChanged())
@@ -160,9 +140,10 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
                     await UpdateLibraryHashCode();
                     break;
                 }
+                
                 default:
                 {
-                    // Performing actions at the LibraryManager
+                    // Performs other actions at the LibraryManager
                     await _libraryManager.RunCommand(commandParameter);
                     break;
                 }
@@ -177,11 +158,8 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
             }));
         }
         else
-        {
-            #if DEBUG
-            Debug.WriteLine(
-                $"Navigation error path '{commandParameter}' in class '{nameof(LibraryViewModel)}' by method '{nameof(PerformAction)}'");
-            #endif
+        {           
+            await ShowDebugNavigationError(commandParameter,nameof(FindBooksViewModel));
         }
     }
 
@@ -193,7 +171,7 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
 
         // MessagingCenter cleanup
         #if DEBUG
-        Console.WriteLine("Cleaning up MessagingCenter resources in LibraryViewModel.");
+        Debug.WriteLine("Cleaning up MessagingCenter resources in LibraryViewModel.");
         #endif
 
         MessagingCenter.Unsubscribe<BooksViewModel>(this, "Navigate");
