@@ -44,24 +44,46 @@
 
     <ContentPage.Content>
         <VerticalStackLayout>
-
             
-            <VerticalStackLayout>
+            <!-- Menu -->
+            <control:ThreeButtonsPanel HeightRequest="35"
+                Margin="20,20,0,20"
+                BindingContext="{Binding}"
+                HorizontalOptions="Start"
+
+                NavigateCommand="{Binding NavigateCommand, Mode=OneTime}"
+                
+                OkText="{Binding SettingsView, Mode=OneTime}"
+
+                IsNoVisibile="True"
+                NoText="{Binding DebugView, Mode=OneTime}"
+                
+                IsCancelVisibile="True" 
+                CancelText="{Binding ToolsView, Mode=OneTime}"/>
+            
+            <VerticalStackLayout IsVisible="{Binding IsSettingsViewVisible}">
                 
                 <control:SettingsView BindingContext="{Binding Settings}" />
+                
                 <control:ThreeButtonsPanel
+                    HeightRequest="35"
+                    Margin="0,50,0,10"
                     BindingContext="{Binding}"
                     HorizontalOptions="Center"
+                    VerticalOptions="End"
 
                     NavigateCommand="{Binding NavigateCommand, Mode=OneTime}"
                     OkText="{Binding Save, Mode=OneTime}"
-
-                    IsNoVisibile="False"
+                    IsNoVisibile="True"
+                    NoText="{Binding Cancel, Mode=OneTime}"
                     IsCancelVisibile="True" 
-                    CancelText="{Binding Cancel, Mode=OneTime}"/>
+                    CancelText="{Binding Reset, Mode=OneTime}"/>
                 
             </VerticalStackLayout>
 
+            <VerticalStackLayout IsVisible="{Binding IsDebugViewVisible}">
+                
+            </VerticalStackLayout>
         </VerticalStackLayout>
     </ContentPage.Content>
 </ContentPage>

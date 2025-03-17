@@ -10,28 +10,14 @@ namespace LibraryManager.ViewModels;
 /// <author>YR 2025-02-14</author>
 public class SettingsViewModel : AbstractBindableModel
 {
-    private readonly Dictionary<string, object> DefaultSettings = new() // Default values for preferences
-    {
-        { nameof(MessageBox_FontSize), 18.0 },
-        { nameof(SearchField), EBibliographicKindInformation.All },
-        { nameof(SearchOnFly), false },
-        { nameof(Debug_TextFontSize), 16.0 },
-
-        { nameof(FirstSortBookProperty), nameof(Book.Year) },
-        { nameof(FirstSortProperty_ByDescend), true },
-        { nameof(SecondSortBookProperty), nameof(Book.Author) },
-        { nameof(SecondSortProperty_ByDescend), false },
-        { nameof(ThirdSortBookProperty), nameof(Book.Title) },
-        { nameof(ThirdSortProperty_ByDescend), false },
-        { nameof(Book_MaxContentLength), 0L },
-        { nameof(Book_MaxContentLength_ToolTip), string.Empty },
-    };
-
     /// <summary>
     /// Initializes a new instance of <see cref="SettingsViewModel"/>.
     /// </summary>
     public SettingsViewModel()
     {
+        // TODO : Load and save data with SettingsModel instead
+        // TODO: write as StaticRoute
+        
         _searchFields = Enum.GetValues(typeof(EBibliographicKindInformation)).Cast<EBibliographicKindInformation>()
             .ToArray();
         _booleans = new[] { true, false };
@@ -41,76 +27,6 @@ public class SettingsViewModel : AbstractBindableModel
         LoadAllSettings();
     }
 
-    #region Reset, Load, and Save Settings
-    /// <summary>
-    /// Resets all application settings to their default values.
-    /// </summary>
-    public void ResetAllSettings()
-    {
-        foreach (var setting in DefaultSettings)
-        {
-            PreferencesExtensions.SetPreference(setting.Key, setting.Value); // Use static method
-        }
-
-        LoadAllSettings(); // Refresh view model properties
-    }
-
-    /// <summary>
-    /// Loads all settings into the view model.
-    /// </summary>
-    public void LoadAllSettings()
-    {
-        MessageBox_FontSize = Preferences.Get(nameof(MessageBox_FontSize),
-            (double)DefaultSettings[nameof(MessageBox_FontSize)]);
-
-        SearchField =
-            (EBibliographicKindInformation)Preferences.Get(nameof(SearchField),
-                (int)DefaultSettings[nameof(SearchField)]);
-
-        SearchOnFly = Preferences.Get(nameof(SearchOnFly), (bool)DefaultSettings[nameof(SearchOnFly)]);
-        Debug_TextFontSize =
-            Preferences.Get(nameof(Debug_TextFontSize), (double)DefaultSettings[nameof(Debug_TextFontSize)]);
-
-        FirstSortBookProperty = Preferences.Get(nameof(FirstSortBookProperty),
-            (string)DefaultSettings[nameof(FirstSortBookProperty)]);
-        FirstSortProperty_ByDescend = Preferences.Get(nameof(FirstSortProperty_ByDescend),
-            (bool)DefaultSettings[nameof(FirstSortProperty_ByDescend)]);
-        SecondSortBookProperty = Preferences.Get(nameof(SecondSortBookProperty),
-            (string)DefaultSettings[nameof(SecondSortBookProperty)]);
-        SecondSortProperty_ByDescend = Preferences.Get(nameof(SecondSortProperty_ByDescend),
-            (bool)DefaultSettings[nameof(SecondSortProperty_ByDescend)]);
-        ThirdSortBookProperty = Preferences.Get(nameof(ThirdSortBookProperty),
-            (string)DefaultSettings[nameof(ThirdSortBookProperty)]);
-        ThirdSortProperty_ByDescend = Preferences.Get(nameof(ThirdSortProperty_ByDescend),
-            (bool)DefaultSettings[nameof(ThirdSortProperty_ByDescend)]);
-
-        Book_MaxContentLength = Preferences.Get(nameof(Book_MaxContentLength),
-            (long)DefaultSettings[nameof(Book_MaxContentLength)]);
-        Book_MaxContentLength_ToolTip = Preferences.Get(nameof(Book_MaxContentLength_ToolTip),
-            (string)DefaultSettings[nameof(Book_MaxContentLength_ToolTip)]);
-    }
-
-    /// <summary>
-    /// Saves all view model values to preferences.
-    /// </summary>
-    public void SaveSettings()
-    {
-        Preferences.Set(nameof(MessageBox_FontSize), MessageBox_FontSize);
-        Preferences.Set(nameof(SearchField), (int)SearchField);
-        Preferences.Set(nameof(SearchOnFly), SearchOnFly);
-        Preferences.Set(nameof(Debug_TextFontSize), Debug_TextFontSize);
-
-        Preferences.Set(nameof(FirstSortBookProperty), FirstSortBookProperty);
-        Preferences.Set(nameof(FirstSortProperty_ByDescend), FirstSortProperty_ByDescend);
-        Preferences.Set(nameof(SecondSortBookProperty), SecondSortBookProperty);
-        Preferences.Set(nameof(SecondSortProperty_ByDescend), SecondSortProperty_ByDescend);
-        Preferences.Set(nameof(ThirdSortBookProperty), ThirdSortBookProperty);
-        Preferences.Set(nameof(ThirdSortProperty_ByDescend), ThirdSortProperty_ByDescend);
-
-        Preferences.Set(nameof(Book_MaxContentLength), Book_MaxContentLength);
-        Preferences.Set(nameof(Book_MaxContentLength_ToolTip), Book_MaxContentLength_ToolTip);
-    }
-    #endregion
 
     #region Dictionaries
     /// <summary>
@@ -297,6 +213,79 @@ public class SettingsViewModel : AbstractBindableModel
     }
     #endregion
 
+
+    #region Reset, Load, and Save Settings
+    /// <summary>
+    /// Resets all application settings to their default values.
+    /// </summary>
+    public void ResetAllSettings()
+    {
+        foreach (var setting in DefaultSettings)
+        {
+            PreferencesExtensions.SetPreference(setting.Key, setting.Value); // Use static method
+        }
+
+        LoadAllSettings(); // Refresh view model properties
+    }
+
+    /// <summary>
+    /// Loads all settings into the view model.
+    /// </summary>
+    public void LoadAllSettings()
+    {
+        MessageBox_FontSize = Preferences.Get(nameof(MessageBox_FontSize),
+            (double)DefaultSettings[nameof(MessageBox_FontSize)]);
+
+        SearchField =
+            (EBibliographicKindInformation)Preferences.Get(nameof(SearchField),
+                (int)DefaultSettings[nameof(SearchField)]);
+
+        SearchOnFly = Preferences.Get(nameof(SearchOnFly), (bool)DefaultSettings[nameof(SearchOnFly)]);
+        Debug_TextFontSize =
+            Preferences.Get(nameof(Debug_TextFontSize), (double)DefaultSettings[nameof(Debug_TextFontSize)]);
+
+        FirstSortBookProperty = Preferences.Get(nameof(FirstSortBookProperty),
+            (string)DefaultSettings[nameof(FirstSortBookProperty)]);
+        FirstSortProperty_ByDescend = Preferences.Get(nameof(FirstSortProperty_ByDescend),
+            (bool)DefaultSettings[nameof(FirstSortProperty_ByDescend)]);
+        SecondSortBookProperty = Preferences.Get(nameof(SecondSortBookProperty),
+            (string)DefaultSettings[nameof(SecondSortBookProperty)]);
+        SecondSortProperty_ByDescend = Preferences.Get(nameof(SecondSortProperty_ByDescend),
+            (bool)DefaultSettings[nameof(SecondSortProperty_ByDescend)]);
+        ThirdSortBookProperty = Preferences.Get(nameof(ThirdSortBookProperty),
+            (string)DefaultSettings[nameof(ThirdSortBookProperty)]);
+        ThirdSortProperty_ByDescend = Preferences.Get(nameof(ThirdSortProperty_ByDescend),
+            (bool)DefaultSettings[nameof(ThirdSortProperty_ByDescend)]);
+
+        Book_MaxContentLength = Preferences.Get(nameof(Book_MaxContentLength),
+            (long)DefaultSettings[nameof(Book_MaxContentLength)]);
+        Book_MaxContentLength_ToolTip = Preferences.Get(nameof(Book_MaxContentLength_ToolTip),
+            (string)DefaultSettings[nameof(Book_MaxContentLength_ToolTip)]);
+    }
+
+    /// <summary>
+    /// Saves all view model values to preferences.
+    /// </summary>
+    public void SaveSettings()
+    {
+        Preferences.Set(nameof(MessageBox_FontSize), MessageBox_FontSize);
+        Preferences.Set(nameof(SearchField), (int)SearchField);
+        Preferences.Set(nameof(SearchOnFly), SearchOnFly);
+        Preferences.Set(nameof(Debug_TextFontSize), Debug_TextFontSize);
+
+        Preferences.Set(nameof(FirstSortBookProperty), FirstSortBookProperty);
+        Preferences.Set(nameof(FirstSortProperty_ByDescend), FirstSortProperty_ByDescend);
+        Preferences.Set(nameof(SecondSortBookProperty), SecondSortBookProperty);
+        Preferences.Set(nameof(SecondSortProperty_ByDescend), SecondSortProperty_ByDescend);
+        Preferences.Set(nameof(ThirdSortBookProperty), ThirdSortBookProperty);
+        Preferences.Set(nameof(ThirdSortProperty_ByDescend), ThirdSortProperty_ByDescend);
+
+        Preferences.Set(nameof(Book_MaxContentLength), Book_MaxContentLength);
+        Preferences.Set(nameof(Book_MaxContentLength_ToolTip), Book_MaxContentLength_ToolTip);
+    }
+    #endregion
+
+
     #region Private methods
     private void SetStringProperty(bool key, ref string _propertyValue, string PropertyName)
     {
@@ -348,7 +337,7 @@ public class SettingsViewModel : AbstractBindableModel
             // Convert the file size to a human-readable format
             ConvertToHumanReadableFileSize(fileSize, EFileLengthUnit.Byte, out var fileSizeInUnits, out var unit);
 
-            tooltip = $"The loaded file size can be maiximum as {fileSizeInUnits} {unit}";
+            tooltip = $"The loaded file size can be maximum as {fileSizeInUnits} {unit}";
         }
 
         return tooltip;
@@ -361,19 +350,26 @@ public class SettingsViewModel : AbstractBindableModel
     /// <param name="startLength">The starting unit of measurement (e.g. Byte, KB, MB, GB).</param>
     /// <param name="result">The converted file size.</param>
     /// <param name="length">The unit of measurement for the converted file size.</param>
-    private void ConvertToHumanReadableFileSize(long number, EFileLengthUnit startLength, out long result,
-        out EFileLengthUnit length)
+    private void ConvertToHumanReadableFileSize(long number, EFileLengthUnit startLength, out long result, out EFileLengthUnit length)
     {
-        result = number;
-        length = startLength;
-        if (1024 < number && (int)startLength < (int)EFileLengthUnit.GB)
+        while (true)
         {
-            length = startLength.Next();
-            result = number / 1024;
-            ConvertToHumanReadableFileSize(result, length, out result, out length);
+            result = number;
+            length = startLength;
+            if (1024 < number && (int)startLength < (int)EFileLengthUnit.GB)
+            {
+                length = startLength.Next();
+                result = number / 1024;
+                number = result;
+                startLength = length;
+                continue;
+            }
+
+            break;
         }
     }
     #endregion
+
 
     #region Private fields
     private long _bookMaxContentLength;
@@ -395,5 +391,22 @@ public class SettingsViewModel : AbstractBindableModel
     private string[] _bookProperties;
     private string[] _sortingDirections;
     private bool[] _booleans;
+
+    private readonly Dictionary<string, object> DefaultSettings = new() // Default values for preferences
+    {
+        { nameof(MessageBox_FontSize), 18.0 },
+        { nameof(SearchField), EBibliographicKindInformation.All },
+        { nameof(SearchOnFly), false },
+        { nameof(Debug_TextFontSize), 16.0 },
+
+        { nameof(FirstSortBookProperty), nameof(Book.Year) },
+        { nameof(FirstSortProperty_ByDescend), true },
+        { nameof(SecondSortBookProperty), nameof(Book.Author) },
+        { nameof(SecondSortProperty_ByDescend), false },
+        { nameof(ThirdSortBookProperty), nameof(Book.Title) },
+        { nameof(ThirdSortProperty_ByDescend), false },
+        { nameof(Book_MaxContentLength), 0L },
+        { nameof(Book_MaxContentLength_ToolTip), string.Empty },
+    };
     #endregion
 }

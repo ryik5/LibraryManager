@@ -6,6 +6,7 @@
              x:Class="LibraryManager.Views.FindBooksPage">
 
     <ContentPage.MenuBarItems>
+        
         <MenuBarItem Text="Find Books">
 
         </MenuBarItem>
@@ -42,7 +43,6 @@
                 <Style TargetType="Button">
                     <Setter Property="FontSize" Value="18" />
                     <Setter Property="BorderWidth" Value="1" />
-                    <Setter Property="Margin" Value="0,0,10,0" />
                     <Setter Property="Background"
                             Value="{AppThemeBinding Light={StaticResource Tertiary}, Dark={StaticResource White}}" />
                 </Style>

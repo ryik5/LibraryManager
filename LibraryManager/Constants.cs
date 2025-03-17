@@ -12,6 +12,9 @@ public static class Constants
     public const string NO = "No";
     public const string SAVE = "Save";
     public const string CANCEL = "Cancel";
+    public const string RESET = "Reset";
+    public const string SETTINGS = "Settings";
+    public const string UNKNOWN_COMMAND = "Unknown command";
     
     public const string ID = "ID";
     public const string LIBRARY_MANAGER = "LibraryManager";
