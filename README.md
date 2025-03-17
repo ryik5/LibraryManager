@@ -85,6 +85,9 @@ Contributions are welcome! Feel free to submit issues or pull requests.
 ## Contact
 
 For questions or support, please contact **me** on **[github](https://github.com/ryik5)**.
+<<<<<<< HEAD
 
 
 S
+=======
+>>>>>>> origin/master
