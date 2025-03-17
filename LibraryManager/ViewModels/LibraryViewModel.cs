@@ -89,7 +89,7 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
                 case nameof(ToolsPage):
                     await TryGoToPage(commandParameter);
                     break;
-                
+
                 case Constants.LIBRARY_NEW:
                 {
                     if (await HasLibraryHashCodeChanged())
@@ -99,14 +99,15 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
                         if (!success)
                             return;
                     }
-                    
+
                     await _libraryManager.CreateNewLibrary();
                     await UpdateLibraryHashCode();
                     break;
                 }
-                
+
                 case Constants.LIBRARY_LOAD:
-                { if (await HasLibraryHashCodeChanged())
+                {
+                    if (await HasLibraryHashCodeChanged())
                     {
                         var success =
                             await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(), GetPathToCurrentLibrary());
@@ -118,14 +119,14 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
                     await UpdateLibraryHashCode();
                     break;
                 }
-                
+
                 case Constants.LIBRARY_SAVE:
                 {
                     await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(), GetPathToCurrentLibrary());
                     await UpdateLibraryHashCode();
                     break;
                 }
-                
+
                 case Constants.LIBRARY_CLOSE:
                 {
                     if (await HasLibraryHashCodeChanged())
@@ -140,7 +141,7 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
                     await UpdateLibraryHashCode();
                     break;
                 }
-                
+
                 default:
                 {
                     // Performs other actions at the LibraryManager
@@ -158,8 +159,8 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
             }));
         }
         else
-        {           
-            await ShowDebugNavigationError(commandParameter,nameof(FindBooksViewModel));
+        {
+            await ShowDebugNavigationError(commandParameter, nameof(FindBooksViewModel));
         }
     }
 

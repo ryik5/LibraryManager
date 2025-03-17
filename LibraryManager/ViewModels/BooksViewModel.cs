@@ -92,9 +92,10 @@ public class BooksViewModel : AbstractViewModel, IDisposable
                 case nameof(ToolsPage):
                     await TryGoToPage(commandParameter);
                     break;
-                
+
                 case Constants.EDIT_BOOK:
-                { if (!ValidSelectedBooks())
+                {
+                    if (!ValidSelectedBooks())
                         return;
                     RunInMainThread(() => Book = SelectFirstFoundBook());
 
@@ -107,7 +108,8 @@ public class BooksViewModel : AbstractViewModel, IDisposable
                         Book.Set(editBookVM.Book);
                     }
 
-                    break;}
+                    break;
+                }
 
                 case Constants.SORT_BOOKS:
                     if (await MakeSortingList() is { Count: > 0 } props)
@@ -126,7 +128,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable
         }
         else
         {
-            await ShowDebugNavigationError(commandParameter,nameof(BooksViewModel));
+            await ShowDebugNavigationError(commandParameter, nameof(BooksViewModel));
         }
 
         RunInMainThread(() =>

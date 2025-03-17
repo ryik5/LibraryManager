@@ -43,7 +43,7 @@ public class ToolsViewModel : AbstractViewModel
                 case nameof(FindBooksPage):
                 case nameof(AboutPage):
                 {
-                   await TryGoToPage(commandParameter);
+                    await TryGoToPage(commandParameter);
                     break;
                 }
 
@@ -62,9 +62,8 @@ public class ToolsViewModel : AbstractViewModel
         }
         else
         {
-            await ShowDebugNavigationError(commandParameter,nameof(ToolsViewModel));
+            await ShowDebugNavigationError(commandParameter, nameof(ToolsViewModel));
         }
     }
     #endregion
-    
 }

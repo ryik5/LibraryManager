@@ -11,7 +11,7 @@ public class FindBooksViewModel : AbstractViewModel
     public FindBooksViewModel(ILibrary library)
     {
         Library = library;
-       //  Library.TotalBooksChanged += BookList_CollectionChanged;
+        //  Library.TotalBooksChanged += BookList_CollectionChanged;
         SearchFields = Enum.GetValues(typeof(EBibliographicKindInformation)).Cast<EBibliographicKindInformation>()
             .ToList();
         FoundBookList.CollectionChanged += HandleFoundBookListChanged;
@@ -111,18 +111,21 @@ public class FindBooksViewModel : AbstractViewModel
                 case nameof(ToolsPage):
                     await TryGoToPage(commandParameter);
                     break;
-                
+
                 case Constants.FIND_BOOKS:
-                { if (!ValidLibary())
+                {
+                    if (!ValidLibary())
                         return;
 
                     Book = null;
                     await FindBooksTask();
 
-                    break;}
+                    break;
+                }
 
                 case Constants.EDIT_BOOK:
-                { if (!ValidSelectedBooks())
+                {
+                    if (!ValidSelectedBooks())
                         return;
                     RunInMainThread(() => Book = SelectFirstFoundBook());
 
@@ -135,14 +138,16 @@ public class FindBooksViewModel : AbstractViewModel
                         Book.Set(editBookVM.Book);
                     }
 
-                    break;}
+                    break;
+                }
 
                 case Constants.DELETE_BOOK:
-                { List<Book> selectedBooks=null;
-                    RunInMainThread(() => selectedBooks = SelectedBooks.ToList() );
+                {
+                    List<Book> selectedBooks = null;
+                    RunInMainThread(() => selectedBooks = SelectedBooks.ToList());
                     // Performing actions by the BooksManager
                     await _bookManageable.RunCommand(commandParameter, SelectedBooks);
-                    
+
                     RunInMainThread(() =>
                         {
                             foreach (var selectedBook in selectedBooks)
@@ -151,21 +156,23 @@ public class FindBooksViewModel : AbstractViewModel
                             }
                         }
                     );
-                    break;}
-                
+                    break;
+                }
+
                 default: //jobs perform without creating views
                 {
                     // Performing actions by the BooksManager
                     await _bookManageable.RunCommand(commandParameter, SelectedBooks);
 
-                     break;
+                    break;
                 }
             }
         }
         else
         {
-            await ShowDebugNavigationError(commandParameter,nameof(FindBooksViewModel));
+            await ShowDebugNavigationError(commandParameter, nameof(FindBooksViewModel));
         }
+
         RunInMainThread(() =>
             {
                 RaisePropertyChanged(nameof(Library));

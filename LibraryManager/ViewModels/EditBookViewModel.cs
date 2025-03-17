@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace LibraryManager.ViewModels;
 
-public class EditBookViewModel :AbstractViewModel
+public class EditBookViewModel : AbstractViewModel
 {
     private Book _book;
 
@@ -19,8 +19,8 @@ public class EditBookViewModel :AbstractViewModel
         set => SetProperty(ref _book, value);
     }
     #endregion
-    
-    
+
+
     #region Public Methods
     protected override async Task PerformAction(string? commandParameter)
     {
@@ -36,10 +36,10 @@ public class EditBookViewModel :AbstractViewModel
             {
                 case Constants.SAVE_CONTENT:
                     break;
-                
+
                 case Constants.LOAD_CONTENT:
                     break;
-                
+
                 default:
                 {
                     // Settings view
@@ -50,9 +50,8 @@ public class EditBookViewModel :AbstractViewModel
         }
         else
         {
-            await ShowDebugNavigationError(commandParameter,nameof(EditBookViewModel));
+            await ShowDebugNavigationError(commandParameter, nameof(EditBookViewModel));
         }
     }
     #endregion
-    
 }

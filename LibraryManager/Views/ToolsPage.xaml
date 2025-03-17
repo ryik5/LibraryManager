@@ -8,12 +8,12 @@
              x:DataType="viewmodel:ToolsViewModel">
 
     <ContentPage.MenuBarItems>
-        <MenuBarItem  Text="Tools">
-            
+        <MenuBarItem Text="Tools">
+
             <MenuFlyoutItem Text="Debug"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="BooksPage" />
-              
+
             <MenuFlyoutItem Text="Settings"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="FindBooksPage" />
@@ -34,7 +34,7 @@
             <MenuFlyoutItem Text="Find Books"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="FindBooksPage" />
-                    
+
             <MenuFlyoutItem Text="About"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="AboutPage" />
@@ -43,23 +43,25 @@
     </ContentPage.MenuBarItems>
 
     <ContentPage.Content>
-<VerticalStackLayout>
-    
-        <control:SettingsView BindingContext="{Binding Settings}"/>
-        
-        <control:ThreeButtonsPanel 
-            BindingContext="{Binding}" 
-            HorizontalOptions="Center"
+        <VerticalStackLayout>
+
             
-            NavigateCommand="{Binding NavigateCommand, Mode=OneTime}"
-            OkText="{Binding Save, Mode=OneTime}"
-            
-            IsNoVisibile="False"
-            
-            CancelText="{Binding Cancel, Mode=OneTime}"
-            IsCancelVisibile="True"
-            />
-        
- </VerticalStackLayout>       
+            <VerticalStackLayout>
+                
+                <control:SettingsView BindingContext="{Binding Settings}" />
+                <control:ThreeButtonsPanel
+                    BindingContext="{Binding}"
+                    HorizontalOptions="Center"
+
+                    NavigateCommand="{Binding NavigateCommand, Mode=OneTime}"
+                    OkText="{Binding Save, Mode=OneTime}"
+
+                    IsNoVisibile="False"
+                    IsCancelVisibile="True" 
+                    CancelText="{Binding Cancel, Mode=OneTime}"/>
+                
+            </VerticalStackLayout>
+
+        </VerticalStackLayout>
     </ContentPage.Content>
 </ContentPage>

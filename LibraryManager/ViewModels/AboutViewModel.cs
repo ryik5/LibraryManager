@@ -41,7 +41,7 @@ public class AboutViewModel : AbstractViewModel
             return;
 
         // Prevent navigation to the same page - 'Shell.Current.GoToAsync(...'
-       //IsCurrentRoute == $"//{nameof(AboutPage)}"
+        //IsCurrentRoute == $"//{nameof(AboutPage)}"
         if (IsCurrentRoute(nameof(AboutPage)))
         {
             switch (commandParameter)
@@ -52,16 +52,15 @@ public class AboutViewModel : AbstractViewModel
                 case nameof(ToolsPage):
                     await TryGoToPage(commandParameter);
                     break;
-                
+
                 default: //jobs perform without creating views
                     await TryOpenBrowser(commandParameter);
                     break;
-
             }
         }
         else
         {
-            await ShowDebugNavigationError(commandParameter,nameof(AboutViewModel));
+            await ShowDebugNavigationError(commandParameter, nameof(AboutViewModel));
         }
     }
     #endregion
