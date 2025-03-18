@@ -29,22 +29,22 @@
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Sort Books" />
         </MenuBarItem>
-        <MenuBarItem  Text="Navigate">
-             <MenuFlyoutItem Text="Library"
-                              Command="{Binding NavigateCommand}"
-                              CommandParameter="LibraryPage" />
-              
-              <MenuFlyoutItem Text="Find Books"
-                              Command="{Binding NavigateCommand}"
-                              CommandParameter="FindBooksPage" />
-  
-              <MenuFlyoutItem Text="Tools"
-                              Command="{Binding NavigateCommand}"
-                              CommandParameter="ToolsPage" />
-                  
-             <MenuFlyoutItem Text="About"
-                             Command="{Binding NavigateCommand}"
-                             CommandParameter="AboutPage" />
+        <MenuBarItem Text="Navigate">
+            <MenuFlyoutItem Text="Library"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="LibraryPage" />
+
+            <MenuFlyoutItem Text="Find Books"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="FindBooksPage" />
+
+            <MenuFlyoutItem Text="Tools"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="ToolsPage" />
+
+            <MenuFlyoutItem Text="About"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="AboutPage" />
         </MenuBarItem>
     </ContentPage.MenuBarItems>
 
@@ -52,9 +52,8 @@
         <Grid BackgroundColor="{StaticResource White}" Padding="10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <Grid.Resources>
                 <Style TargetType="Button">
@@ -68,41 +67,66 @@
             <StackLayout Grid.Row="0"
                          Orientation="Horizontal"
                          HorizontalOptions="Fill"
-                         Margin="10,10,10,0" HeightRequest="35"
-                         IsVisible="{Binding IsBooksCollectionViewVisible, Mode=OneWay}">
+                         Margin="10,10,10,0" HeightRequest="35">
                 <Button Text="Add Book"
                         Command="{Binding NavigateCommand}"
-                        CommandParameter="Add Book"/>
+                        CommandParameter="Add Book" />
                 <Button Text="Demo 'Add Books'"
                         Command="{Binding NavigateCommand}"
-                        CommandParameter="Demo add books"/>
+                        CommandParameter="Demo add books" />
                 <Button Text="Edit Book"
                         Command="{Binding NavigateCommand}"
-                        CommandParameter="Edit Book"/>
+                        CommandParameter="Edit Book" />
                 <Button Text="Delete Book(s)"
                         Command="{Binding NavigateCommand}"
-                        CommandParameter="Delete the selected book"/>
+                        CommandParameter="Delete the selected book" />
                 <Button Text="Import Book"
                         Command="{Binding NavigateCommand}"
-                        CommandParameter="Import Book"/>
+                        CommandParameter="Import Book" />
                 <Button Text="Export Book"
                         Command="{Binding NavigateCommand}"
-                        CommandParameter="Export the selected book"/>
+                        CommandParameter="Export the selected book" />
 
                 <Button Text="Sort Library"
                         Command="{Binding NavigateCommand}"
-                        CommandParameter="Sort Books"/>
+                        CommandParameter="Sort Books" />
 
             </StackLayout>
 
             <!-- Displays Books-->
-            <control:BookCollectionView 
-                x:Name="BooksCollectionView" 
+            <control:BookCollectionView
+                BookCollection="{Binding Library.BookList,Mode=TwoWay}"
+                SelectionChangedCommand="{Binding SelectionChangedCommand}"
+                BindingContext="{Binding}"
                 Grid.Row="1"
-                Margin="10,10,5,30"
-                IsVisible="{Binding IsBooksCollectionViewVisible, Mode=OneWay}" 
-                />
-            
+                x:Name="BooksCollectionView"
+                IsVisible="{Binding IsBooksCollectionViewVisible, Mode=OneWay}"
+                Margin="10,10,5,30" />
+
+            <!-- Add/Edit Book View -->
+            <control:EditBookView
+                Grid.Row="1"
+                Book="{Binding Book,Mode=TwoWay}"
+                BindingContext="{Binding}"
+                IsVisible="{Binding IsEditBookViewVisible, Mode=OneWay}"
+                Margin="10,20,20,10" />
+
+            <!-- Add/Edit Book Controls -->
+            <control:ThreeButtonsPanel
+                Grid.Row="2"
+                IsVisible="{Binding IsEditBookViewVisible, Mode=OneWay}"
+                HeightRequest="35"
+                Margin="0,50,0,10"
+                BindingContext="{Binding}"
+                HorizontalOptions="Center"
+                VerticalOptions="End"
+                NavigateCommand="{Binding NavigateCommand, Mode=OneTime}"
+                IsOkVisibile="True"
+                OkText="{Binding OK, Mode=OneWay}"
+                IsNoVisibile="False"
+                IsCancelVisibile="True"
+                CancelText="{Binding Cancel, Mode=OneWay}" />
+
         </Grid>
     </ContentPage.Content>
 

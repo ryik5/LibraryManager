@@ -3,6 +3,7 @@ using LibraryManager.Models;
 using LibraryManager.Views;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Windows.Input;
 
 namespace LibraryManager.ViewModels;
 
@@ -11,16 +12,22 @@ public class FindBooksViewModel : AbstractViewModel
     public FindBooksViewModel(ILibrary library)
     {
         Library = library;
-        //  Library.TotalBooksChanged += BookList_CollectionChanged;
+        _bookManageable = new BookManagerModel(Library);
+        Library.TotalBooksChanged += BookList_CollectionChanged;
         SearchFields = Enum.GetValues(typeof(EBibliographicKindInformation)).Cast<EBibliographicKindInformation>()
             .ToList();
         FoundBookList.CollectionChanged += HandleFoundBookListChanged;
-        CanEditBook = true;
-        _bookManageable = new BookManagerModel(Library);
+        SelectionChangedCommand = new Command<IList<object>>(HandleOnCollectionViewSelectionChanged);
+        IsBooksCollectionViewVisible = true;
+        IsEditBookViewVisible = false;
+
+        CleanSelectionTask().ConfigureAwait(false);
     }
 
 
     #region Public Properties
+    public ICommand SelectionChangedCommand { get; }
+
     public ILibrary Library { get; set; }
 
     public ObservableCollection<Book> FoundBookList
@@ -29,7 +36,7 @@ public class FindBooksViewModel : AbstractViewModel
         set => SetProperty(ref _foundBookList, value);
     }
 
-    public ObservableCollection<Book> SelectedBooks
+    public IList<Book> SelectedBooks
     {
         get => _selectedBooks;
         set => SetProperty(ref _selectedBooks, value);
@@ -85,11 +92,29 @@ public class FindBooksViewModel : AbstractViewModel
         }
     }
 
+    public bool IsBooksCollectionViewVisible
+    {
+        get => _isBooksCollectionViewVisible;
+        set => SetProperty(ref _isBooksCollectionViewVisible, value);
+    }
+
+    public bool IsEditBookViewVisible
+    {
+        get => _isEditBookViewVisible;
+        set => SetProperty(ref _isEditBookViewVisible, value);
+    }
+
     public bool CanEditBook
     {
         get => _canEditBook;
         set => SetProperty(ref _canEditBook, value);
     }
+
+    #region CommandParameters
+    public string OK => Constants.SAVE_CHANGES;
+
+    public string Cancel => Constants.CANCEL;
+    #endregion
     #endregion
 
     #region Public Methods
@@ -123,20 +148,36 @@ public class FindBooksViewModel : AbstractViewModel
                     break;
                 }
 
+                case Constants.CANCEL:
+                {
+                    Book = null;
+                    IsBooksCollectionViewVisible = true;
+                    IsEditBookViewVisible = false;
+                    break;
+                }
+
+                case Constants.SAVE_CHANGES:
+                {
+                    if (Book.IsValid())
+                    {
+                        RunInMainThread(() => { SelectFirstFoundBook()?.Set(Book); });
+                    }
+
+                    Book = null;
+                    IsBooksCollectionViewVisible = true;
+                    IsEditBookViewVisible = false;
+                    break;
+                }
+
                 case Constants.EDIT_BOOK:
                 {
                     if (!ValidSelectedBooks())
                         return;
-                    RunInMainThread(() => Book = SelectFirstFoundBook());
+                    
+                    RunInMainThread(() => Book = (Book)SelectFirstFoundBook().Clone());
 
-                    var editBookVM = new EditBookViewModel((Book)Book.Clone());
-                    var editBookPage = new EditBookPage() { BindingContext = editBookVM };
-                    await Application.Current?.MainPage?.Navigation.PushModalAsync(editBookPage)!;
-
-                    if (await editBookPage.DialogResultTask.Task)
-                    {
-                        Book.Set(editBookVM.Book);
-                    }
+                    IsBooksCollectionViewVisible = false;
+                    IsEditBookViewVisible = true;
 
                     break;
                 }
@@ -217,32 +258,41 @@ public class FindBooksViewModel : AbstractViewModel
     /// </summary>
     /// <param name="sender">The source of the event.</param>
     /// <param name="e">The NotifyCollectionChangedEventArgs instance containing the event data.</param>
-    private void HandleFoundBookListChanged(object? sender,
+    private async void HandleFoundBookListChanged(object? sender,
         System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
-        RunInMainThread(() =>
-        {
-            SelectedBooks.Clear();
-            CanEditBook = 0 < SelectedBooks?.Count;
-        });
+        await CleanSelectionTask();
+    }
+
+    private async Task CleanSelectionTask()
+    {
+        SelectedBooks = null;
+        CanEditBook = false;
     }
 
     private Book? SelectFirstFoundBook() => ValidSelectedBooks() ? SelectedBooks[0] : null;
 
     private async void BookList_CollectionChanged(object? sender, TotalBooksEventArgs e)
     {
-        await FindBooksTask();
+        await CleanSelectionTask();
+    }
+
+    private void HandleOnCollectionViewSelectionChanged(IList<object> obj)
+    {
+        SelectedBooks = obj?.Select(b => b as Book)?.ToList();
     }
     #endregion
 
     #region Private fields
-    private ObservableCollection<Book> _selectedBooks = new();
-    private Book _book;
     private ObservableCollection<Book> _foundBookList = new();
+    private IList<Book> _selectedBooks = new List<Book>();
+    private Book _book;
     private readonly BookManagerModel _bookManageable;
     private string _searchText;
     private bool _searchOnFly;
     private EBibliographicKindInformation _searchField;
     private bool _canEditBook;
+    private bool _isEditBookViewVisible;
+    private bool _isBooksCollectionViewVisible;
     #endregion
 }

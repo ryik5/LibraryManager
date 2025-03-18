@@ -19,9 +19,6 @@ public partial class BooksPage : ContentPage
 
         // Avoid assigning a new instance unnecessarily
         BindingContext ??= App.Services.GetService<BooksViewModel>();
-
-        // Add event handlers
-        BooksCollectionView?.OnAppearing();
     }
 
     /// <summary>
@@ -30,8 +27,6 @@ public partial class BooksPage : ContentPage
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
-
-        BooksCollectionView?.OnDisappearing();
 
         BindingContext = null;
     }

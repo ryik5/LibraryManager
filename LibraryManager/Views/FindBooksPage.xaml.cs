@@ -8,8 +8,8 @@ public partial class FindBooksPage : ContentPage
     {
         InitializeComponent();
     }
-    
-    
+
+
     /// <summary>
     /// To ensure the BindingContext is bound correctly
     /// </summary>
@@ -19,9 +19,6 @@ public partial class FindBooksPage : ContentPage
 
         // Avoid assigning a new instance unnecessarily
         BindingContext ??= App.Services.GetService<FindBooksViewModel>();
-
-        // Add event handlers
-        BooksCollectionView?.OnAppearing();
     }
 
     /// <summary>
@@ -30,8 +27,6 @@ public partial class FindBooksPage : ContentPage
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
-
-        BooksCollectionView?.OnDisappearing();
 
         BindingContext = null;
     }

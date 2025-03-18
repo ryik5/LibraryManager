@@ -33,25 +33,33 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
                 <Label Text="Author" Grid.Row="0" Grid.Column="0" />
-                <Entry Text="{Binding Source={RelativeSource TemplatedParent}, Path=Book.Author}" Grid.Row="0" Grid.Column="1" />
+                <Entry Text="{Binding Source={RelativeSource TemplatedParent}, Path=Book.Author}" 
+                       Placeholder="Author"
+                       Grid.Row="0" Grid.Column="1" />
 
                 <Label Text="Title" Grid.Row="1" Grid.Column="0" />
-                <Entry Text="{Binding Source={RelativeSource TemplatedParent}, Path=Book.Title}" Grid.Row="1" Grid.Column="1" />
+                <Entry Text="{Binding Source={RelativeSource TemplatedParent}, Path=Book.Title}" 
+                       Placeholder="Title of the Book"
+                       Grid.Row="1" Grid.Column="1" />
 
                 <Label Text="Pages" Grid.Row="2" Grid.Column="0" />
-                <Entry Text="{Binding Source={RelativeSource TemplatedParent}, Path=Book.TotalPages}" Grid.Row="2" Grid.Column="1" />
+                <Entry Text="{Binding Source={RelativeSource TemplatedParent}, Path=Book.TotalPages}" 
+                       Placeholder="Total pages in the Book"
+                       Grid.Row="2" Grid.Column="1" />
 
                 <Label Text="Publish Year" Grid.Row="3" Grid.Column="0" />
-                <Entry Text="{Binding Source={RelativeSource TemplatedParent}, Path=Book.Year}" Grid.Row="3" Grid.Column="1" />
+                <Entry Text="{Binding Source={RelativeSource TemplatedParent}, Path=Book.Year}" Grid.Row="3" 
+                       Placeholder="Publish Year"
+                       Grid.Column="1" />
 
                 <Label Text="Description" Grid.Row="4" Grid.Column="0" />
                 <Frame Grid.Row="4" Grid.Column="1" Margin="5" Padding="2 ,0,2,0">
                     <Grid> <!-- TODO: Check necessary -->
                         <Editor Text="{Binding Source={RelativeSource TemplatedParent}, Path=Book.Description}"
+                                Placeholder="Book's short description"
                                 AutoSize="TextChanges"
                                 HorizontalTextAlignment="Start"
                                 VerticalTextAlignment="Start"
@@ -70,23 +78,28 @@
                 </Frame>
 
                 <Label Text="Genre" Grid.Row="5" Grid.Column="0" />
-                <Entry Text="{Binding Source={RelativeSource TemplatedParent}, Path=Book.Genre}" Grid.Row="5" Grid.Column="1" />
+                <Entry Text="{Binding Source={RelativeSource TemplatedParent}, Path=Book.Genre}" 
+                       Placeholder="Genre of the Book"
+                       Grid.Row="5" Grid.Column="1" />
 
                 <Label Text="ISBN" Grid.Row="6" Grid.Column="0" />
-                <Entry Text="{Binding Source={RelativeSource TemplatedParent}, Path=Book.ISBN}" Grid.Row="6" Grid.Column="1" />
+                <Entry Text="{Binding Source={RelativeSource TemplatedParent}, Path=Book.ISBN}" 
+                       Placeholder="ISBN"
+                       Grid.Row="6" Grid.Column="1" />
 
-                <Label Text="External content" Grid.Row="8" Grid.Column="0" />
+                <Label Text="External content" Grid.Row="7" Grid.Column="0" />
                 <CheckBox IsChecked="{Binding Source={RelativeSource TemplatedParent}, Path=Book.Content.IsContentStoredSeparately, Mode=OneWay}"
-                          IsEnabled="False" Grid.Row="8" Grid.Column="1"
+                          IsEnabled="False" Grid.Row="7" Grid.Column="1"
                           VerticalOptions="Center"
                           HorizontalOptions="Start"
                           HeightRequest="20"
                           Margin="0" />
 
                 <Label Text="Original path"
-                       Grid.Row="9" Grid.Column="0" />
+                       Grid.Row="8" Grid.Column="0" />
                 <Entry Text="{Binding Source={RelativeSource TemplatedParent}, Path=Book.Content.OriginalPath}"
-                       Grid.Row="9" Grid.Column="1" IsEnabled="False" />
+                       Placeholder="Original path where the uploaded content was"
+                       Grid.Row="8" Grid.Column="1" IsEnabled="False" />
 
             </Grid>
         </ControlTemplate>

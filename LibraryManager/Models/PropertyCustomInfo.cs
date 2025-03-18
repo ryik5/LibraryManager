@@ -11,16 +11,10 @@ public class PropertyCustomInfo
     /// <summary>
     /// Gets or sets the PropertyInfo associated with this custom property information.
     /// </summary>
-    public PropertyInfo PropertyInfo
-    {
-        get; set;
-    }
+    public PropertyInfo PropertyInfo { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether the property should be sorted in descending order.
     /// </summary>
-    public bool DescendingOrder
-    {
-        get; set;
-    }
+    public bool DescendingOrder { get; set; }
 }

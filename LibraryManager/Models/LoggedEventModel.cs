@@ -9,26 +9,17 @@ public sealed class LoggedEventModel
     /// <summary>
     /// Gets the log level of the event.
     /// </summary>
-    public ELogLevel LogLevel
-    {
-        get;
-    }
+    public ELogLevel LogLevel { get; }
 
     /// <summary>
     /// Gets the message text.
     /// </summary>
-    public string Message
-    {
-        get;
-    }
+    public string Message { get; }
 
     /// <summary>
     /// Gets the timestamp when the event was logged.
     /// </summary>
-    public DateTime Timestamp
-    {
-        get;
-    }
+    public DateTime Timestamp { get; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="LoggedEventModel"/> class with the specified log level and message.

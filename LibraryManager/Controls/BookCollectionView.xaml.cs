@@ -1,53 +1,47 @@
-using LibraryManager.Extensions;
 using LibraryManager.Models;
-using LibraryManager.ViewModels;
+using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace LibraryManager.Controls;
 
 public partial class BookCollectionView : ContentView
 {
+    public static readonly BindableProperty SelectionChangedCommandProperty =
+        BindableProperty.Create(nameof(SelectionChangedCommand),
+            typeof(ICommand), typeof(BookCollectionView),
+            defaultBindingMode: BindingMode.TwoWay);
+
+    public ICommand SelectionChangedCommand
+    {
+        get => (ICommand)GetValue(SelectionChangedCommandProperty);
+        set => SetValue(SelectionChangedCommandProperty, value);
+    }
+
+
+    public static readonly BindableProperty BookCollectionProperty =
+        BindableProperty.Create(nameof(BookCollection), typeof(ObservableCollection<Book>), typeof(BookCollectionView),
+            default,
+            propertyChanged: OnBookChanged);
+
+    private static void OnBookChanged(BindableObject bindable, object oldvalue, object newValue)
+    {
+        if (!(bindable is BookCollectionView bookCollectionView))
+            return;
+        if (!(newValue is ObservableCollection<Book> value))
+            return;
+        bookCollectionView.BookCollection = value;
+    }
+
+    public ObservableCollection<Book> BookCollection
+    {
+        get => (ObservableCollection<Book>)GetValue(BookCollectionProperty);
+        set => SetValue(BookCollectionProperty, value);
+    }
+
+
     // Parameterless constructor required by .NET MAUI Shell navigation
     public BookCollectionView()
     {
         InitializeComponent();
-    }
-
-    /// <summary>
-    /// To ensure the BindingContext is bound correctly
-    /// </summary>
-    public virtual void OnAppearing()
-    {
-        // Avoid assigning a new instance unnecessarily
-        BindingContext ??= App.Services.GetService<BooksViewModel>();
-
-        // Add event handlers
-        BooksCollectionView.SelectionChanged += SelectableItemsView_OnSelectionChanged;
-    }
-
-    /// <summary>
-    /// To ensure the BindingContext is cleared correctly
-    /// </summary>
-    public virtual void OnDisappearing()
-    {
-        // prevention of hung up switching between pages after it has been done selection of the row 
-        BooksCollectionView.SelectedItems = null;
-        
-        if (BooksCollectionView != null)
-            BooksCollectionView.SelectionChanged -= SelectableItemsView_OnSelectionChanged;
-
-        if (BindingContext != null)
-            BindingContext = null;
-    }
-
-
-    /// <summary>
-    /// Event handler for SelectionChanged event
-    /// </summary>
-    private void SelectableItemsView_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
-    {
-        if (BindingContext is BooksViewModel bvs)
-        {
-            bvs.SelectedBooks.ResetAndAddRange(e.CurrentSelection.Select(b => b as Book));
-        }
     }
 }

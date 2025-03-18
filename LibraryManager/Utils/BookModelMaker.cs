@@ -5,16 +5,16 @@ using LibraryManager.Models;
 namespace LibraryManager.Utils;
 
 /// <summary>
-/// A utility class for generating demo book data.
+/// A utility class for generating book data.
 /// </summary>
 /// <author>YR 2025-02-03</author>
-internal static class DemoBookMaker
+internal static class BookModelMaker
 {
     /// <summary>
     /// Generates a book with randomly generated properties.
     /// </summary>
     /// <returns>A new instance of Book with random properties.</returns>
-    public static Book GenerateBook()
+    public static Book GenerateDemoBook()
     {
         var id = Random.Shared.Next();
         var title = GenerateTitle();
@@ -32,6 +32,27 @@ internal static class DemoBookMaker
         };
     }
 
+    /// <summary>
+    /// Generates a book with empty generated properties.
+    /// </summary>
+    /// <returns>A new instance of Book.</returns>
+    public static Book GenerateBook()
+    {
+        var id = Random.Shared.Next();
+        var title = String.Empty;
+        var author = String.Empty;
+        var year = DateTime.Now.Year;
+        var pages = 0;
+
+        return new Book()
+        {
+            Id = id,
+            Author = author,
+            Title = title,
+            TotalPages = pages,
+            Year = year
+        };
+    }
 
     #region private methods
     /// <summary>

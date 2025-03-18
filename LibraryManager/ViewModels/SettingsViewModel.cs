@@ -17,7 +17,7 @@ public class SettingsViewModel : AbstractBindableModel
     {
         // TODO : Load and save data with SettingsModel instead
         // TODO: write as StaticRoute
-        
+
         _searchFields = Enum.GetValues(typeof(EBibliographicKindInformation)).Cast<EBibliographicKindInformation>()
             .ToArray();
         _booleans = new[] { true, false };
@@ -97,8 +97,8 @@ public class SettingsViewModel : AbstractBindableModel
         get => _firstSortPropertyByDescend;
         set
         {
-            if (SetProperty(ref _firstSortPropertyByDescend, value))
-                SetStringProperty(value, ref _firstSortProperty_SortingDirection, FirstSortProperty_SortingDirection);
+            SetProperty(ref _firstSortPropertyByDescend, value);
+            SetStringProperty(value, ref _firstSortProperty_SortingDirection, FirstSortProperty_SortingDirection);
         }
     }
 
@@ -107,8 +107,8 @@ public class SettingsViewModel : AbstractBindableModel
         get => _firstSortProperty_SortingDirection;
         set
         {
-            if (SetProperty(ref _firstSortProperty_SortingDirection, value))
-                SetBooleanProperty(value, ref _firstSortPropertyByDescend, FirstSortProperty_ByDescend);
+            SetProperty(ref _firstSortProperty_SortingDirection, value);
+            SetBooleanProperty(value, ref _firstSortPropertyByDescend, FirstSortProperty_ByDescend);
         }
     }
 
@@ -132,8 +132,8 @@ public class SettingsViewModel : AbstractBindableModel
         get => _secondSortPropertyByDescend;
         set
         {
-            if (SetProperty(ref _secondSortPropertyByDescend, value))
-                SetStringProperty(value, ref _secondSortProperty_SortingDirection, SecondSortProperty_SortingDirection);
+            SetProperty(ref _secondSortPropertyByDescend, value);
+            SetStringProperty(value, ref _secondSortProperty_SortingDirection, SecondSortProperty_SortingDirection);
         }
     }
 
@@ -142,8 +142,8 @@ public class SettingsViewModel : AbstractBindableModel
         get => _secondSortProperty_SortingDirection;
         set
         {
-            if (SetProperty(ref _secondSortProperty_SortingDirection, value))
-                SetBooleanProperty(value, ref _secondSortPropertyByDescend, SecondSortProperty_ByDescend);
+            SetProperty(ref _secondSortProperty_SortingDirection, value);
+            SetBooleanProperty(value, ref _secondSortPropertyByDescend, SecondSortProperty_ByDescend);
         }
     }
 
@@ -167,8 +167,8 @@ public class SettingsViewModel : AbstractBindableModel
         get => _thirdSortPropertyByDescend;
         set
         {
-            if (SetProperty(ref _thirdSortPropertyByDescend, value))
-                SetStringProperty(value, ref _thirdSortProperty_SortingDirection, ThirdSortProperty_SortingDirection);
+            SetProperty(ref _thirdSortPropertyByDescend, value);
+            SetStringProperty(value, ref _thirdSortProperty_SortingDirection, ThirdSortProperty_SortingDirection);
         }
     }
 
@@ -177,8 +177,8 @@ public class SettingsViewModel : AbstractBindableModel
         get => _thirdSortProperty_SortingDirection;
         set
         {
-            if (SetProperty(ref _thirdSortProperty_SortingDirection, value))
-                SetBooleanProperty(value, ref _thirdSortPropertyByDescend, ThirdSortProperty_ByDescend);
+            SetProperty(ref _thirdSortProperty_SortingDirection, value);
+            SetBooleanProperty(value, ref _thirdSortPropertyByDescend, ThirdSortProperty_ByDescend);
         }
     }
 
@@ -287,7 +287,7 @@ public class SettingsViewModel : AbstractBindableModel
 
 
     #region Private methods
-    private void SetStringProperty(bool key, ref string _propertyValue, string PropertyName)
+    private Task SetStringProperty(bool key, ref string _propertyValue, string PropertyName)
     {
         switch (key)
         {
@@ -300,9 +300,10 @@ public class SettingsViewModel : AbstractBindableModel
         }
 
         RaisePropertyChanged(nameof(PropertyName));
+        return Task.CompletedTask;
     }
 
-    private void SetBooleanProperty(string key, ref bool _propertyValue, bool PropertyName)
+    private Task SetBooleanProperty(string key, ref bool _propertyValue, bool PropertyName)
     {
         switch (key)
         {
@@ -315,6 +316,8 @@ public class SettingsViewModel : AbstractBindableModel
         }
 
         RaisePropertyChanged(nameof(PropertyName));
+
+        return Task.CompletedTask;
     }
 
 
@@ -350,7 +353,8 @@ public class SettingsViewModel : AbstractBindableModel
     /// <param name="startLength">The starting unit of measurement (e.g. Byte, KB, MB, GB).</param>
     /// <param name="result">The converted file size.</param>
     /// <param name="length">The unit of measurement for the converted file size.</param>
-    private void ConvertToHumanReadableFileSize(long number, EFileLengthUnit startLength, out long result, out EFileLengthUnit length)
+    private void ConvertToHumanReadableFileSize(long number, EFileLengthUnit startLength, out long result,
+        out EFileLengthUnit length)
     {
         while (true)
         {

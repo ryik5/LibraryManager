@@ -69,7 +69,7 @@
                     Command="{Binding Source={RelativeSource TemplatedParent}, Path=NavigateCommand}"
                     CommandParameter="{Binding Source={RelativeSource TemplatedParent}, Path=OkText}"
                     Text="{Binding Source={RelativeSource TemplatedParent}, Path=OkText}"
-                    IsVisible="{Binding Source={RelativeSource TemplatedParent}, Path=IsOkButtonVisible}"
+                    IsVisible="{Binding Source={RelativeSource TemplatedParent}, Path=IsOkVisibile}"
                     MinimumWidthRequest="70"
                     Margin="0,0,0,0" />
 

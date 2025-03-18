@@ -38,11 +38,13 @@
 
         <Label Text="ID" Grid.Row="0" Grid.Column="0" />
         <Entry Text="{Binding Library.Id}"
+               Placeholder="ID"
                IsReadOnly="True"
                Grid.Row="0" Grid.Column="1" />
 
         <Label Text="Name" Grid.Row="1" Grid.Column="0" />
         <Entry Text="{Binding Library.Name}"
+               Placeholder="Library's Name"
                IsEnabled="{Binding CanOperateWithBooks}"
                Grid.Row="1" Grid.Column="1" />
 
@@ -55,6 +57,7 @@
         <Frame Grid.Row="3" Grid.Column="1">
             <Grid> <!-- TODO: Check necessary -->
                 <Editor Text="{Binding Library.Description}"
+                        Placeholder="Library's short description"
                         IsEnabled="{Binding CanOperateWithBooks}"
                         AutoSize="TextChanges"
                         VerticalOptions="Start"

@@ -26,12 +26,12 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
         switch (commandParameter)
         {
             case Constants.ADD_BOOK:
-                AddBook(DemoBookMaker.GenerateBook());
+                AddBook(BookModelMaker.GenerateDemoBook());
                 break;
 
             case Constants.DEMO_ADD_BOOKS:
                 for (var b = 0; b < 10; b++)
-                    AddBook(DemoBookMaker.GenerateBook());
+                    AddBook(BookModelMaker.GenerateDemoBook());
                 break;
 
             case Constants.DELETE_BOOK:
@@ -113,7 +113,7 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
         RunInMainThread(() =>
         {
             book.Id = _library.BookList.Count == 0 ? 1 : _library.BookList.Max(b => b.Id) + 1;
-            _library.BookList.Add(book);
+            _library.BookList.Insert(0,book);
         });
     }
 

@@ -32,27 +32,27 @@
             <MenuFlyoutSeparator />
             <!--</MenuFlyoutSubItem>-->
         </MenuBarItem>
-                
-        <MenuBarItem  Text="Navigate">
-            
+
+        <MenuBarItem Text="Navigate">
+
             <MenuFlyoutItem Text="Books"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="BooksPage" />
-              
+
             <MenuFlyoutItem Text="Find Books"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="FindBooksPage" />
-  
+
             <MenuFlyoutItem Text="Tools"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="ToolsPage" />
-              
+
             <MenuFlyoutItem Text="About"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="AboutPage" />
-            
+
         </MenuBarItem>
-        
+
     </ContentPage.MenuBarItems>
 
     <ContentPage.Content>
@@ -83,9 +83,6 @@
                 <Button Text="Load Library"
                         Command="{Binding NavigateCommand}"
                         CommandParameter="Load the library" />
-                <Button Text="Edit Library"
-                        Command="{Binding NavigateCommand}"
-                        CommandParameter="Edit Library" />
                 <Button Text="Save Library"
                         Command="{Binding NavigateCommand}"
                         CommandParameter="Save Library"
@@ -106,7 +103,7 @@
                 Grid.Row="1"
                 HeightRequest="400"
                 VerticalOptions="Start"
-                BindingContext="{Binding  }"
+                BindingContext="{Binding }"
                 Margin="20,30,0,20" />
 
         </Grid>

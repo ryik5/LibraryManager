@@ -1,8 +1,11 @@
+using CommunityToolkit.Mvvm.Input;
 using System.Diagnostics;
 using LibraryManager.Models;
+using LibraryManager.Utils;
 using LibraryManager.Views;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Windows.Input;
 
 namespace LibraryManager.ViewModels;
 
@@ -15,13 +18,14 @@ public class BooksViewModel : AbstractViewModel, IDisposable
         Library = library;
         Library.BookList.CollectionChanged += BookList_CollectionChanged;
         _bookManageable = new BookManagerModel(Library);
-        SelectedBooks = new();
-        SelectedBooks.CollectionChanged += Handle_SelectedBooks_CollectionChanged;
-
+        SelectedBooks = new List<Book>();
+       SelectionChangedCommand =  new Command<IList<object>>(HandleOnCollectionViewSelectionChanged);
         IsBooksCollectionViewVisible = true;
         IsEditBookViewVisible = false;
         Handle_SelectedBooks_CollectionChanged().ConfigureAwait(false);
     }
+
+
 
 
     #region Public properties
@@ -31,11 +35,13 @@ public class BooksViewModel : AbstractViewModel, IDisposable
         set => SetProperty(ref _library, value);
     }
 
-    public ObservableCollection<Book> SelectedBooks
+    public IList<Book> SelectedBooks
     {
         get => _selectedBooks;
         set => SetProperty(ref _selectedBooks, value);
     }
+
+    public ICommand SelectionChangedCommand { get; }
 
     public Book Book
     {
@@ -68,6 +74,16 @@ public class BooksViewModel : AbstractViewModel, IDisposable
     }
 
     public event EventHandler<TotalBooksEventArgs>? TotalBooksChanged;
+
+    #region CommandParameters
+    public string OK
+    {
+        get => _ok;
+        set => SetProperty(ref _ok, value);
+    }
+
+    public string Cancel => Constants.CANCEL;
+    #endregion
     #endregion
 
 
@@ -90,38 +106,82 @@ public class BooksViewModel : AbstractViewModel, IDisposable
                 case nameof(LibraryPage):
                 case nameof(FindBooksPage):
                 case nameof(ToolsPage):
+                {
                     await TryGoToPage(commandParameter);
                     break;
+                }
+                case Constants.CANCEL:
+                {
+                    Book = null;
+                    IsBooksCollectionViewVisible = true;
+                    IsEditBookViewVisible = false;
+                    break;
+                }
+                case Constants.SAVE:
+                {
+                    if (Book.IsValid())
+                    {
+                        RunInMainThread(() => _bookManageable.AddBook(Book));
+                    }
 
+                    IsBooksCollectionViewVisible = true;
+                    IsEditBookViewVisible = false;
+                    Book = null;
+                    break;
+                }
+                case Constants.ADD_BOOK:
+                {
+                    OK = Constants.SAVE;
+                    Book = BookModelMaker.GenerateBook();
+                    IsBooksCollectionViewVisible = false;
+                    IsEditBookViewVisible = true;
+                    break;
+                }
+                case Constants.SAVE_CHANGES:
+                {
+                    if (Book.IsValid())
+                    {
+                        RunInMainThread(() => { SelectFirstFoundBook()?.Set(Book); });
+                    }
+
+                    Book = null;
+                    IsBooksCollectionViewVisible = true;
+                    IsEditBookViewVisible = false;
+                    break;
+                }
                 case Constants.EDIT_BOOK:
                 {
                     if (!ValidSelectedBooks())
                         return;
-                    RunInMainThread(() => Book = SelectFirstFoundBook());
+                    RunInMainThread(() => Book = (Book)SelectFirstFoundBook().Clone());
 
-                    var editBookVM = new EditBookViewModel((Book)Book.Clone());
+                    OK = Constants.SAVE_CHANGES;
+
+                    IsBooksCollectionViewVisible = false;
+                    IsEditBookViewVisible = true;
+
+                    /*var editBookVM = new EditBookViewModel((Book)Book.Clone());
                     var editBookPage = new EditBookPage() { BindingContext = editBookVM };
                     await Application.Current?.MainPage?.Navigation.PushModalAsync(editBookPage)!;
 
                     if (await editBookPage.DialogResultTask.Task)
                     {
                         Book.Set(editBookVM.Book);
-                    }
+                    }*/
 
                     break;
                 }
 
                 case Constants.SORT_BOOKS:
+                {
                     if (await MakeSortingList() is { Count: > 0 } props)
                         _bookManageable.SafetySortBooks(props);
-
                     break;
-
+                }
                 default: //jobs perform without creating views
                 {
                     // Performing actions at the BooksManager
                     await _bookManageable.RunCommand(commandParameter, SelectedBooks);
-
                     break;
                 }
             }
@@ -149,7 +209,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable
 
         // Perform cleanup: Unsubscribe from any events
         Library.BookList.CollectionChanged -= BookList_CollectionChanged;
-        SelectedBooks.CollectionChanged -= Handle_SelectedBooks_CollectionChanged;
+       // SelectedBooks.CollectionChanged -= Handle_SelectedBooks_CollectionChanged;
         SelectedBooks.Clear();
 
         #if DEBUG
@@ -177,16 +237,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable
         Book = null;
         Library.TotalBooks = Library.BookList.Count;
     }
-
-    private bool StartEditSelectedBook()
-    {
-        if (!CanEditSelectedBook())
-            return false;
-
-        Book = SelectedBooks[0].Clone() as Book;
-
-        return true;
-    }
+    
 
     private bool CanEditSelectedBook()
     {
@@ -218,6 +269,11 @@ public class BooksViewModel : AbstractViewModel, IDisposable
         return Task.FromResult(props);
     }
 
+    private void HandleOnCollectionViewSelectionChanged(IList<object> obj)
+    {
+        SelectedBooks = obj?.Select(b=>b as Book)?.ToList();
+    }
+
 
     private async void Handle_SelectedBooks_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
@@ -226,7 +282,8 @@ public class BooksViewModel : AbstractViewModel, IDisposable
 
     private Task Handle_SelectedBooks_CollectionChanged()
     {
-        CanEditBook = 0 < SelectedBooks?.Count;
+        CanEditBook = 0 < SelectedBooks.Count;
+        Book = null;
         return Task.CompletedTask;
     }
 
@@ -249,7 +306,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable
     #region Private fields
     private readonly IBookManageable _bookManageable;
     private ILibrary _library;
-    private ObservableCollection<Book> _selectedBooks;
+    private IList<Book> _selectedBooks;
     private Book _book;
     private SettingsViewModel _settings;
     private bool _isBooksCollectionViewVisible;
@@ -257,5 +314,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable
     private bool _disposed; // Safeguard for multiple calls to Dispose.
     private string _loadingState;
     private bool _canEditBook;
+    private string _ok;
+    private object _onSelectionObject;
     #endregion
 }

@@ -55,18 +55,11 @@
       <MauiXaml Update="Controls\CustomDialogPage.xaml">
         <SubType>Designer</SubType>
       </MauiXaml>
-      <MauiXaml Update="Views\EditBookPage.xaml">
-        <SubType>Designer</SubType>
-      </MauiXaml>
     </ItemGroup>
     
     <ItemGroup>
       <Compile Update="Controls\CustomDialogPage.xaml.cs">
         <DependentUpon>CustomDialogPage.xaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Views\EditBookPage.xaml.cs">
-        <DependentUpon>EditBookPage.xaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
     </ItemGroup>

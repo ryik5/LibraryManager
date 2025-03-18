@@ -38,6 +38,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <Grid.Resources>
                 <Style TargetType="Button">
@@ -55,6 +56,7 @@
                          Margin="10,10,10,0" HeightRequest="35">
 
                 <Entry Text="{Binding SearchText}"
+                       Placeholder="Input word to seek"
                        Margin="10,0,10,0"
                        FontSize="18"
                        MinimumWidthRequest="150" />
@@ -91,12 +93,39 @@
             </StackLayout>
 
             <!-- Displays Found Books-->
-            <control:FoundCollectionView
+             <control:BookCollectionView
+                BookCollection="{Binding FoundBookList, Mode=TwoWay}"
+                SelectionChangedCommand="{Binding SelectionChangedCommand}"
                 BindingContext="{Binding}"
+                Grid.Row="1"
                 x:Name="BooksCollectionView"
-                Margin="10,10,5,30"
-                Grid.Row="1" />
+                IsVisible="{Binding IsBooksCollectionViewVisible, Mode=OneWay}"
+                Margin="10,10,5,30" />
 
+            <!-- Add/Edit Book View -->
+            <control:EditBookView
+                Grid.Row="1"
+                Book="{Binding Book,Mode=TwoWay}"
+                BindingContext="{Binding}"
+                IsVisible="{Binding IsEditBookViewVisible, Mode=OneWay}"
+                Margin="10,20,20,10" />
+
+            <!-- Add/Edit Book Controls -->
+            <control:ThreeButtonsPanel
+                Grid.Row="2"
+                IsVisible="{Binding IsEditBookViewVisible, Mode=OneWay}"
+                HeightRequest="35"
+                Margin="0,50,0,10"
+                BindingContext="{Binding}"
+                HorizontalOptions="Center"
+                VerticalOptions="End"
+                NavigateCommand="{Binding NavigateCommand, Mode=OneTime}"
+                IsOkVisibile="True"
+                OkText="{Binding OK, Mode=OneWay}"
+                IsNoVisibile="False"
+                IsCancelVisibile="True"
+                CancelText="{Binding Cancel, Mode=OneWay}" />
+            
         </Grid>
     </ContentPage.Content>
 </ContentPage>

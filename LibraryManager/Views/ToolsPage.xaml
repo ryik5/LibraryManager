@@ -20,9 +20,6 @@
 
         </MenuBarItem>
         <MenuBarItem Text="Navigate">
-            <!--  To make menu like menu with SubMenu -->
-            <!--<MenuFlyoutSubItem Text="Library">-->
-
             <MenuFlyoutItem Text="Library"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="LibraryPage" />
@@ -38,52 +35,66 @@
             <MenuFlyoutItem Text="About"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="AboutPage" />
-            <!--</MenuFlyoutSubItem>-->
         </MenuBarItem>
     </ContentPage.MenuBarItems>
 
     <ContentPage.Content>
-        <VerticalStackLayout>
+        <Grid>
+<Grid.RowDefinitions>
+    <RowDefinition Height="Auto"/>
+    <RowDefinition  Height="*"/>
+</Grid.RowDefinitions>
             
             <!-- Menu -->
-            <control:ThreeButtonsPanel HeightRequest="35"
-                Margin="20,20,0,20"
-                BindingContext="{Binding}"
-                HorizontalOptions="Start"
+            <control:ThreeButtonsPanel Grid.Row="0" HeightRequest="35"
+                                       Margin="20,20,0,20"
+                                       BindingContext="{Binding}"
+                                       HorizontalOptions="Start"
+                                       NavigateCommand="{Binding NavigateCommand, Mode=OneTime}"
+                                       IsOkVisibile="True"
+                                       OkText="{Binding SettingsView, Mode=OneTime}"
+                                       IsNoVisibile="True"
+                                       NoText="{Binding DebugView, Mode=OneTime}"
+                                       IsCancelVisibile="True"
+                                       CancelText="{Binding ToolsView, Mode=OneTime}" />
 
-                NavigateCommand="{Binding NavigateCommand, Mode=OneTime}"
+            <!--Settings View-->
+            <Grid Grid.Row="1" IsVisible="{Binding IsSettingsViewVisible}">
+                <Grid.RowDefinitions>
+                 <RowDefinition Height="*"/>
+                 <RowDefinition  Height="Auto"/>                   
+                </Grid.RowDefinitions>
                 
-                OkText="{Binding SettingsView, Mode=OneTime}"
+                <control:SettingsView 
+                    BindingContext="{Binding Settings}" 
+                    Grid.Row="0" />
 
-                IsNoVisibile="True"
-                NoText="{Binding DebugView, Mode=OneTime}"
-                
-                IsCancelVisibile="True" 
-                CancelText="{Binding ToolsView, Mode=OneTime}"/>
-            
-            <VerticalStackLayout IsVisible="{Binding IsSettingsViewVisible}">
-                
-                <control:SettingsView BindingContext="{Binding Settings}" />
-                
                 <control:ThreeButtonsPanel
+                    Grid.Row="1"
                     HeightRequest="35"
-                    Margin="0,50,0,10"
+                    Margin="0,50,0,40"
                     BindingContext="{Binding}"
                     HorizontalOptions="Center"
                     VerticalOptions="End"
 
                     NavigateCommand="{Binding NavigateCommand, Mode=OneTime}"
+                    IsOkVisibile="True"
                     OkText="{Binding Save, Mode=OneTime}"
                     IsNoVisibile="True"
                     NoText="{Binding Cancel, Mode=OneTime}"
-                    IsCancelVisibile="True" 
-                    CancelText="{Binding Reset, Mode=OneTime}"/>
-                
-            </VerticalStackLayout>
+                    IsCancelVisibile="True"
+                    CancelText="{Binding Reset, Mode=OneTime}" />
 
-            <VerticalStackLayout IsVisible="{Binding IsDebugViewVisible}">
-                
+            </Grid>
+
+            <!--Debug View-->
+            <VerticalStackLayout  Grid.Row="1"  IsVisible="{Binding IsDebugViewVisible}">
+                <!--TODO : -->
             </VerticalStackLayout>
-        </VerticalStackLayout>
+            
+            <!--Tools View-->
+            <!--TODO : -->
+            
+        </Grid>
     </ContentPage.Content>
 </ContentPage>

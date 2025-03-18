@@ -15,6 +15,7 @@ internal sealed class SettingsModel
         SortingDirections = new[] { Constants.SORTING_ASCENDING, Constants.SORTING_DESCENDING };
     }
 
+    
     #region Dictionaries
     /// <summary>
     /// Gets or sets an array of search fields available for the FindBooks page.
@@ -34,6 +35,7 @@ internal sealed class SettingsModel
     public string[] BookProperties;
     #endregion
 
+    
     #region Book details
     public long Book_MaxContentLength;
     #endregion

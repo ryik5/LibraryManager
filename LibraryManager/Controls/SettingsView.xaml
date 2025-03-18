@@ -2,8 +2,10 @@
 
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="LibraryManager.Controls.SettingsView">
-
+             x:Class="LibraryManager.Controls.SettingsView"
+             xmlns:vm="clr-namespace:LibraryManager.ViewModels"
+             x:DataType="vm:SettingsViewModel">
+    
     <VerticalStackLayout HorizontalOptions="Fill" >
         <Border HorizontalOptions="Center"
                 StrokeThickness="0" 
@@ -34,7 +36,7 @@
 
                             <Label Text="Text's font size" Grid.Row="0" Grid.Column="0" />
                             <Entry Text="{Binding MessageBox_FontSize}"
-                                   Grid.Row="0" Grid.Column="1" />
+                                   Grid.Row="0" Grid.Column="1" Placeholder="Input here font size:" />
                         </Grid>
                     </Frame>
                 </StackLayout>
@@ -128,29 +130,29 @@
                             <Label Grid.Row="0" Grid.Column="0"
                                    Text="First Property" />
                             <Picker Grid.Row="0" Grid.Column="1"
-                                    ItemsSource="{Binding SortingDirections, Mode=OneWay}"
-                                    SelectedItem="{Binding FirstSortProperty_SortingDirection}" 
+                                    ItemsSource="{Binding SortingDirections}"
+                                    SelectedItem="{Binding FirstSortProperty_SortingDirection,Mode=TwoWay}" 
                                     Margin="0,0,0,10"/>
                             <Picker Grid.Row="0" Grid.Column="2"
-                                    ItemsSource="{Binding BookProperties, Mode=OneWay}"
+                                    ItemsSource="{Binding BookProperties}"
                                     SelectedItem="{Binding FirstSortBookProperty}" 
                                     Margin="10,0,0,10"/>
 
                             <Label Grid.Row="1" Grid.Column="0"
                                    Text="Second Property" />
                             <Picker Grid.Row="1" Grid.Column="1"
-                                    ItemsSource="{Binding SortingDirections, Mode=OneWay}"
-                                    SelectedItem="{Binding SecondSortProperty_SortingDirection}" 
+                                    ItemsSource="{Binding SortingDirections}"
+                                    SelectedItem="{Binding SecondSortProperty_SortingDirection,Mode=TwoWay}" 
                                     Margin="0,0,0,10"/>
                             <Picker Grid.Row="1" Grid.Column="2"
-                                    ItemsSource="{Binding BookProperties, Mode=OneWay}"
-                                    SelectedItem="{Binding SecondSortBookProperty}"
+                                    ItemsSource="{Binding BookProperties}"
+                                    SelectedItem="{Binding SecondSortBookProperty,Mode=TwoWay}"
                                     Margin="10,0,0,10"/>
 
                             <Label Grid.Row="2" Grid.Column="0"
                                    Text="Third Property" />
                             <Picker Grid.Row="2" Grid.Column="1"
-                                    ItemsSource="{Binding SortingDirections, Mode=OneWay}"
+                                    ItemsSource="{Binding SortingDirections}"
                                     SelectedItem="{Binding ThirdSortProperty_SortingDirection}" 
                                     Margin="0,0,0,0"/>
                             <Picker Grid.Row="2" Grid.Column="2"

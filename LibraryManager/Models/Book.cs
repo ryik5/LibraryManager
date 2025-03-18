@@ -8,6 +8,120 @@ namespace LibraryManager.Models;
 [Serializable]
 public class Book : AbstractBindableModel, ICloneable, IXmlSerializable
 {
+    #region Public Properties
+    /// <summary>
+    /// Dump property to sort nothing
+    /// </summary>
+    [XmlIgnore]
+    [BookProperty]
+    public string None { get; }
+
+    /// <summary>
+    /// Gets or sets the unique identifier for the <see cref="Book"/>.
+    /// </summary>
+    [BookProperty]
+    public required int Id
+    {
+        get => _id;
+        set => SetProperty(ref _id, value);
+    }
+
+    /// <summary>
+    /// Gets or sets the author of the <see cref="Book"/>.
+    /// </summary>
+    [BookProperty]
+    public required string Author
+    {
+        get => _author;
+        set => SetProperty(ref _author, value);
+    }
+
+    /// <summary>
+    /// Gets or sets the title of the <see cref="Book"/>.
+    /// </summary>
+    [BookProperty]
+    public required string Title
+    {
+        get => _title;
+        set => SetProperty(ref _title, value);
+    }
+
+
+    /// <summary>
+    /// Gets or sets the publication date of the <see cref="Book"/>.
+    /// </summary>
+    [BookProperty]
+    public int Year
+    {
+        get => _year;
+        set
+        {
+            if (value is > 450 and < 2030)
+                SetProperty(ref _year, value);
+            else
+                SetProperty(ref _year, 1971);
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets the number of total pages in the <see cref="Book"/>.
+    /// </summary>
+    [BookProperty]
+    public required int TotalPages
+    {
+        get => _totalPages;
+        set
+        {
+            if (value is >= 0 and <= 10000)
+                SetProperty(ref _totalPages, value);
+            else
+                SetProperty(ref _totalPages, 1);
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets the description of the <see cref="Book"/>.
+    /// </summary>
+    [BookProperty]
+    public string Description
+    {
+        get => _description;
+        set => SetProperty(ref _description, value);
+    }
+
+
+    /// <summary>
+    /// Gets or sets the genre of the <see cref="Book"/>.
+    /// </summary>
+    [BookProperty]
+    public string Genre
+    {
+        get => _genre;
+        set => SetProperty(ref _genre, value);
+    }
+
+    /// <summary>
+    /// Gets or sets the ISBN of the <see cref="Book"/>.
+    /// </summary>
+    [BookProperty]
+    public string ISBN
+    {
+        get => _isbn;
+        set => SetProperty(ref _isbn, value);
+    }
+
+    /// <summary>
+    /// Gets or sets the media content of the <see cref="Book"/>.
+    /// </summary>
+    public MediaData Content
+    {
+        get => _content;
+        set => SetProperty(ref _content, value);
+    }
+    #endregion
+
+
+    #region Public Methods
     /// <summary>
     /// Sets the properties of the current <see cref="Book"/> based on the values of the specified <see cref="Book"/>.
     /// </summary>
@@ -34,130 +148,24 @@ public class Book : AbstractBindableModel, ICloneable, IXmlSerializable
     }
 
     /// <summary>
-    /// Dump property to sort nothing
+    /// Determines whether the current <see cref="Book"/> is valid according to the following criteria:
+    /// <list type="bullet">
+    /// <item><description>The <see cref="Author"/> is not null or empty.</description></item>
+    /// <item><description>The <see cref="Title"/> is not null or empty.</description></item>
+    /// <item><description>The <see cref="TotalPages"/> is less than 1.</description></item>
+    /// <item><description>The <see cref="Year"/> is less than 400.</description></item>
+    /// </list>
     /// </summary>
-    [XmlIgnore]
-    [BookProperty]
-    public string None { get; }
-
-    /// <summary>
-    /// Gets or sets the unique identifier for the <see cref="Book"/>.
-    /// </summary>
-    [BookProperty]
-    public required int Id
+    /// <returns><see langword="true"/> if the book is valid; otherwise, <see langword="false"/>.</returns>
+    public bool IsValid()
     {
-        get => _id;
-        set => SetProperty(ref _id, value);
+        if (string.IsNullOrEmpty(Author) ||
+            string.IsNullOrEmpty(Title) ||
+            TotalPages < 1 ||
+            Year < 400)
+            return false;
+        return true;
     }
-
-    private int _id;
-
-    /// <summary>
-    /// Gets or sets the author of the <see cref="Book"/>.
-    /// </summary>
-    [BookProperty]
-    public required string Author
-    {
-        get => _author;
-        set => SetProperty(ref _author, value);
-    }
-
-    private string _author;
-
-    /// <summary>
-    /// Gets or sets the title of the <see cref="Book"/>.
-    /// </summary>
-    [BookProperty]
-    public required string Title
-    {
-        get => _title;
-        set => SetProperty(ref _title, value);
-    }
-
-    private string _title;
-
-    /// <summary>
-    /// Gets or sets the publication date of the <see cref="Book"/>.
-    /// </summary>
-    [BookProperty]
-    public int Year
-    {
-        get => _year;
-        set
-        {
-            if (value is > 450 and < 2030)
-                SetProperty(ref _year, value);
-            else
-                SetProperty(ref _year, 1971);
-        }
-    }
-
-    private int _year;
-
-    /// <summary>
-    /// Gets or sets the number of total pages in the <see cref="Book"/>.
-    /// </summary>
-    [BookProperty]
-    public required int TotalPages
-    {
-        get => _totalPages;
-        set
-        {
-            if (value is >= 0 and <= 10000)
-                SetProperty(ref _totalPages, value);
-            else
-                SetProperty(ref _totalPages, 1);
-        }
-    }
-
-    private int _totalPages;
-
-    /// <summary>
-    /// Gets or sets the description of the <see cref="Book"/>.
-    /// </summary>
-    [BookProperty]
-    public string Description
-    {
-        get => _description;
-        set => SetProperty(ref _description, value);
-    }
-
-    private string _description;
-
-    /// <summary>
-    /// Gets or sets the genre of the <see cref="Book"/>.
-    /// </summary>
-    [BookProperty]
-    public string Genre
-    {
-        get => _genre;
-        set => SetProperty(ref _genre, value);
-    }
-
-    private string _genre;
-
-    /// <summary>
-    /// Gets or sets the ISBN of the <see cref="Book"/>.
-    /// </summary>
-    [BookProperty]
-    public string ISBN
-    {
-        get => _isbn;
-        set => SetProperty(ref _isbn, value);
-    }
-
-    private string _isbn;
-
-    /// <summary>
-    /// Gets or sets the media content of the <see cref="Book"/>.
-    /// </summary>
-    public MediaData Content
-    {
-        get => _content;
-        set => SetProperty(ref _content, value);
-    }
-
-    private MediaData _content;
 
     /// <summary>
     /// Returns a string that represents the current <see cref="Book"/>.
@@ -288,4 +296,18 @@ public class Book : AbstractBindableModel, ICloneable, IXmlSerializable
 
         writer.WriteEndElement();
     }
+    #endregion
+
+
+    #region Private fields
+    private int _id;
+    private string _author;
+    private string _title;
+    private int _year;
+    private int _totalPages;
+    private string _description;
+    private string _genre;
+    private string _isbn;
+    private MediaData _content;
+    #endregion
 }

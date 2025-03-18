@@ -14,6 +14,5 @@ internal static class StringsHandler
     /// <returns>The XML file name.</returns>
     public static string CreateXmlFileName(string name) => $"{name}.xml";
     #endregion
-
-
+    
 }

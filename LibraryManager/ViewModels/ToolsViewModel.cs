@@ -5,10 +5,6 @@ namespace LibraryManager.ViewModels;
 
 public class ToolsViewModel : AbstractViewModel
 {
-    private SettingsViewModel _settings;
-    private bool _isSettingsVisible;
-    private bool _isDebugViewVisible;
-
     public ToolsViewModel()
     {
         Settings = new SettingsViewModel();
@@ -102,5 +98,12 @@ public class ToolsViewModel : AbstractViewModel
             await ShowDebugNavigationError(commandParameter, nameof(ToolsViewModel));
         }
     }
+    #endregion
+
+
+    #region Private fields
+    private SettingsViewModel _settings;
+    private bool _isSettingsVisible;
+    private bool _isDebugViewVisible;
     #endregion
 }
