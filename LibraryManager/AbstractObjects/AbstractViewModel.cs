@@ -147,11 +147,21 @@ public abstract class AbstractViewModel : AbstractBindableModel
     protected bool IsCurrentRoute(string page) =>
         Shell.Current.CurrentState.Location.OriginalString == $"//{page}";
 
-    protected Task ShowDebugNavigationError(string commandParameter, string className)
+    protected Task ShowNavigationErrorInDebug(string commandParameter, string className)
     {
         #if DEBUG
         Debug.WriteLine(
             $"Navigation error path '{commandParameter}' in class '{className}' by method '{nameof(PerformAction)}'");
+        #endif
+
+        return Task.CompletedTask;
+    }
+
+    protected Task ShowNavigationCommandInDebug(string commandParameter, string className)
+    {
+        #if DEBUG
+        Debug.WriteLine(
+            $"NavigateCommand on {className} triggered with commandParameter: {commandParameter}");
         #endif
 
         return Task.CompletedTask;

@@ -40,11 +40,11 @@
 
     <ContentPage.Content>
         <Grid>
-<Grid.RowDefinitions>
-    <RowDefinition Height="Auto"/>
-    <RowDefinition  Height="*"/>
-</Grid.RowDefinitions>
-            
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
             <!-- Menu -->
             <control:ThreeButtonsPanel Grid.Row="0" HeightRequest="35"
                                        Margin="20,20,0,20"
@@ -61,12 +61,12 @@
             <!--Settings View-->
             <Grid Grid.Row="1" IsVisible="{Binding IsSettingsViewVisible}">
                 <Grid.RowDefinitions>
-                 <RowDefinition Height="*"/>
-                 <RowDefinition  Height="Auto"/>                   
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                
-                <control:SettingsView 
-                    BindingContext="{Binding Settings}" 
+
+                <control:SettingsView
+                    BindingContext="{Binding Settings}"
                     Grid.Row="0" />
 
                 <control:ThreeButtonsPanel
@@ -88,13 +88,13 @@
             </Grid>
 
             <!--Debug View-->
-            <VerticalStackLayout  Grid.Row="1"  IsVisible="{Binding IsDebugViewVisible}">
+            <VerticalStackLayout Grid.Row="1" IsVisible="{Binding IsDebugViewVisible}">
                 <!--TODO : -->
             </VerticalStackLayout>
-            
+
             <!--Tools View-->
             <!--TODO : -->
-            
+
         </Grid>
     </ContentPage.Content>
 </ContentPage>

@@ -19,13 +19,11 @@ public class BooksViewModel : AbstractViewModel, IDisposable
         Library.BookList.CollectionChanged += BookList_CollectionChanged;
         _bookManageable = new BookManagerModel(Library);
         SelectedBooks = new List<Book>();
-       SelectionChangedCommand =  new Command<IList<object>>(HandleOnCollectionViewSelectionChanged);
+        SelectionChangedCommand = new Command<IList<object>>(HandleOnCollectionViewSelectionChanged);
         IsBooksCollectionViewVisible = true;
         IsEditBookViewVisible = false;
         Handle_SelectedBooks_CollectionChanged().ConfigureAwait(false);
     }
-
-
 
 
     #region Public properties
@@ -90,9 +88,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable
     #region Public Methods
     protected override async Task PerformAction(string? commandParameter)
     {
-        #if DEBUG
-        Debug.WriteLine($"NavigateCommand on {nameof(BooksPage)} triggered with commandParameter: {commandParameter}");
-        #endif
+        await ShowNavigationCommandInDebug(commandParameter, nameof(BooksPage));
 
         if (string.IsNullOrWhiteSpace(commandParameter))
             return;
@@ -188,7 +184,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable
         }
         else
         {
-            await ShowDebugNavigationError(commandParameter, nameof(BooksViewModel));
+            await ShowNavigationErrorInDebug(commandParameter, nameof(BooksViewModel));
         }
 
         RunInMainThread(() =>
@@ -209,7 +205,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable
 
         // Perform cleanup: Unsubscribe from any events
         Library.BookList.CollectionChanged -= BookList_CollectionChanged;
-       // SelectedBooks.CollectionChanged -= Handle_SelectedBooks_CollectionChanged;
+        // SelectedBooks.CollectionChanged -= Handle_SelectedBooks_CollectionChanged;
         SelectedBooks.Clear();
 
         #if DEBUG
@@ -237,7 +233,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable
         Book = null;
         Library.TotalBooks = Library.BookList.Count;
     }
-    
+
 
     private bool CanEditSelectedBook()
     {
@@ -271,7 +267,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable
 
     private void HandleOnCollectionViewSelectionChanged(IList<object> obj)
     {
-        SelectedBooks = obj?.Select(b=>b as Book)?.ToList();
+        SelectedBooks = obj?.Select(b => b as Book)?.ToList();
     }
 
 

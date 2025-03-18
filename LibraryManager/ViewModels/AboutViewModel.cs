@@ -35,7 +35,7 @@ public class AboutViewModel : AbstractViewModel
     #region Public Methods
     protected override async Task PerformAction(string? commandParameter)
     {
-        Debug.WriteLine($"NavigateCommand triggered with commandParameter: {commandParameter}");
+        await   ShowNavigationCommandInDebug(commandParameter,nameof(AboutPage));
 
         if (string.IsNullOrWhiteSpace(commandParameter))
             return;
@@ -60,7 +60,7 @@ public class AboutViewModel : AbstractViewModel
         }
         else
         {
-            await ShowDebugNavigationError(commandParameter, nameof(AboutViewModel));
+            await ShowNavigationErrorInDebug(commandParameter, nameof(AboutViewModel));
         }
     }
     #endregion

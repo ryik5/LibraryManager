@@ -71,10 +71,7 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
 
     protected override async Task PerformAction(string? commandParameter)
     {
-        #if DEBUG
-        Debug.WriteLine(
-            $"NavigateCommand on {nameof(LibraryPage)} triggered with commandParameter: {commandParameter}");
-        #endif
+        await ShowNavigationCommandInDebug(commandParameter, nameof(LibraryPage));
 
         if (string.IsNullOrWhiteSpace(commandParameter))
             return;
@@ -87,9 +84,9 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
                 case nameof(BooksPage):
                 case nameof(FindBooksPage):
                 case nameof(ToolsPage):
-                    await TryGoToPage(commandParameter);
+                {  await TryGoToPage(commandParameter);
                     break;
-
+}
                 case Constants.LIBRARY_NEW:
                 {
                     if (await HasLibraryHashCodeChanged())
@@ -104,7 +101,6 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
                     await UpdateLibraryHashCode();
                     break;
                 }
-
                 case Constants.LIBRARY_LOAD:
                 {
                     if (await HasLibraryHashCodeChanged())
@@ -119,14 +115,22 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
                     await UpdateLibraryHashCode();
                     break;
                 }
-
                 case Constants.LIBRARY_SAVE:
                 {
                     await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(), GetPathToCurrentLibrary());
                     await UpdateLibraryHashCode();
                     break;
                 }
-
+                case Constants.LIBRARY_SAVE_WITH_NEW_NAME:
+                {
+                    // TODO :
+                    // display window with input a new library name
+                    var libName = Library.Id.ToString();
+                    
+                    await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(), GetPathToCurrentLibrary(libName));
+                    await UpdateLibraryHashCode();
+                    break;
+                }
                 case Constants.LIBRARY_CLOSE:
                 {
                     if (await HasLibraryHashCodeChanged())
@@ -141,7 +145,6 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
                     await UpdateLibraryHashCode();
                     break;
                 }
-
                 default:
                 {
                     // Performs other actions at the LibraryManager
@@ -160,7 +163,7 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
         }
         else
         {
-            await ShowDebugNavigationError(commandParameter, nameof(FindBooksViewModel));
+            await ShowNavigationErrorInDebug(commandParameter, nameof(FindBooksViewModel));
         }
     }
 
@@ -228,12 +231,12 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
         return false;
     }
 
-    private string GetPathToCurrentLibrary()
+    private string GetPathToCurrentLibrary(string libraryName="{Library.Id}")
     {
         var folder =
             new NSFileManager().GetUrls(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomain.User)[0]
                 .Path;
-        return Path.Combine(folder, $"{Library.Id}.xml");
+        return Path.Combine(folder, StringsHandler.CreateXmlFileName(libraryName));
     }
     #endregion
 

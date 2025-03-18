@@ -120,7 +120,7 @@ public class FindBooksViewModel : AbstractViewModel
     #region Public Methods
     protected override async Task PerformAction(string? commandParameter)
     {
-        Debug.WriteLine($"NavigateCommand triggered with commandParameter: {commandParameter}");
+        await ShowNavigationCommandInDebug(commandParameter, nameof(FindBooksPage));
 
         if (string.IsNullOrWhiteSpace(commandParameter))
             return;
@@ -173,7 +173,7 @@ public class FindBooksViewModel : AbstractViewModel
                 {
                     if (!ValidSelectedBooks())
                         return;
-                    
+
                     RunInMainThread(() => Book = (Book)SelectFirstFoundBook().Clone());
 
                     IsBooksCollectionViewVisible = false;
@@ -211,7 +211,7 @@ public class FindBooksViewModel : AbstractViewModel
         }
         else
         {
-            await ShowDebugNavigationError(commandParameter, nameof(FindBooksViewModel));
+            await ShowNavigationErrorInDebug(commandParameter, nameof(FindBooksViewModel));
         }
 
         RunInMainThread(() =>

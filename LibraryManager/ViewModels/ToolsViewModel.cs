@@ -44,7 +44,7 @@ public class ToolsViewModel : AbstractViewModel
     #region Public Methods
     protected override async Task PerformAction(string? commandParameter)
     {
-        Debug.WriteLine($"NavigateCommand triggered with commandParameter: {commandParameter}");
+        await   ShowNavigationCommandInDebug(commandParameter,nameof(ToolsPage));
 
         if (string.IsNullOrWhiteSpace(commandParameter))
             return;
@@ -95,7 +95,7 @@ public class ToolsViewModel : AbstractViewModel
         }
         else
         {
-            await ShowDebugNavigationError(commandParameter, nameof(ToolsViewModel));
+            await ShowNavigationErrorInDebug(commandParameter, nameof(ToolsViewModel));
         }
     }
     #endregion

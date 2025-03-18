@@ -31,7 +31,6 @@
 
     <ContentPage.Content>
         <Grid Padding="10">
-            <!-- Row Definitions -->
             <Grid.RowDefinitions>
                 <RowDefinition Height="55" />
                 <RowDefinition />
