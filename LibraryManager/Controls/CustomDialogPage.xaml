@@ -2,8 +2,63 @@
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="LibraryManager.Views.CustomDialogPage">
+             x:Class="LibraryManager.Views.CustomDialogPage"
+             x:Name="customDialog">
+
     <ContentPage.Content>
-        
+        <VerticalStackLayout
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            BackgroundColor="White"
+            WidthRequest="350"
+            HeightRequest="350"
+            Spacing="15">
+            <VerticalStackLayout.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="FontSize" Value="18" />
+                    <Setter Property="BorderWidth" Value="1" />
+                    <Setter Property="Margin" Value="10" />
+                    <Setter Property="FontFamily" Value="ManropeExtraLight" />
+                </Style>
+            </VerticalStackLayout.Resources>
+
+            <Label x:Name="TitleLabel"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   FontSize="22"
+                   FontFamily="ManropeExtraLight"
+                   FontAttributes="Bold"
+                   Margin="10" />
+
+            <Label x:Name="MessageLabel"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   FontSize="18"
+                   FontFamily="ManropeExtraLight"
+                   Margin="10,20,10,20" />
+
+            <Entry x:Name="EntryInput"
+                   Placeholder="Input here"
+                   HorizontalOptions="Center"
+                   MinimumWidthRequest="150"
+                   IsVisible="{Binding  x:DataType='ContentPage' , Source={RelativeSource AncestorType={x:Type ContentPage}, AncestorLevel=2}, Path=IsInputVisible}"
+                   Text="{Binding  x:DataType='ContentPage' , Source={RelativeSource AncestorType={x:Type ContentPage}, AncestorLevel=2}, Path=InputText, Mode=TwoWay}" 
+                   Margin="10" />
+
+            <HorizontalStackLayout HorizontalOptions="Center" Margin="10">
+
+                <Button x:Name="ExecuteButton"
+                        Text="OK"
+                        Padding="20,10,20,10" 
+                        Margin="10" />
+
+                <Button x:Name="CancelButton"
+                        Text="Cancel"
+                        Padding="10" 
+                        Margin="10" />
+
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+
     </ContentPage.Content>
 </ContentPage>

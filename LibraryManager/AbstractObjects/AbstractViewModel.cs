@@ -75,18 +75,19 @@ public abstract class AbstractViewModel : AbstractBindableModel
     /// <param name="title">The title of the dialog page.</param>
     /// <param name="message">The message to display on the dialog page.</param>
     /// <returns>A boolean indicating whether the user pressed OK or Cancel.</returns>
-    protected async Task<bool> ShowCustomDialogPage(string title, string message)
+    protected async Task<ResultData> ShowCustomDialogPage(string title, string message, bool isInputVisible=false)
     {
-        var dialogPage = new CustomDialogPage(title, message);
+        var dialogPage = new CustomDialogPage(title, message,isInputVisible);
         await Application.Current?.MainPage?.Navigation.PushModalAsync(dialogPage)!;
 
         var result = await dialogPage.DialogResultTask.Task; // Await the user's response
+        var inputText = dialogPage.InputText;
 
         #if DEBUG
         Debug.WriteLine(result ? "User pressed OK." : "User pressed Cancel.");
         #endif
 
-        return result;
+        return new ResultData(result, inputText);
     }
 
     /// <summary>
@@ -180,4 +181,16 @@ public abstract class AbstractViewModel : AbstractBindableModel
     /// </summary>
     public ICommand ExtendedCommand { get; }
     #endregion
+}
+
+public class ResultData
+{
+    public ResultData(bool isOk, string? inputString = null)
+    {
+        IsOk = isOk;
+        InputString = inputString;
+    }
+
+    public bool IsOk { get; private set; }
+    public string? InputString { get; private set; }
 }

@@ -84,9 +84,10 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
                 case nameof(BooksPage):
                 case nameof(FindBooksPage):
                 case nameof(ToolsPage):
-                {  await TryGoToPage(commandParameter);
+                {
+                    await TryGoToPage(commandParameter);
                     break;
-}
+                }
                 case Constants.LIBRARY_NEW:
                 {
                     if (await HasLibraryHashCodeChanged())
@@ -117,18 +118,22 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
                 }
                 case Constants.LIBRARY_SAVE:
                 {
-                    await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(), GetPathToCurrentLibrary());
-                    await UpdateLibraryHashCode();
+                    if (await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(), GetPathToCurrentLibrary()))
+                        await UpdateLibraryHashCode();
                     break;
                 }
                 case Constants.LIBRARY_SAVE_WITH_NEW_NAME:
                 {
-                    // TODO :
+                    var library = await ShowCustomDialogPage(Constants.LIBRARY_SAVE_WITH_NEW_NAME,
+                        Constants.LIBRARY_NAME, true);
+
                     // display window with input a new library name
-                    var libName = Library.Id.ToString();
-                    
-                    await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(), GetPathToCurrentLibrary(libName));
-                    await UpdateLibraryHashCode();
+                    var libName = library.IsOk && !string.IsNullOrEmpty(library.InputString)
+                        ? library.InputString
+                        : Library.Id.ToString();
+
+                    if (await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(), GetPathToCurrentLibrary(libName)))
+                        await UpdateLibraryHashCode();
                     break;
                 }
                 case Constants.LIBRARY_CLOSE:
@@ -205,7 +210,7 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
 
     /// <summary>
     /// Updates the library state by raising a property changed event for the Library property
-    /// and setting the IsEnabled property based on whether the Library Id differs from the default value of 0.
+    /// and setting the IsEnabled property based on whether the Library ID differs from the default value of 0.
     /// </summary>
     private Task UpdateLibraryHashCode()
     {
@@ -225,13 +230,14 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
 
         if (libraryChanged)
         {
-            return await ShowCustomDialogPage(Constants.LIBRARY_SAVE, StringsHandler.LibraryChangedMessage());
+            var res = await ShowCustomDialogPage(Constants.LIBRARY_SAVE, StringsHandler.LibraryChangedMessage());
+            return res.IsOk;
         }
 
         return false;
     }
 
-    private string GetPathToCurrentLibrary(string libraryName="{Library.Id}")
+    private string GetPathToCurrentLibrary(string libraryName = "{Library.Id}")
     {
         var folder =
             new NSFileManager().GetUrls(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomain.User)[0]

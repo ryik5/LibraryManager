@@ -2,8 +2,25 @@ namespace LibraryManager.Views;
 
 public partial class CustomDialogPage : ContentPage
 {
-    public CustomDialogPage(string title, string message)
+    public CustomDialogPage(string title, string message, bool isInputVisible=false)
     {
+        InitializeComponent();
+        
+        TitleLabel.Text = title;
+        MessageLabel.Text = message;
+        IsInputVisible = isInputVisible;
+        
+        CancelButton.Command = new Command(async () =>
+        {
+            await CloseDialogAsync(false);
+        });
+        ExecuteButton.Command = new Command(async () =>
+        {
+            InputText = EntryInput.Text;
+            await CloseDialogAsync(true);
+        });
+        
+        /*
         var layout = new VerticalStackLayout
         {
             Padding = new Thickness(20),
@@ -48,10 +65,14 @@ public partial class CustomDialogPage : ContentPage
                 }
             }
         };
-
+        
         Content = layout;
+        */
     }
 
+    public string InputText { get; set; }
+    
+    public bool IsInputVisible { get; set; }
     public TaskCompletionSource<bool> DialogResultTask { get; set; } = new TaskCompletionSource<bool>();
 
     private async Task CloseDialogAsync(bool isConfirmed)
