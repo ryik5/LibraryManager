@@ -50,9 +50,9 @@ public interface IBookManageable
     /// Saves the selected book to the specified folder.
     /// </summary>
     /// <param name="keeper">The keeper responsible for saving the book.</param>
-    /// <param name="pathToFolder">The path to the folder where the book will be saved.</param>
+    /// <param name="pathToFile">The path to the folder where the book will be saved.</param>
     /// <returns>True if the book was successfully saved; otherwise, false.</returns>
-    bool TrySaveBook(IBookKeeper keeper, Book book, string pathToFolder);
+    Task<bool> TrySaveBook(IBookKeeper keeper, Book book, string pathToFile);
 
     /// <summary>
     /// Finds books by a specific element of the <see cref="Book"/>.

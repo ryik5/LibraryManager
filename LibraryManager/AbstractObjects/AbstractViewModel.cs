@@ -1,7 +1,9 @@
 using System.Diagnostics;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
+using Foundation;
 using LibraryManager.AbstractObjects;
+using LibraryManager.Utils;
 using LibraryManager.Views;
 
 namespace LibraryManager.ViewModels;
@@ -75,9 +77,9 @@ public abstract class AbstractViewModel : AbstractBindableModel
     /// <param name="title">The title of the dialog page.</param>
     /// <param name="message">The message to display on the dialog page.</param>
     /// <returns>A boolean indicating whether the user pressed OK or Cancel.</returns>
-    protected async Task<ResultData> ShowCustomDialogPage(string title, string message, bool isInputVisible=false)
+    protected async Task<ResultData> ShowCustomDialogPage(string title, string message, bool isInputVisible = false)
     {
-        var dialogPage = new CustomDialogPage(title, message,isInputVisible);
+        var dialogPage = new CustomDialogPage(title, message, isInputVisible);
         await Application.Current?.MainPage?.Navigation.PushModalAsync(dialogPage)!;
 
         var result = await dialogPage.DialogResultTask.Task; // Await the user's response
@@ -158,6 +160,16 @@ public abstract class AbstractViewModel : AbstractBindableModel
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Displays the navigation command parameter in debug mode.
+    /// </summary>
+    /// <remarks>
+    /// This method is used to debug the navigation commands. It shows the command parameter and the class name
+    /// of the view model that triggered the navigation command.
+    /// </remarks>
+    /// <param name="commandParameter">The command parameter.</param>
+    /// <param name="className">The name of the view model class.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
     protected Task ShowNavigationCommandInDebug(string commandParameter, string className)
     {
         #if DEBUG
@@ -166,6 +178,29 @@ public abstract class AbstractViewModel : AbstractBindableModel
         #endif
 
         return Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// Gets the path to the current user Document Directory on the device.
+    /// </summary>
+    /// <returns>The path to the user Document Directory.</returns>
+    /// <remarks>
+    /// This method returns the URL of the document directory
+    /// and then getting the path from the URL. The document directory is the path to the directory
+    /// for storing user documents. The path returned by this method is the path to the root of this
+    /// directory.
+    /// </remarks>
+    protected string GetPathToDocumentDirectory()
+        => new NSFileManager().GetUrls(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomain.User)[0].Path;
+    
+    /// <summary>
+    /// Gets the path to a XML file in the document directory.
+    /// </summary>
+    /// <param name="pointedName">The name of the file to get the path for.</param>
+    /// <returns>The path to the XML file in the document directory.</returns>
+    protected string GetPathToFile(string pointedName)
+    {
+        return Path.Combine(GetPathToDocumentDirectory(), StringsHandler.CreateXmlFileName(pointedName));
     }
     #endregion
 

@@ -1,9 +1,7 @@
-using CommunityToolkit.Mvvm.Input;
 using System.Diagnostics;
 using LibraryManager.Models;
 using LibraryManager.Utils;
 using LibraryManager.Views;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Windows.Input;
 
@@ -156,22 +154,31 @@ public class BooksViewModel : AbstractViewModel, IDisposable
                     IsBooksCollectionViewVisible = false;
                     IsEditBookViewVisible = true;
 
-                    /*var editBookVM = new EditBookViewModel((Book)Book.Clone());
-                    var editBookPage = new EditBookPage() { BindingContext = editBookVM };
-                    await Application.Current?.MainPage?.Navigation.PushModalAsync(editBookPage)!;
-
-                    if (await editBookPage.DialogResultTask.Task)
-                    {
-                        Book.Set(editBookVM.Book);
-                    }*/
-
                     break;
                 }
-
                 case Constants.SORT_BOOKS:
                 {
                     if (await MakeSortingList() is { Count: > 0 } props)
                         _bookManageable.SafetySortBooks(props);
+                    break;
+                }
+                case Constants.EXPORT_BOOK:
+                {
+                    if (!ValidSelectedBooks())
+                        return;
+
+                    // display window with input a new book name
+                    var customDialog = await ShowCustomDialogPage(Constants.EXPORT_BOOK,
+                        Constants.INPUT_NAME, true);
+
+                    RunInMainThread(() => Book = SelectFirstFoundBook());
+
+                    var bookName = customDialog.IsOk && !string.IsNullOrEmpty(customDialog.InputString)
+                        ? customDialog.InputString
+                        : $"{Book.Author}. {Book.Title}";
+
+                   await _bookManageable.TrySaveBook(new XmlBookKeeper(), Book, GetPathToFile(bookName));
+
                     break;
                 }
                 default: //jobs perform without creating views

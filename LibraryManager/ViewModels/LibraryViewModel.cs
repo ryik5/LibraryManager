@@ -93,7 +93,7 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
                     if (await HasLibraryHashCodeChanged())
                     {
                         var success =
-                            await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(), GetPathToCurrentLibrary());
+                            await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(), GetPathToCurrentLibraryFile());
                         if (!success)
                             return;
                     }
@@ -107,7 +107,7 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
                     if (await HasLibraryHashCodeChanged())
                     {
                         var success =
-                            await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(), GetPathToCurrentLibrary());
+                            await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(), GetPathToCurrentLibraryFile());
                         if (!success)
                             return;
                     }
@@ -118,21 +118,21 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
                 }
                 case Constants.LIBRARY_SAVE:
                 {
-                    if (await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(), GetPathToCurrentLibrary()))
+                    if (await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(), GetPathToCurrentLibraryFile()))
                         await UpdateLibraryHashCode();
                     break;
                 }
                 case Constants.LIBRARY_SAVE_WITH_NEW_NAME:
                 {
-                    var library = await ShowCustomDialogPage(Constants.LIBRARY_SAVE_WITH_NEW_NAME,
+                    // display window with input a new library name
+                    var castomDialog = await ShowCustomDialogPage(Constants.LIBRARY_SAVE_WITH_NEW_NAME,
                         Constants.LIBRARY_NAME, true);
 
-                    // display window with input a new library name
-                    var libName = library.IsOk && !string.IsNullOrEmpty(library.InputString)
-                        ? library.InputString
+                    var libName = castomDialog.IsOk && !string.IsNullOrEmpty(castomDialog.InputString)
+                        ? castomDialog.InputString
                         : Library.Id.ToString();
 
-                    if (await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(), GetPathToCurrentLibrary(libName)))
+                    if (await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(), GetPathToFile(libName)))
                         await UpdateLibraryHashCode();
                     break;
                 }
@@ -141,7 +141,7 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
                     if (await HasLibraryHashCodeChanged())
                     {
                         var success =
-                            await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(), GetPathToCurrentLibrary());
+                            await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(),GetPathToCurrentLibraryFile());
                         if (!success)
                             return;
                     }
@@ -237,13 +237,8 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
         return false;
     }
 
-    private string GetPathToCurrentLibrary(string libraryName = "{Library.Id}")
-    {
-        var folder =
-            new NSFileManager().GetUrls(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomain.User)[0]
-                .Path;
-        return Path.Combine(folder, StringsHandler.CreateXmlFileName(libraryName));
-    }
+
+    private string GetPathToCurrentLibraryFile() => GetPathToFile(Library.Id.ToString());
     #endregion
 
 
