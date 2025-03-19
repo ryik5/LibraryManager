@@ -2,6 +2,7 @@
 using LibraryManager.AbstractObjects;
 using LibraryManager.Extensions;
 using LibraryManager.Utils;
+using System.Xml;
 
 namespace LibraryManager.Models;
 
@@ -61,6 +62,7 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
     {
         bookLoader.LoadingFinished += BookLoader_LoadingBookFinished;
 
+
         var result = bookLoader.TryLoadBook(pathToFile, out var book);
         if (result)
             RunInMainThread(() => AddBook(book));
@@ -68,6 +70,33 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
         bookLoader.LoadingFinished -= BookLoader_LoadingBookFinished;
 
         return result;
+    }
+
+
+    public async Task<bool> TryLoadBook()
+    {
+        return await DeserializeBookTask(await TryPickFileUpTask("Please select a book file", "xml"));
+    }
+
+
+    private async Task<bool> DeserializeBookTask(FileResult fileResult)
+    {
+        await using var fileStream = await fileResult.OpenReadAsync();
+        using var xmlReader = XmlReader.Create(fileStream, new XmlReaderSettings
+        {
+            IgnoreWhitespace = false,
+            IgnoreComments = false
+        });
+
+        var book = await Task.Run(() =>
+            (Book)(new System.Xml.Serialization.XmlSerializer(typeof(Book))).Deserialize(xmlReader));
+        if (book?.IsValid() ?? false)
+        {
+            await AddBookTask(book);
+            return true;
+        }
+
+        return false;
     }
 
     /// <summary>
@@ -78,7 +107,7 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
     /// <returns>True if the book was successfully saved; otherwise, false.</returns>
     public Task<bool> TrySaveBook(IBookKeeper keeper, Book book, string pathToFile)
     {
-        return Task.FromResult( keeper.TrySaveBook(book, pathToFile));
+        return Task.FromResult(keeper.TrySaveBook(book, pathToFile));
     }
 
     /// <summary>
@@ -111,8 +140,18 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
         RunInMainThread(() =>
         {
             book.Id = _library.BookList.Count == 0 ? 1 : _library.BookList.Max(b => b.Id) + 1;
-            _library.BookList.Insert(0,book);
+            _library.BookList.Insert(0, book);
         });
+    }
+
+    public Task AddBookTask(Book book)
+    {
+        RunInMainThread(() =>
+        {
+            book.Id = _library.BookList.Count == 0 ? 1 : _library.BookList.Max(b => b.Id) + 1;
+            _library.BookList.Insert(0, book);
+        });
+        return Task.CompletedTask;
     }
 
     /// <summary>

@@ -38,7 +38,6 @@ public class LibraryManagerModel : AbstractBindableModel, ILibraryManageable
                 break;
 
             case Constants.LIBRARY_LOAD:
-
                 break;
 
             case Constants.LIBRARY_SAVE:
@@ -55,51 +54,34 @@ public class LibraryManagerModel : AbstractBindableModel, ILibraryManageable
         }
     }
 
-    public async Task TryLoadLibrary()
+    public async Task<bool> TryLoadLibrary()
     {
-        var customFileType = new FilePickerFileType(
-            new Dictionary<DevicePlatform, IEnumerable<string>>
-            {
-                { DevicePlatform.iOS, new[] { "public.archive" } },
-                { DevicePlatform.Android, new[] { "application/xml" } },
-                { DevicePlatform.WinUI, new[] { ".xml", "xml" } },
-                { DevicePlatform.MacCatalyst, new[] { ".xml", "xml" } }
-            });
+        return await TryLoadLibrary(await TryPickFileUpTask("Please select a library file", "xml"));
+    }
 
-        PickOptions options = new()
-        {
-            PickerTitle = "Please select a library file",
-            FileTypes = customFileType,
-        };
+
+    private async Task<bool> TryLoadLibrary(FileResult result)
+    {
         try
         {
-            var result = await FilePicker.Default.PickAsync(options);
-            if (result != null)
+            await using var fileStream = await result.OpenReadAsync();
+            using var xmlReader = XmlReader.Create(fileStream, new XmlReaderSettings
             {
-                if (result.FileName.EndsWith("xml", StringComparison.OrdinalIgnoreCase))
-                {
-                    using var fileStream = await result.OpenReadAsync();
-                    using var xmlReader = XmlReader.Create(fileStream, new XmlReaderSettings
-                    {
-                        IgnoreWhitespace = false,
-                        IgnoreComments = false
-                    });
+                IgnoreWhitespace = false,
+                IgnoreComments = false
+            });
 
-                    var lib = await Task.Run(() =>
-                        (Library)(new System.Xml.Serialization.XmlSerializer(typeof(Library))).Deserialize(xmlReader));
+            var lib = await Task.Run(() =>
+                (Library)(new System.Xml.Serialization.XmlSerializer(typeof(Library))).Deserialize(xmlReader));
 
-                    await SetLibrary(lib);
-
-                    await Task.Delay(500);
-                }
-            }
+            await SetLibrary(lib);
         }
-        catch (Exception ex)
+        catch (Exception e)
         {
-            #if DEBUG
-            Debug.WriteLine($"{ex.Message}");
-            #endif
+            return false;
         }
+
+        return true;
     }
 
     private Task SetLibrary(ILibrary lib)

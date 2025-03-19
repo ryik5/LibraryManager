@@ -34,7 +34,7 @@ public interface ILibraryManageable
     /// <summary>
     /// Loads a library.
     /// </summary>
-     Task TryLoadLibrary();
+    Task<bool> TryLoadLibrary();
      
     /// <summary>
     /// Saves the specified library to the specified folder.

@@ -115,7 +115,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable
                 {
                     if (Book.IsValid())
                     {
-                        RunInMainThread(() => _bookManageable.AddBook(Book));
+                         _bookManageable.AddBook(Book);
                     }
 
                     IsBooksCollectionViewVisible = true;
@@ -179,6 +179,11 @@ public class BooksViewModel : AbstractViewModel, IDisposable
 
                    await _bookManageable.TrySaveBook(new XmlBookKeeper(), Book, GetPathToFile(bookName));
 
+                    break;
+                }
+                case Constants.IMPORT_BOOK:
+                {
+                    await _bookManageable.TryLoadBook();
                     break;
                 }
                 default: //jobs perform without creating views

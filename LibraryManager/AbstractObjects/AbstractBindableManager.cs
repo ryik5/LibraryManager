@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace LibraryManager.AbstractObjects;
@@ -29,11 +30,48 @@ public abstract class AbstractBindableModel: INotifyPropertyChanged
         Application.Current?.Dispatcher.Dispatch(a.Invoke);
     }
     
+    protected async Task<FileResult> TryPickFileUpTask(string windowTitle, string fileExtension)
+    {
+        var fileTypes = new FilePickerFileType(
+            new Dictionary<DevicePlatform, IEnumerable<string>>
+            {
+                /*{ DevicePlatform.iOS, new[] { "public.archive" } },
+                { DevicePlatform.Android, new[] { "application/xml" } },*/
+                { DevicePlatform.WinUI, new[] { $".{fileExtension}", fileExtension } },
+                { DevicePlatform.MacCatalyst, new[] { $".{fileExtension}", fileExtension } } //".xml", "xml"
+            });
+
+        var options = new PickOptions()
+        {
+            PickerTitle = windowTitle,
+            FileTypes = fileTypes,
+        };
+        try
+        {
+            var result = await FilePicker.Default.PickAsync(options);
+            if (result != null)
+            {
+                if (result.FileName.EndsWith(fileExtension, StringComparison.OrdinalIgnoreCase))
+                {
+                   return result;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            #if DEBUG
+            Debug.WriteLine($"{ex.Message}");
+            #endif
+        }
+
+        return null;
+    }
+    
     
     #region implementation INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    protected virtual void RaisePropertyChanged([CallerMemberName] string? propertyName = null)
+    protected void RaisePropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }

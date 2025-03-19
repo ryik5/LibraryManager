@@ -21,7 +21,7 @@
                             CommandParameter="Delete the selected book" />
             <MenuFlyoutItem Text="Import Book"
                             Command="{Binding NavigateCommand}"
-                            CommandParameter="ImportBook" />
+                            CommandParameter="Import a book" />
             <MenuFlyoutItem Text="Export Book"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Export the selected book" />
@@ -82,7 +82,7 @@
                         CommandParameter="Delete the selected book" />
                 <Button Text="Import Book"
                         Command="{Binding NavigateCommand}"
-                        CommandParameter="Import Book" />
+                        CommandParameter="Import a book" />
                 <Button Text="Export Book"
                         Command="{Binding NavigateCommand}"
                         CommandParameter="Export the selected book" />

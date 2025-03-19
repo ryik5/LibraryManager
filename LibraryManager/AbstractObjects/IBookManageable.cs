@@ -4,7 +4,7 @@
 /// Represents a Book interface that provides functionalities to add, remove, sort, and display books.
 /// </summary>
 /// <author>YR 2025-01-09</author>
-public interface IBookManageable 
+public interface IBookManageable
 {
     public event EventHandler<TotalBooksEventArgs> TotalBooksChanged;
     public event EventHandler<ActionFinishedEventArgs> LoadingFinished;
@@ -19,7 +19,7 @@ public interface IBookManageable
     /// enabling additional extensibility or dynamic behaviors based on the provided input.
     /// </remarks>
     Task RunCommand(string commandParameter, IList<Book>? selectedBooks);
-    
+
     /// <summary>
     /// Sorts books in the library.
     /// </summary>
@@ -46,6 +46,8 @@ public interface IBookManageable
     /// <returns>True if the book was successfully loaded; otherwise, false.</returns>
     bool TryLoadBook(IBookLoader bookLoader, string pathToFile);
 
+    Task<bool> TryLoadBook();
+
     /// <summary>
     /// Saves the selected book to the specified folder.
     /// </summary>
@@ -71,8 +73,5 @@ public interface IBookManageable
     /// <summary>
     /// Gets or sets the library.
     /// </summary>
-    ILibrary Library
-    {
-        get; set;
-    }
+    ILibrary Library { get; set; }
 }
