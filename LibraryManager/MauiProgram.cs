@@ -1,7 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using LibraryManager.Models;
 using LibraryManager.ViewModels;
-using LibraryManager.Views;
 using Microsoft.Extensions.Logging;
 
 namespace LibraryManager;
@@ -22,9 +21,8 @@ public static class MauiProgram
 
 
         var library = new Library
-        {
-            // Populate with sample data       
-            Id = new Random().Next(),
+        {  
+            Id = 0,
             Name = "",
             Description = "",
             BookList = new ObservableCollection<Book>()

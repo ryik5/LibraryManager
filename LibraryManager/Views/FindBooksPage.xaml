@@ -44,13 +44,13 @@
                 <Style TargetType="Button">
                     <Setter Property="FontSize" Value="18" />
                     <Setter Property="BorderWidth" Value="1" />
-                    <Setter Property="Background"
-                            Value="{AppThemeBinding Light={StaticResource Tertiary}, Dark={StaticResource White}}" />
+                    <Setter Property="Margin" Value="0,0,10,0" />
                 </Style>
             </Grid.Resources>
 
             <!-- General Controls -->
             <StackLayout Grid.Row="0"
+                         IsVisible="{Binding IsBooksCollectionViewVisible, Mode=OneWay}"
                          Orientation="Horizontal"
                          HorizontalOptions="Fill"
                          Margin="10,10,10,0" HeightRequest="35">
@@ -63,6 +63,7 @@
 
                 <Button Text="Find"
                         Command="{Binding NavigateCommand}"
+                        IsEnabled="{Binding CanOperateWithBooks}"
                         CommandParameter="Find Books"
                         MinimumWidthRequest="85"
                         Margin="10,0,0,0" />
@@ -83,12 +84,14 @@
                         Command="{Binding NavigateCommand}"
                         CommandParameter="Edit Book"
                         MinimumWidthRequest="100"
-                        Margin="10,0,20,0" />
+                        Margin="10,0,20,0" 
+                        IsEnabled="{Binding CanEditBook}"/>
 
                 <Button Text="Delete Book(s)"
                         Command="{Binding NavigateCommand}"
                         CommandParameter="Delete the selected book"
-                        MinimumWidthRequest="100" />
+                        MinimumWidthRequest="100" 
+                        IsEnabled="{Binding CanEditBook}"/>
 
             </StackLayout>
 

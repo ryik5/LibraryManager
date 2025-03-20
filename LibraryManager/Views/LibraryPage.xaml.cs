@@ -1,3 +1,4 @@
+using LibraryManager.AbstractObjects;
 using LibraryManager.ViewModels;
 
 namespace LibraryManager.Views;
@@ -19,7 +20,10 @@ public partial class LibraryPage : ContentPage
         
         // Ensure BindingContext is assigned only if not already set
         BindingContext ??= App.Services.GetService<LibraryViewModel>();
-    }
+        if (BindingContext is IRefreshable refresher)
+        {
+            refresher.RefreshControls();
+        } }
 
     /// <summary>
     /// To ensure the BindingContext is cleared correctly

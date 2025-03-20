@@ -1,3 +1,4 @@
+using LibraryManager.AbstractObjects;
 using LibraryManager.ViewModels;
 
 namespace LibraryManager.Views;
@@ -19,6 +20,10 @@ public partial class BooksPage : ContentPage
 
         // Avoid assigning a new instance unnecessarily
         BindingContext ??= App.Services.GetService<BooksViewModel>();
+        if (BindingContext is IRefreshable refresher)
+        {
+            refresher.RefreshControls();
+        }
     }
 
     /// <summary>

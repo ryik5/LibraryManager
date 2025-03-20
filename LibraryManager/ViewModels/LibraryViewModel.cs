@@ -1,13 +1,12 @@
 using System.Diagnostics;
-using CommunityToolkit.Mvvm.Input;
-using Foundation;
+using LibraryManager.AbstractObjects;
 using LibraryManager.Models;
 using LibraryManager.Utils;
 using LibraryManager.Views;
 
 namespace LibraryManager.ViewModels;
 
-public class LibraryViewModel : AbstractViewModel, IDisposable
+public class LibraryViewModel : AbstractViewModel, IDisposable, IRefreshable
 {
     public LibraryViewModel(ILibrary library)
     {
@@ -141,7 +140,7 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
                     if (await HasLibraryHashCodeChanged())
                     {
                         var success =
-                            await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(),GetPathToCurrentLibraryFile());
+                            await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(), GetPathToCurrentLibraryFile());
                         if (!success)
                             return;
                     }
@@ -160,7 +159,7 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
 
             await Task.Run(() => RunInMainThread(() =>
             {
-                CanOperateWithBooks = Library.Id != 0;
+                CanOperateWithBooks = ValidLibrary();
                 Library.TotalBooks = Library.BookList.Count;
                 RaisePropertyChanged(nameof(Library));
                 RaisePropertyChanged(nameof(Library.BookList));
@@ -170,6 +169,13 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
         {
             await ShowNavigationErrorInDebug(commandParameter, nameof(FindBooksViewModel));
         }
+    }
+
+    public void RefreshControls()
+    {
+        RaisePropertyChanged(nameof(Library));
+        RaisePropertyChanged(nameof(Library.BookList));
+        CanOperateWithBooks = ValidLibrary();
     }
 
     // Dispose method for external calls
@@ -199,7 +205,7 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
     /// </summary>
     private void Handle_LibraryIdChanged(object? sender, EventArgs e)
     {
-        CanOperateWithBooks = (sender as ILibrary)?.Id != 0;
+        CanOperateWithBooks = ValidLibrary();
     }
 
     private void BookList_CollectionChanged(object? sender, TotalBooksEventArgs e)
@@ -239,6 +245,8 @@ public class LibraryViewModel : AbstractViewModel, IDisposable
 
 
     private string GetPathToCurrentLibraryFile() => GetPathToFile(Library.Id.ToString());
+
+    private bool ValidLibrary() => Library?.Id != 0;
     #endregion
 
 

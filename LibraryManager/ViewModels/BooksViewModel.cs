@@ -1,3 +1,4 @@
+using LibraryManager.AbstractObjects;
 using System.Diagnostics;
 using LibraryManager.Models;
 using LibraryManager.Utils;
@@ -7,20 +8,21 @@ using System.Windows.Input;
 
 namespace LibraryManager.ViewModels;
 
-public class BooksViewModel : AbstractViewModel, IDisposable
+public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
 {
     public BooksViewModel(ILibrary library)
     {
         _settings = new SettingsViewModel();
 
         Library = library;
+
+        Library.LibraryIdChanged += Handle_LibraryIdChanged;
         Library.BookList.CollectionChanged += BookList_CollectionChanged;
-        _bookManageable = new BookManagerModel(Library);
-        SelectedBooks = new List<Book>();
         SelectionChangedCommand = new Command<IList<object>>(HandleOnCollectionViewSelectionChanged);
+        RefreshControls();
         IsBooksCollectionViewVisible = true;
         IsEditBookViewVisible = false;
-        Handle_SelectedBooks_CollectionChanged().ConfigureAwait(false);
+        _bookManageable = new BookManagerModel(Library);
     }
 
 
@@ -69,7 +71,14 @@ public class BooksViewModel : AbstractViewModel, IDisposable
         set => SetProperty(ref _canEditBook, value);
     }
 
+    public bool CanOperateWithLibrary
+    {
+        get => _canOperateWithLibrary;
+        set => SetProperty(ref _canOperateWithLibrary, value);
+    }
+
     public event EventHandler<TotalBooksEventArgs>? TotalBooksChanged;
+    #endregion
 
     #region CommandParameters
     public string OK
@@ -79,7 +88,6 @@ public class BooksViewModel : AbstractViewModel, IDisposable
     }
 
     public string Cancel => Constants.CANCEL;
-    #endregion
     #endregion
 
 
@@ -115,7 +123,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable
                 {
                     if (Book.IsValid())
                     {
-                         _bookManageable.AddBook(Book);
+                        _bookManageable.AddBook(Book);
                     }
 
                     IsBooksCollectionViewVisible = true;
@@ -177,7 +185,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable
                         ? customDialog.InputString
                         : $"{Book.Author}. {Book.Title}";
 
-                   await _bookManageable.TrySaveBook(new XmlBookKeeper(), Book, GetPathToFile(bookName));
+                    await _bookManageable.TrySaveBook(new XmlBookKeeper(), Book, GetPathToFile(bookName));
 
                     break;
                 }
@@ -207,6 +215,17 @@ public class BooksViewModel : AbstractViewModel, IDisposable
         );
     }
 
+    public void RefreshControls()
+    {
+        RaisePropertyChanged(nameof(Library));
+        RaisePropertyChanged(nameof(Library.BookList));
+        CanOperateWithLibrary = ValidLibrary();
+        CanEditBook = false;
+        SelectedBooks?.Clear();
+        Book = null;
+    }
+
+
     // Dispose method for external calls
     public void Dispose()
     {
@@ -217,11 +236,11 @@ public class BooksViewModel : AbstractViewModel, IDisposable
 
         // Perform cleanup: Unsubscribe from any events
         Library.BookList.CollectionChanged -= BookList_CollectionChanged;
-        // SelectedBooks.CollectionChanged -= Handle_SelectedBooks_CollectionChanged;
-        SelectedBooks.Clear();
+        Library.LibraryIdChanged -= Handle_LibraryIdChanged;
+        SelectedBooks?.Clear();
 
         #if DEBUG
-        Debug.WriteLine("BooksViewModel disposed successfully.");
+        Debug.WriteLine($"{nameof(BooksViewModel)} disposed successfully.");
         #endif
     }
 
@@ -241,19 +260,16 @@ public class BooksViewModel : AbstractViewModel, IDisposable
     private void BookList_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         TotalBooksChanged?.Invoke(this, new TotalBooksEventArgs { TotalBooks = Library.BookList.Count });
-        SelectedBooks.Clear();
+        SelectedBooks?.Clear();
         Book = null;
         Library.TotalBooks = Library.BookList.Count;
     }
 
-
-    private bool CanEditSelectedBook()
+    private void Handle_LibraryIdChanged(object? sender, EventArgs e)
     {
-        if (SelectedBooks.Count == 0)
-            return false;
-
-        return true;
+        RefreshControls();
     }
+
 
     /// <summary>
     /// Makes sorting property name list.
@@ -290,14 +306,15 @@ public class BooksViewModel : AbstractViewModel, IDisposable
 
     private Task Handle_SelectedBooks_CollectionChanged()
     {
-        CanEditBook = 0 < SelectedBooks.Count;
+        CanEditBook = ValidSelectedBooks();
         Book = null;
         return Task.CompletedTask;
     }
 
-    private bool ValidSelectedBooks() => MoreZero(SelectedBooks?.Count ?? 0);
+    private bool ValidSelectedBooks() =>
+        ValidLibrary() && MoreZero(Library.TotalBooks) && MoreZero(SelectedBooks?.Count ?? 0);
 
-    private bool ValidLibary() => MoreZero(Library.TotalBooks);
+    private bool ValidLibrary() => Library?.Id != 0;
 
     private bool MoreZero(int number)
     {
@@ -324,5 +341,6 @@ public class BooksViewModel : AbstractViewModel, IDisposable
     private bool _canEditBook;
     private string _ok;
     private object _onSelectionObject;
+    private bool _canOperateWithLibrary;
     #endregion
 }

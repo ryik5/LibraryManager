@@ -67,29 +67,37 @@
             <StackLayout Grid.Row="0"
                          Orientation="Horizontal"
                          HorizontalOptions="Fill"
-                         Margin="10,10,10,0" HeightRequest="35">
+                         Margin="10,10,10,0"
+                         HeightRequest="35">
                 <Button Text="Add Book"
                         Command="{Binding NavigateCommand}"
-                        CommandParameter="Add Book" />
+                        CommandParameter="Add Book" 
+                        IsEnabled="{Binding CanOperateWithLibrary}"/>
                 <Button Text="Demo 'Add Books'"
                         Command="{Binding NavigateCommand}"
-                        CommandParameter="Demo add books" />
+                        CommandParameter="Demo add books"
+                        IsEnabled="{Binding CanOperateWithLibrary}"/>
                 <Button Text="Edit Book"
                         Command="{Binding NavigateCommand}"
-                        CommandParameter="Edit Book" />
+                        CommandParameter="Edit Book"
+                        IsEnabled="{Binding CanEditBook}"/>
                 <Button Text="Delete Book(s)"
                         Command="{Binding NavigateCommand}"
-                        CommandParameter="Delete the selected book" />
+                        CommandParameter="Delete the selected book" 
+                        IsEnabled="{Binding CanEditBook}"/>
                 <Button Text="Import Book"
                         Command="{Binding NavigateCommand}"
-                        CommandParameter="Import a book" />
+                        CommandParameter="Import a book" 
+                        IsEnabled="{Binding CanOperateWithLibrary}"/>
                 <Button Text="Export Book"
                         Command="{Binding NavigateCommand}"
-                        CommandParameter="Export the selected book" />
+                        CommandParameter="Export the selected book" 
+                        IsEnabled="{Binding CanEditBook}"/>
 
                 <Button Text="Sort Library"
                         Command="{Binding NavigateCommand}"
-                        CommandParameter="Sort Books" />
+                        CommandParameter="Sort Books" 
+                        IsEnabled="{Binding CanOperateWithLibrary}"/>
 
             </StackLayout>
 
