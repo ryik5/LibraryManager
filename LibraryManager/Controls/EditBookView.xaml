@@ -87,19 +87,19 @@
                        Placeholder="ISBN"
                        Grid.Row="6" Grid.Column="1" />
 
-                <Label Text="External content" Grid.Row="7" Grid.Column="0" />
+                <Label Text="Original path"
+                       Grid.Row="7" Grid.Column="0" />
+                <Entry Text="{Binding Source={RelativeSource TemplatedParent}, Path=Book.Content.OriginalPath}"
+                       Placeholder="Original path where the uploaded content was"
+                       Grid.Row="7" Grid.Column="1" IsEnabled="False" />
+
+                <Label Text="External content" Grid.Row="8" Grid.Column="0" />
                 <CheckBox IsChecked="{Binding Source={RelativeSource TemplatedParent}, Path=Book.Content.IsContentStoredSeparately, Mode=OneWay}"
-                          IsEnabled="False" Grid.Row="7" Grid.Column="1"
+                          IsEnabled="False" Grid.Row="8" Grid.Column="1"
                           VerticalOptions="Center"
                           HorizontalOptions="Start"
                           HeightRequest="20"
                           Margin="0" />
-
-                <Label Text="Original path"
-                       Grid.Row="8" Grid.Column="0" />
-                <Entry Text="{Binding Source={RelativeSource TemplatedParent}, Path=Book.Content.OriginalPath}"
-                       Placeholder="Original path where the uploaded content was"
-                       Grid.Row="8" Grid.Column="1" IsEnabled="False" />
 
             </Grid>
         </ControlTemplate>

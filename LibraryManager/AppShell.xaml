@@ -10,7 +10,7 @@
     MinimumHeightRequest="800"
     FlyoutBehavior="Locked"
     FlyoutHeaderBehavior="Fixed"
-    FlyoutBackgroundColor="{StaticResource Tertiary}"
+    FlyoutBackgroundColor="{StaticResource Quaternary}"
     FlyoutWidth="{OnPlatform Android=180, iOS=200, WinUI=250, MacCatalyst=150}"
     x:DataType="local:AppShell">
 
@@ -72,7 +72,7 @@
                             <VisualState x:Name="Selected">
                                 <VisualState.Setters>
                                     <Setter Property="BackgroundColor"
-                                            Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Tertiary}}" />
+                                            Value="{AppThemeBinding Light={StaticResource Secondary}, Dark={StaticResource Tertiary}}" />
                                 </VisualState.Setters>
                             </VisualState>
                         </VisualStateGroup>
