@@ -6,15 +6,15 @@ namespace LibraryManager.Controls;
 
 public partial class BookCollectionView : ContentView
 {
-    public static readonly BindableProperty SelectionChangedCommandProperty =
-        BindableProperty.Create(nameof(SelectionChangedCommand),
+    public static readonly BindableProperty SelectionInBookCollectionChangedCommandProperty =
+        BindableProperty.Create(nameof(SelectionInBookCollectionChangedCommand),
             typeof(ICommand), typeof(BookCollectionView),
             defaultBindingMode: BindingMode.TwoWay);
 
-    public ICommand SelectionChangedCommand
+    public ICommand SelectionInBookCollectionChangedCommand
     {
-        get => (ICommand)GetValue(SelectionChangedCommandProperty);
-        set => SetValue(SelectionChangedCommandProperty, value);
+        get => (ICommand)GetValue(SelectionInBookCollectionChangedCommandProperty);
+        set => SetValue(SelectionInBookCollectionChangedCommandProperty, value);
     }
 
 

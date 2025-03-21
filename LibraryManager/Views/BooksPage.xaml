@@ -107,8 +107,8 @@
                 Grid.Row="1"
                 x:Name="BooksCollectionView"
                 IsVisible="{Binding IsBooksCollectionViewVisible, Mode=OneWay}"
-                BookCollection="{Binding Library.BookList,Mode=TwoWay}"
-                SelectionChangedCommand="{Binding SelectionChangedCommand}"
+                BookCollection="{Binding Library.BookList,Mode=OneWay}"
+                SelectionInBookCollectionChangedCommand="{Binding SelectionChangedCommand,Mode=OneWay}"
                 BindingContext="{Binding}"
                 Margin="10,10,5,30" />
 

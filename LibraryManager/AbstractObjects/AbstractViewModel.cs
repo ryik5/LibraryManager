@@ -14,7 +14,6 @@ public abstract class AbstractViewModel : AbstractBindableModel
     {
         // Initialize the generic navigation command
         NavigateCommand = new AsyncRelayCommand<string>(PerformAction);
-        ExtendedCommand = new AsyncRelayCommand<string>(PerformExtendedAction);
     }
 
 
@@ -26,17 +25,6 @@ public abstract class AbstractViewModel : AbstractBindableModel
     /// <param name="commandParameter">The command parameter specifying the action to be performed.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
     protected abstract Task PerformAction(string? commandParameter);
-
-    /// <summary>
-    /// Performs an extended action based on the provided command parameter.
-    /// This is a virtual empty method and can be overridden by derived classes to implement specific extended actions.
-    /// </summary>
-    /// <param name="commandParameter">The command parameter specifying the action to be performed.</param>
-    /// <returns>A task representing the asynchronous operation.</returns>
-    protected virtual Task PerformExtendedAction(string? commandParameter)
-    {
-        return Task.CompletedTask;
-    }
 
     /// <summary>
     /// Shows a display alert to the user, with the option to either press "OK" or "Cancel".
@@ -210,11 +198,6 @@ public abstract class AbstractViewModel : AbstractBindableModel
     /// Command to perform an action, such as navigate to a different page or view or other actions.
     /// </summary>
     public ICommand NavigateCommand { get; set; }
-
-    /// <summary>
-    /// Command to perform an extra actions.
-    /// </summary>
-    public ICommand ExtendedCommand { get; }
     #endregion
 }
 

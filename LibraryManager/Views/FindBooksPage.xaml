@@ -2,11 +2,11 @@
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-              xmlns:control="clr-namespace:LibraryManager.Controls"
+             xmlns:control="clr-namespace:LibraryManager.Controls"
              x:Class="LibraryManager.Views.FindBooksPage">
 
     <ContentPage.MenuBarItems>
-        
+
         <MenuBarItem Text="Find Books">
 
         </MenuBarItem>
@@ -85,25 +85,25 @@
                         Command="{Binding NavigateCommand}"
                         CommandParameter="Edit Book"
                         MinimumWidthRequest="100"
-                        Margin="10,0,20,0" 
-                        IsEnabled="{Binding CanEditBook}"/>
+                        Margin="10,0,20,0"
+                        IsEnabled="{Binding CanEditBook}" />
 
                 <Button Text="Delete Book(s)"
                         Command="{Binding NavigateCommand}"
                         CommandParameter="Delete the selected book"
-                        MinimumWidthRequest="100" 
-                        IsEnabled="{Binding CanEditBook}"/>
+                        MinimumWidthRequest="100"
+                        IsEnabled="{Binding CanEditBook}" />
 
             </StackLayout>
 
             <!-- Displays Found Books-->
-             <control:BookCollectionView
-                BookCollection="{Binding FoundBookList, Mode=TwoWay}"
-                SelectionChangedCommand="{Binding SelectionChangedCommand}"
-                BindingContext="{Binding}"
+            <control:BookCollectionView
                 Grid.Row="1"
                 x:Name="BooksCollectionView"
+                BookCollection="{Binding FoundBookList, Mode=OneWay}"
+                SelectionInBookCollectionChangedCommand="{Binding SelectionChangedCommand, Mode=OneWay}"
                 IsVisible="{Binding IsBooksCollectionViewVisible, Mode=OneWay}"
+                BindingContext="{Binding}"
                 Margin="10,10,5,30" />
 
             <!-- Add/Edit Book View -->
@@ -132,7 +132,7 @@
 
                 IsCancelVisibile="{Binding CanClearContent, Mode=OneWay}"
                 CancelText="{Binding ClearingState, Mode=OneWay}" />
-            
+
             <!-- Add/Edit Book Controls -->
             <control:ThreeButtonsPanel
                 Grid.Row="3"
@@ -148,7 +148,7 @@
                 IsNoVisibile="False"
                 IsCancelVisibile="True"
                 CancelText="{Binding Cancel, Mode=OneWay}" />
-            
+
         </Grid>
     </ContentPage.Content>
 </ContentPage>

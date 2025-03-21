@@ -8,9 +8,9 @@
         <ControlTemplate>
 
             <CollectionView x:Name="BooksCollectionView"
-                            ItemsSource="{Binding Source={RelativeSource TemplatedParent}, Path=BookCollection,Mode=TwoWay}" 
+                            ItemsSource="{Binding Source={RelativeSource TemplatedParent}, Path=BookCollection}" 
                             SelectionMode="Multiple"
-                            SelectionChangedCommand="{Binding Source={RelativeSource TemplatedParent}, Path=SelectionChangedCommand}" 
+                            SelectionChangedCommand="{Binding Source={RelativeSource TemplatedParent}, Path=SelectionInBookCollectionChangedCommand}" 
                             SelectionChangedCommandParameter="{Binding Path=SelectedItems, Source={RelativeSource Self}}"
                             HorizontalScrollBarVisibility="Always"
                             VerticalScrollBarVisibility="Always">

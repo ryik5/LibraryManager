@@ -49,7 +49,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
         set => SetProperty(ref _book, value);
     }
 
-    // TODO : 
+    // TODO : Move to Ancestor class
     public string ContentState
     {
         get => _contentState;
@@ -319,6 +319,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
 
     private void HandleOnCollectionViewSelectionChanged(IList<object> obj)
     {
+        SelectedBooks?.Clear();
         SelectedBooks = obj?.Select(b => b as Book)?.ToList();
     }
 

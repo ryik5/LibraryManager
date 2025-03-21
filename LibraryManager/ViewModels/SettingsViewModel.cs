@@ -18,11 +18,10 @@ public class SettingsViewModel : AbstractBindableModel
         // TODO : Load and save data with SettingsModel instead
         // TODO: write as StaticRoute
 
-        _searchFields = Enum.GetValues(typeof(EBibliographicKindInformation)).Cast<EBibliographicKindInformation>()
-            .ToArray();
-        _booleans = new[] { true, false };
-        _bookProperties = new Library().GetBookProperties();
-        _sortingDirections = new[] { Constants.SORTING_ASCENDING, Constants.SORTING_DESCENDING };
+        SearchFields = Enum.GetValues<EBibliographicKindInformation>().ToArray();
+        Booleans = new[] { true, false };
+        SortingDirections = new[] { Constants.SORTING_ASCENDING, Constants.SORTING_DESCENDING };
+        BookProperties = new Library().GetBookProperties();
 
         LoadAllSettings();
     }
@@ -32,19 +31,19 @@ public class SettingsViewModel : AbstractBindableModel
     /// <summary>
     /// Gets an array of search fields available for the FindBooks page.
     /// </summary>
-    public EBibliographicKindInformation[] SearchFields => _searchFields;
+    public EBibliographicKindInformation[] SearchFields { get; }
 
     /// <summary>
     /// Gets an array of boolean values representing the state of various settings.
     /// </summary>
-    public bool[] Booleans => _booleans;
+    public bool[] Booleans { get; }
 
-    public string[] SortingDirections => _sortingDirections;
+    public string[] SortingDirections { get; }
 
     /// <summary>
     /// Gets an array of boolean values representing the state of various settings.
     /// </summary>
-    public string[] BookProperties => _bookProperties;
+    public string[] BookProperties { get; }
     #endregion
 
 
@@ -378,7 +377,7 @@ public class SettingsViewModel : AbstractBindableModel
     #region Private fields
     private long _bookMaxContentLength;
     private double _messageBoxFontSize;
-    private EBibliographicKindInformation _searchField;
+    private EBibliographicKindInformation _searchField = EBibliographicKindInformation.All;
     private bool _searchOnFly;
     private double _debugTextFontSize;
     private string _firstSortBookProperty;
@@ -391,10 +390,6 @@ public class SettingsViewModel : AbstractBindableModel
     private bool _thirdSortPropertyByDescend;
     private string _thirdSortProperty_SortingDirection;
     private string _book_MaxContentLength_ToolTip;
-    private EBibliographicKindInformation[] _searchFields;
-    private string[] _bookProperties;
-    private string[] _sortingDirections;
-    private bool[] _booleans;
 
     private readonly Dictionary<string, object> DefaultSettings = new() // Default values for preferences
     {

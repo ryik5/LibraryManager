@@ -130,29 +130,29 @@
                             <Label Grid.Row="0" Grid.Column="0"
                                    Text="First Property" />
                             <Picker Grid.Row="0" Grid.Column="1"
-                                    ItemsSource="{Binding SortingDirections}"
+                                    ItemsSource="{Binding SortingDirections, Mode=OneWay}"
                                     SelectedItem="{Binding FirstSortProperty_SortingDirection,Mode=TwoWay}" 
                                     Margin="0,0,0,10"/>
                             <Picker Grid.Row="0" Grid.Column="2"
-                                    ItemsSource="{Binding BookProperties}"
+                                    ItemsSource="{Binding BookProperties, Mode=OneWay}"
                                     SelectedItem="{Binding FirstSortBookProperty}" 
                                     Margin="10,0,0,10"/>
 
                             <Label Grid.Row="1" Grid.Column="0"
                                    Text="Second Property" />
                             <Picker Grid.Row="1" Grid.Column="1"
-                                    ItemsSource="{Binding SortingDirections}"
+                                    ItemsSource="{Binding SortingDirections, Mode=OneWay}"
                                     SelectedItem="{Binding SecondSortProperty_SortingDirection,Mode=TwoWay}" 
                                     Margin="0,0,0,10"/>
                             <Picker Grid.Row="1" Grid.Column="2"
-                                    ItemsSource="{Binding BookProperties}"
+                                    ItemsSource="{Binding BookProperties, Mode=OneWay}"
                                     SelectedItem="{Binding SecondSortBookProperty,Mode=TwoWay}"
                                     Margin="10,0,0,10"/>
 
                             <Label Grid.Row="2" Grid.Column="0"
                                    Text="Third Property" />
                             <Picker Grid.Row="2" Grid.Column="1"
-                                    ItemsSource="{Binding SortingDirections}"
+                                    ItemsSource="{Binding SortingDirections, Mode=OneWay}"
                                     SelectedItem="{Binding ThirdSortProperty_SortingDirection}" 
                                     Margin="0,0,0,0"/>
                             <Picker Grid.Row="2" Grid.Column="2"

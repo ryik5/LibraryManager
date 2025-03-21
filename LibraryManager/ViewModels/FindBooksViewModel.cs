@@ -320,8 +320,8 @@ public class FindBooksViewModel : AbstractViewModel, IRefreshable
 
     private void HandleOnCollectionViewSelectionChanged(IList<object> obj)
     {
-        if (0 < FoundBookList.Count)
-            SelectedBooks = obj?.Select(b => b as Book)?.ToList();
+        SelectedBooks?.Clear();
+        SelectedBooks = obj?.Select(b => b as Book)?.ToList();
     }
 
     private Book? SelectFirstFoundBook() => ValidSelectedBooks() ? SelectedBooks[0] : null;
