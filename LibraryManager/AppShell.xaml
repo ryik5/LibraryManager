@@ -7,7 +7,7 @@
     xmlns:view="clr-namespace:LibraryManager.Views"
     xmlns:local="clr-namespace:LibraryManager"
     MinimumWidthRequest="1200"
-    MinimumHeightRequest="800"
+    MinimumHeightRequest="900"
     FlyoutBehavior="Locked"
     FlyoutHeaderBehavior="Fixed"
     FlyoutBackgroundColor="{StaticResource Quaternary}"

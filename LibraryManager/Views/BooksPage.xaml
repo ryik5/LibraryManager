@@ -54,6 +54,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <Grid.Resources>
                 <Style TargetType="Button">
@@ -71,60 +72,79 @@
                          HeightRequest="35">
                 <Button Text="Add Book"
                         Command="{Binding NavigateCommand}"
-                        CommandParameter="Add Book" 
-                        IsEnabled="{Binding CanOperateWithLibrary}"/>
+                        CommandParameter="Add Book"
+                        IsEnabled="{Binding CanOperateWithLibrary}" />
                 <Button Text="Demo 'Add Books'"
                         Command="{Binding NavigateCommand}"
                         CommandParameter="Demo add books"
-                        IsEnabled="{Binding CanOperateWithLibrary}"/>
+                        IsEnabled="{Binding CanOperateWithLibrary}" />
                 <Button Text="Edit Book"
                         Command="{Binding NavigateCommand}"
                         CommandParameter="Edit Book"
-                        IsEnabled="{Binding CanEditBook}"/>
+                        IsEnabled="{Binding CanEditBook}" />
                 <Button Text="Delete Book(s)"
                         Command="{Binding NavigateCommand}"
-                        CommandParameter="Delete the selected book" 
-                        IsEnabled="{Binding CanEditBook}"/>
+                        CommandParameter="Delete the selected book"
+                        IsEnabled="{Binding CanEditBook}" />
                 <Button Text="Import Book"
                         Command="{Binding NavigateCommand}"
-                        CommandParameter="Import a book" 
-                        IsEnabled="{Binding CanOperateWithLibrary}"/>
+                        CommandParameter="Import a book"
+                        IsEnabled="{Binding CanOperateWithLibrary}" />
                 <Button Text="Export Book"
                         Command="{Binding NavigateCommand}"
-                        CommandParameter="Export the selected book" 
-                        IsEnabled="{Binding CanEditBook}"/>
+                        CommandParameter="Export the selected book"
+                        IsEnabled="{Binding CanEditBook}" />
 
                 <Button Text="Sort Library"
                         Command="{Binding NavigateCommand}"
-                        CommandParameter="Sort Books" 
-                        IsEnabled="{Binding CanOperateWithLibrary}"/>
+                        CommandParameter="Sort Books"
+                        IsEnabled="{Binding CanOperateWithLibrary}" />
 
             </StackLayout>
 
             <!-- Displays Books-->
             <control:BookCollectionView
-                BookCollection="{Binding Library.BookList,Mode=TwoWay}"
-                SelectionChangedCommand="{Binding SelectionChangedCommand}"
-                BindingContext="{Binding}"
                 Grid.Row="1"
                 x:Name="BooksCollectionView"
                 IsVisible="{Binding IsBooksCollectionViewVisible, Mode=OneWay}"
+                BookCollection="{Binding Library.BookList,Mode=TwoWay}"
+                SelectionChangedCommand="{Binding SelectionChangedCommand}"
+                BindingContext="{Binding}"
                 Margin="10,10,5,30" />
 
             <!-- Add/Edit Book View -->
-            <control:EditBookView
-                Grid.Row="1"
-                Book="{Binding Book,Mode=TwoWay}"
-                BindingContext="{Binding}"
+            <control:EditBookView 
+                Grid.Row="1" 
                 IsVisible="{Binding IsEditBookViewVisible, Mode=OneWay}"
-                Margin="10,20,20,10" />
+                                  Book="{Binding Book,Mode=TwoWay}"
+                                  BindingContext="{Binding}"
+                                  Margin="10,20,20,30" />
 
-            <!-- Add/Edit Book Controls -->
+            <!-- Load Book's content controls -->
             <control:ThreeButtonsPanel
                 Grid.Row="2"
                 IsVisible="{Binding IsEditBookViewVisible, Mode=OneWay}"
                 HeightRequest="35"
-                Margin="0,50,0,10"
+                Margin="200,00,0,10"
+
+                HorizontalOptions="Start"
+                VerticalOptions="End"
+                NavigateCommand="{Binding NavigateCommand, Mode=OneTime}"
+
+                IsOkVisibile="True"
+                OkText="{Binding ContentState, Mode=OneWay}"
+
+                IsNoVisibile="False"
+
+                IsCancelVisibile="{Binding CanClearContent, Mode=OneWay}"
+                CancelText="{Binding ClearingState, Mode=OneWay}" />
+
+            <!-- Add/Edit Book Controls -->
+            <control:ThreeButtonsPanel
+                Grid.Row="3"
+                IsVisible="{Binding IsEditBookViewVisible, Mode=OneWay}"
+                HeightRequest="35"
+                Margin="0,00,0,10"
                 BindingContext="{Binding}"
                 HorizontalOptions="Center"
                 VerticalOptions="End"

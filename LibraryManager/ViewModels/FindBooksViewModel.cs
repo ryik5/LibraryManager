@@ -21,10 +21,12 @@ public class FindBooksViewModel : AbstractViewModel, IRefreshable
         SelectionChangedCommand = new Command<IList<object>>(HandleOnCollectionViewSelectionChanged);
         IsBooksCollectionViewVisible = true;
         IsEditBookViewVisible = false;
+        ContentState = Constants.LOAD_CONTENT;
+        ClearingState = Constants.CLEAR_CONTENT;
         RefreshControls();
-        
-         _bookManageable = new BookManagerModel(Library);
-   }
+
+        _bookManageable = new BookManagerModel(Library);
+    }
 
 
     #region Public Properties
@@ -122,6 +124,25 @@ public class FindBooksViewModel : AbstractViewModel, IRefreshable
     public string OK => Constants.SAVE_CHANGES;
 
     public string Cancel => Constants.CANCEL;
+
+    // TODO : 
+    public string ContentState
+    {
+        get => _contentState;
+        set => SetProperty(ref _contentState, value);
+    }
+
+    public string ClearingState
+    {
+        get => _clearingState;
+        set => SetProperty(ref _clearingState, value);
+    }
+
+    public bool CanClearContent
+    {
+        get => _canClearContent;
+        set => SetProperty(ref _canClearContent, value);
+    }
     #endregion
     #endregion
 
@@ -187,6 +208,7 @@ public class FindBooksViewModel : AbstractViewModel, IRefreshable
 
                     IsBooksCollectionViewVisible = false;
                     IsEditBookViewVisible = true;
+                    await UpdateButtonContentState(Book.Content?.IsLoaded ?? false);
 
                     break;
                 }
@@ -208,6 +230,15 @@ public class FindBooksViewModel : AbstractViewModel, IRefreshable
                     );
                     break;
                 }
+
+                case Constants.LOAD_CONTENT:
+                case Constants.CLEAR_CONTENT:
+                    await _bookManageable.RunCommand(commandParameter, new List<Book>() { Book });
+                    await UpdateButtonContentState(Book.Content?.IsLoaded ?? false);
+                    break;
+                case Constants.SAVE_CONTENT:
+                    await _bookManageable.RunCommand(commandParameter, new List<Book>() { Book });
+                    break;
 
                 default: //jobs perform without creating views
                 {
@@ -315,8 +346,12 @@ public class FindBooksViewModel : AbstractViewModel, IRefreshable
         CanEditBook = false;
     }
 
-    private bool CheckCanEditBook() =>
-        MoreZero(Library.Id) && MoreZero(Library.TotalBooks) && MoreZero(SelectedBooks?.Count ?? 0);
+    private Task UpdateButtonContentState(bool isContentLoaded)
+    {
+        ContentState = isContentLoaded ? Constants.SAVE_CONTENT : Constants.LOAD_CONTENT;
+        CanClearContent = isContentLoaded;
+        return Task.CompletedTask;
+    }
     #endregion
 
     #region Private fields
@@ -331,5 +366,8 @@ public class FindBooksViewModel : AbstractViewModel, IRefreshable
     private bool _isEditBookViewVisible;
     private bool _isBooksCollectionViewVisible;
     private bool _canOperateWithBooks;
+    private string _contentState;
+    private bool _canClearContent;
+    private string _clearingState;
     #endregion
 }

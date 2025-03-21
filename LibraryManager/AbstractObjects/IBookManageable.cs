@@ -29,7 +29,7 @@ public interface IBookManageable
     /// Adds a book to the library.
     /// </summary>
     /// <param name="book">The book to add.</param>
-    void AddBook(Book book);
+    Task AddBookTask(Book book);
 
     /// <summary>
     /// Removes the specified book from the library.

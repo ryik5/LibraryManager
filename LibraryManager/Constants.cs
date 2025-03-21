@@ -84,6 +84,7 @@ public static class Constants
     public const string ATTEMPT_TO = "Attempt to";
     public const string SAVE_CHANGES = "Save changes";
     public const string SAVE_CONTENT = "Save content";
+    public const string CLEAR_CONTENT = "Clear content";
     public const string SAVING_STARTED = "Saving started";
     public const string CONTENT_SAVED_SUCCESSFULLY = "Content saved successfully";
     public const string FAILED_TO_SAVE_CONTENT = "Failed to save content";

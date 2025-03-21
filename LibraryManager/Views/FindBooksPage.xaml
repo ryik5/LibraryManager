@@ -39,6 +39,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <Grid.Resources>
                 <Style TargetType="Button">
@@ -113,9 +114,28 @@
                 IsVisible="{Binding IsEditBookViewVisible, Mode=OneWay}"
                 Margin="10,20,20,10" />
 
-            <!-- Add/Edit Book Controls -->
+            <!-- Load Book's content controls -->
             <control:ThreeButtonsPanel
                 Grid.Row="2"
+                IsVisible="{Binding IsEditBookViewVisible, Mode=OneWay}"
+                HeightRequest="35"
+                Margin="200,00,0,10"
+
+                HorizontalOptions="Start"
+                VerticalOptions="End"
+                NavigateCommand="{Binding NavigateCommand, Mode=OneTime}"
+
+                IsOkVisibile="True"
+                OkText="{Binding ContentState, Mode=OneWay}"
+
+                IsNoVisibile="False"
+
+                IsCancelVisibile="{Binding CanClearContent, Mode=OneWay}"
+                CancelText="{Binding ClearingState, Mode=OneWay}" />
+            
+            <!-- Add/Edit Book Controls -->
+            <control:ThreeButtonsPanel
+                Grid.Row="3"
                 IsVisible="{Binding IsEditBookViewVisible, Mode=OneWay}"
                 HeightRequest="35"
                 Margin="0,50,0,10"

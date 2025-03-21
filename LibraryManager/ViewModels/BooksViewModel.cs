@@ -23,6 +23,8 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
         IsBooksCollectionViewVisible = true;
         IsEditBookViewVisible = false;
         _bookManageable = new BookManagerModel(Library);
+        ContentState = Constants.LOAD_CONTENT;
+        ClearingState = Constants.CLEAR_CONTENT;
     }
 
 
@@ -47,11 +49,25 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
         set => SetProperty(ref _book, value);
     }
 
-    public string LoadingState
+    // TODO : 
+    public string ContentState
     {
-        get => _loadingState;
-        set => SetProperty(ref _loadingState, value);
+        get => _contentState;
+        set => SetProperty(ref _contentState, value);
     }
+
+    public string ClearingState
+    {
+        get => _clearingState;
+        set => SetProperty(ref _clearingState, value);
+    }
+
+    public bool CanClearContent
+    {
+        get => _canClearContent;
+        set => SetProperty(ref _canClearContent, value);
+    }
+
 
     public bool IsBooksCollectionViewVisible
     {
@@ -123,7 +139,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
                 {
                     if (Book.IsValid())
                     {
-                        _bookManageable.AddBook(Book);
+                        await _bookManageable.AddBookTask(Book);
                     }
 
                     IsBooksCollectionViewVisible = true;
@@ -134,6 +150,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
                 case Constants.ADD_BOOK:
                 {
                     OK = Constants.SAVE;
+                    ContentState = Constants.LOAD_CONTENT;
                     Book = BookModelMaker.GenerateBook();
                     IsBooksCollectionViewVisible = false;
                     IsEditBookViewVisible = true;
@@ -159,6 +176,8 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
 
                     OK = Constants.SAVE_CHANGES;
 
+                    await UpdateButtonContentState(Book.Content?.IsLoaded ?? false);
+
                     IsBooksCollectionViewVisible = false;
                     IsEditBookViewVisible = true;
 
@@ -170,6 +189,8 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
                         _bookManageable.SafetySortBooks(props);
                     break;
                 }
+
+                //TODO : move inside BookManager
                 case Constants.EXPORT_BOOK:
                 {
                     if (!ValidSelectedBooks())
@@ -189,11 +210,14 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
 
                     break;
                 }
-                case Constants.IMPORT_BOOK:
-                {
-                    await _bookManageable.TryLoadBook();
+                case Constants.LOAD_CONTENT:
+                case Constants.CLEAR_CONTENT:
+                    await _bookManageable.RunCommand(commandParameter, new List<Book>() { Book });
+                    await UpdateButtonContentState(Book.Content?.IsLoaded ?? false);
                     break;
-                }
+                case Constants.SAVE_CONTENT:
+                    await _bookManageable.RunCommand(commandParameter, new List<Book>() { Book });
+                    break;
                 default: //jobs perform without creating views
                 {
                     // Performing actions at the BooksManager
@@ -311,10 +335,9 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
         return Task.CompletedTask;
     }
 
-    private bool ValidSelectedBooks() =>
-        ValidLibrary() && MoreZero(Library.TotalBooks) && MoreZero(SelectedBooks?.Count ?? 0);
+    private bool ValidSelectedBooks() => MoreZero(SelectedBooks?.Count ?? 0);
 
-    private bool ValidLibrary() => Library?.Id != 0;
+    private bool ValidLibrary() => MoreZero(Library?.Id ?? 0);
 
     private bool MoreZero(int number)
     {
@@ -324,7 +347,14 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
         return true;
     }
 
-    private Book? SelectFirstFoundBook() => ValidSelectedBooks() ? SelectedBooks[0] : null;
+    private Book? SelectFirstFoundBook() => MoreZero(SelectedBooks?.Count ?? 0) ? SelectedBooks[0] : null;
+
+    private Task UpdateButtonContentState(bool isContentLoaded)
+    {
+        ContentState = isContentLoaded ? Constants.SAVE_CONTENT : Constants.LOAD_CONTENT;
+        CanClearContent = isContentLoaded;
+        return Task.CompletedTask;
+    }
     #endregion
 
 
@@ -337,10 +367,13 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
     private bool _isBooksCollectionViewVisible;
     private bool _isEditBookViewVisible;
     private bool _disposed; // Safeguard for multiple calls to Dispose.
-    private string _loadingState;
+    private string _contentState;
     private bool _canEditBook;
     private string _ok;
     private object _onSelectionObject;
     private bool _canOperateWithLibrary;
+    private string _savingState;
+    private string _clearingState;
+    private bool _canClearContent;
     #endregion
 }

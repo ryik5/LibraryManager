@@ -192,7 +192,7 @@ public abstract class AbstractViewModel : AbstractBindableModel
     /// </remarks>
     protected string GetPathToDocumentDirectory()
         => new NSFileManager().GetUrls(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomain.User)[0].Path;
-    
+
     /// <summary>
     /// Gets the path to a XML file in the document directory.
     /// </summary>

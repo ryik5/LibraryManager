@@ -22,20 +22,23 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
 
 
     #region public methods
-    public Task RunCommand(string commandParameter, IList<Book>? selectedBooks)
+    public async Task RunCommand(string commandParameter, IList<Book>? selectedBooks)
     {
         switch (commandParameter)
         {
             case Constants.ADD_BOOK:
-                AddBook(BookModelMaker.GenerateDemoBook());
+            {
+                await AddBookTask(BookModelMaker.GenerateDemoBook());
                 break;
-
+            }
             case Constants.DEMO_ADD_BOOKS:
+            {
                 for (var b = 0; b < 10; b++)
-                    AddBook(BookModelMaker.GenerateDemoBook());
+                    await AddBookTask(BookModelMaker.GenerateDemoBook());
                 break;
-
+            }
             case Constants.DELETE_BOOK:
+            {
                 if (selectedBooks is not null && 0 < selectedBooks.Count)
                 {
                     foreach (var bookToDelete in selectedBooks)
@@ -45,11 +48,24 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
                 }
 
                 break;
-            default:
+            }
+            case Constants.IMPORT_BOOK:
+            {
+                await TryLoadBook();
                 break;
+            }
+            case Constants.LOAD_CONTENT:
+            {
+                var book = selectedBooks[0];
+                var result = await TryLoadContentToBookTask(book);
+                break;
+            }
+            case Constants.CLEAR_CONTENT:
+            {
+                selectedBooks[0].Content = null;
+                break;
+            }
         }
-
-        return Task.CompletedTask;
     }
 
     /// <summary>
@@ -65,7 +81,7 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
 
         var result = bookLoader.TryLoadBook(pathToFile, out var book);
         if (result)
-            RunInMainThread(() => AddBook(book));
+            Task.Run(async () => await AddBookTask(book));
 
         bookLoader.LoadingFinished -= BookLoader_LoadingBookFinished;
 
@@ -77,7 +93,6 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
     {
         return await DeserializeBookTask(await TryPickFileUpTask("Please select a book file", "xml"));
     }
-
 
     private async Task<bool> DeserializeBookTask(FileResult fileResult)
     {
@@ -98,6 +113,7 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
 
         return false;
     }
+
 
     /// <summary>
     /// Saves the selected book to the specified folder.
@@ -135,15 +151,6 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
     /// Adds a new book to the <see cref="Library.BookList"/>
     /// </summary>
     /// <param name="book">The book to add.</param>
-    public void AddBook(Book book)
-    {
-        RunInMainThread(() =>
-        {
-            book.Id = _library.BookList.Count == 0 ? 1 : _library.BookList.Max(b => b.Id) + 1;
-            _library.BookList.Insert(0, book);
-        });
-    }
-
     public Task AddBookTask(Book book)
     {
         RunInMainThread(() =>
@@ -351,6 +358,9 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
 
     private const StringComparison CurrentComparisionRule = StringComparison.OrdinalIgnoreCase;
 
+
     private ILibrary _library;
     #endregion
-}
+ }
+
+
