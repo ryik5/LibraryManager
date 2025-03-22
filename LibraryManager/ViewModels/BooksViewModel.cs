@@ -17,8 +17,8 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
         Library = library;
 
         Library.LibraryIdChanged += Handle_LibraryIdChanged;
-        Library.BookList.CollectionChanged += BookList_CollectionChanged;
-        SelectionChangedCommand = new Command<IList<object>>(HandleOnCollectionViewSelectionChanged);
+        Library.BookList.CollectionChanged += Handle_BookListCollectionChanged;
+        SelectionChangedCommand = new Command<IList<object>>(Handle_OnCollectionViewSelectionChanged);
         IsBooksCollectionViewVisible = true;
         IsEditBookViewVisible = false;
         _bookManageable = new BookManagerModel(Library);
@@ -327,20 +327,20 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
         return Task.FromResult(props);
     }
 
-    private async void HandleOnCollectionViewSelectionChanged(IList<object> obj)
+    private async void Handle_OnCollectionViewSelectionChanged(IList<object> list)
     {
-        SelectedBooks?.Clear();
-        SelectedBooks = obj?.Select(b => b as Book)?.ToList();
-        await Handle_SelectedBooks_CollectionChanged();
+        await Handle_SelectedBooks_CollectionChanged(list);
     }
 
-    private void BookList_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    private void Handle_BookListCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         Library.TotalBooks = Library.BookList.Count;
     }
 
-    private Task Handle_SelectedBooks_CollectionChanged()
+    private Task Handle_SelectedBooks_CollectionChanged(IList<object> list)
     {
+        SelectedBooks?.Clear();
+        SelectedBooks = list?.Select(b => b as Book)?.ToList();
         CanEditBook = ValidSelectedBooks();
         Book = null;
         return Task.CompletedTask;

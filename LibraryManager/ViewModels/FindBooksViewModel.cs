@@ -16,9 +16,9 @@ public class FindBooksViewModel : AbstractViewModel, IRefreshable
             .ToList();
         Library = library;
 
-        Library.TotalBooksChanged += BookList_CollectionChanged;
-        FoundBookList.CollectionChanged += HandleFoundBookListChanged;
-        SelectionChangedCommand = new Command<IList<object>>(HandleOnCollectionViewSelectionChanged);
+        Library.TotalBooksChanged += Handle_TotalBooksChanged;
+        FoundBookList.CollectionChanged += Handle_FoundBookListChanged;
+        SelectionChangedCommand = new Command<IList<object>>(Handle_OnCollectionViewSelectionChanged);
         IsBooksCollectionViewVisible = true;
         IsEditBookViewVisible = false;
         ContentState = Constants.LOAD_CONTENT;
@@ -313,7 +313,7 @@ public class FindBooksViewModel : AbstractViewModel, IRefreshable
         FoundBookList.ResetAndAddRange(foundBooks);
     }
 
-    private void BookList_CollectionChanged(object? sender, TotalBooksEventArgs e)
+    private void Handle_TotalBooksChanged(object? sender, TotalBooksEventArgs e)
     {
         FoundBookList.Clear();
         CanOperateWithBooks = ValidLibrary();
@@ -324,7 +324,7 @@ public class FindBooksViewModel : AbstractViewModel, IRefreshable
     /// </summary>
     /// <param name="sender">The source of the event.</param>
     /// <param name="e">The NotifyCollectionChangedEventArgs instance containing the event data.</param>
-    private void HandleFoundBookListChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    private void Handle_FoundBookListChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         SelectedBooks?.Clear();
         SelectedBooks = null;
@@ -332,7 +332,7 @@ public class FindBooksViewModel : AbstractViewModel, IRefreshable
         CanEditBook = false;;
     }
 
-    private void HandleOnCollectionViewSelectionChanged(IList<object> obj)
+    private void Handle_OnCollectionViewSelectionChanged(IList<object> obj)
     {
         SelectedBooks?.Clear();
         SelectedBooks = obj?.Select(b => b as Book)?.ToList();
@@ -346,7 +346,6 @@ public class FindBooksViewModel : AbstractViewModel, IRefreshable
         CleanSelectedBooks();
         return Task.CompletedTask;
     }
-    
 
     private void CleanSelectedBooks()
     {

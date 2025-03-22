@@ -11,7 +11,7 @@ public class LibraryViewModel : AbstractViewModel, IDisposable, IRefreshable
     public LibraryViewModel(ILibrary library)
     {
         Library = library; // Constructor injection ensures proper dependency handling
-        Library.TotalBooksChanged += BookList_CollectionChanged;
+        Library.TotalBooksChanged += Handle_TotalBooksChanged;
         Library.LibraryIdChanged += Handle_LibraryIdChanged;
         _libraryManager = new LibraryManagerModel(Library);
         CanOperateWithLibrary = ValidLibrary();
@@ -188,9 +188,8 @@ public class LibraryViewModel : AbstractViewModel, IDisposable, IRefreshable
         CanOperateWithLibrary = ValidLibrary();
     }
 
-    private void BookList_CollectionChanged(object? sender, TotalBooksEventArgs e)
+    private void Handle_TotalBooksChanged(object? sender, TotalBooksEventArgs e)
     {
-        RaisePropertyChanged(nameof(Library));
         RaisePropertyChanged(nameof(Library.TotalBooks));
     }
 
