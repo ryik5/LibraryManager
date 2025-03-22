@@ -1,6 +1,7 @@
 using LibraryManager.AbstractObjects;
 using LibraryManager.Extensions;
 using LibraryManager.Models;
+using LibraryManager.Platforms.MacCatalyst;
 
 namespace LibraryManager.ViewModels;
 
@@ -22,8 +23,19 @@ public class SettingsViewModel : AbstractBindableModel
         Booleans = new[] { true, false };
         SortingDirections = new[] { Constants.SORTING_ASCENDING, Constants.SORTING_DESCENDING };
         BookProperties = new Library().GetBookProperties();
-
+        _folderPicker = new FolderPicker();
         LoadAllSettings();
+    }
+
+    protected override async Task PerformExtendedAction(string? arg1, CancellationToken arg2)
+    {
+        switch (arg1)
+        {
+            case Constants.LIBRARY_HOME_FOLDER:
+                LibraryHomeFolder=await _folderPicker.PickFolder();
+                break;
+            
+        }
     }
 
 
@@ -210,6 +222,14 @@ public class SettingsViewModel : AbstractBindableModel
         get => _book_MaxContentLength_ToolTip;
         set => SetProperty(ref _book_MaxContentLength_ToolTip, value);
     }
+    
+    public string LibraryHomeFolder
+    {
+        get => _libraryHomeFolder;
+        set => SetProperty(ref _libraryHomeFolder, value);
+    }
+
+    public string LabelLibraryHomeFolder => Constants.LIBRARY_HOME_FOLDER;
     #endregion
 
 
@@ -260,6 +280,9 @@ public class SettingsViewModel : AbstractBindableModel
             (long)DefaultSettings[nameof(Book_MaxContentLength)]);
         Book_MaxContentLength_ToolTip = Preferences.Get(nameof(Book_MaxContentLength_ToolTip),
             (string)DefaultSettings[nameof(Book_MaxContentLength_ToolTip)]);
+        
+        LibraryHomeFolder = Preferences.Get(nameof(LibraryHomeFolder),
+            (string)DefaultSettings[nameof(LibraryHomeFolder)]);
     }
 
     /// <summary>
@@ -281,12 +304,13 @@ public class SettingsViewModel : AbstractBindableModel
 
         Preferences.Set(nameof(Book_MaxContentLength), Book_MaxContentLength);
         Preferences.Set(nameof(Book_MaxContentLength_ToolTip), Book_MaxContentLength_ToolTip);
+        Preferences.Set(nameof(LibraryHomeFolder), LibraryHomeFolder);
     }
     #endregion
 
 
     #region Private methods
-    private Task SetStringProperty(bool key, ref string _propertyValue, string PropertyName)
+    private void SetStringProperty(bool key, ref string _propertyValue, string PropertyName)
     {
         switch (key)
         {
@@ -299,10 +323,9 @@ public class SettingsViewModel : AbstractBindableModel
         }
 
         RaisePropertyChanged(nameof(PropertyName));
-        return Task.CompletedTask;
     }
 
-    private Task SetBooleanProperty(string key, ref bool _propertyValue, bool PropertyName)
+    private void SetBooleanProperty(string key, ref bool _propertyValue, bool PropertyName)
     {
         switch (key)
         {
@@ -315,8 +338,6 @@ public class SettingsViewModel : AbstractBindableModel
         }
 
         RaisePropertyChanged(nameof(PropertyName));
-
-        return Task.CompletedTask;
     }
 
 
@@ -390,7 +411,9 @@ public class SettingsViewModel : AbstractBindableModel
     private bool _thirdSortPropertyByDescend;
     private string _thirdSortProperty_SortingDirection;
     private string _book_MaxContentLength_ToolTip;
-
+    private string _libraryHomeFolder;
+    private readonly IFolderPicker _folderPicker;
+    
     private readonly Dictionary<string, object> DefaultSettings = new() // Default values for preferences
     {
         { nameof(MessageBox_FontSize), 18.0 },
@@ -406,6 +429,7 @@ public class SettingsViewModel : AbstractBindableModel
         { nameof(ThirdSortProperty_ByDescend), false },
         { nameof(Book_MaxContentLength), 0L },
         { nameof(Book_MaxContentLength_ToolTip), string.Empty },
+        { nameof(LibraryHomeFolder), string.Empty },
     };
     #endregion
 }

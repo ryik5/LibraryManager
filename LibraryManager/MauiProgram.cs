@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using LibraryManager.AbstractObjects;
+using System.Collections.ObjectModel;
 using LibraryManager.Models;
 using LibraryManager.ViewModels;
 using Microsoft.Extensions.Logging;
@@ -27,7 +28,13 @@ public static class MauiProgram
             Description = "",
             BookList = new ObservableCollection<Book>()
         };
-
+        
+        builder.Services.AddTransient<IFolderPicker, Platforms.MacCatalyst.FolderPicker>();
+       // builder.Services.AddTransient<MainPage>();
+        builder.Services.AddTransient<App>();
+        
+        
+        
         // Register all shared ViewModels and objects
         builder.Services.AddSingleton<ILibrary>(library);
         builder.Services.AddSingleton<LibraryViewModel>();

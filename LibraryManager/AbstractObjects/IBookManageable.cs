@@ -21,11 +21,6 @@ public interface IBookManageable
     Task RunCommand(string commandParameter, IList<Book>? selectedBooks);
 
     /// <summary>
-    /// Sorts books in the library.
-    /// </summary>
-    void SortBooks();
-
-    /// <summary>
     /// Adds a book to the library.
     /// </summary>
     /// <param name="book">The book to add.</param>
@@ -68,7 +63,7 @@ public interface IBookManageable
     /// Sorts the books in the <see cref="ILibrary"/> based on the provided properties.
     /// </summary>
     /// <param name="sortProperties">The properties to sort the books by.</param>
-    void SafetySortBooks(List<PropertyCustomInfo> sortProperties);
+    Task SafetySortBooks(List<PropertyCustomInfo> sortProperties);
 
     /// <summary>
     /// Gets or sets the library.

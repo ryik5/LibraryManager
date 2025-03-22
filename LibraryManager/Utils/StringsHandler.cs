@@ -13,6 +13,8 @@ internal static class StringsHandler
     /// <param name="name">The base name of the XML file.</param>
     /// <returns>The XML file name.</returns>
     public static string CreateXmlFileName(string name) => $"{name}.xml";
+    public static string CreateXmlFileName(string name, string extension) => $"{name}{extension}";
+
     #endregion
     
 }

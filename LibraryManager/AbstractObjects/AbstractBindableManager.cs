@@ -1,18 +1,57 @@
+using CommunityToolkit.Mvvm.Input;
+using Foundation;
 using LibraryManager.Models;
+using LibraryManager.Utils;
+using LibraryManager.Views;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Windows.Input;
 
 namespace LibraryManager.AbstractObjects;
 
-public abstract class AbstractBindableModel: INotifyPropertyChanged
+public abstract class AbstractBindableModel : INotifyPropertyChanged
 {
+    protected AbstractBindableModel()
+    {
+        // Initialize the generic navigation command
+        NavigateExtendedCommand = new AsyncRelayCommand<string>(PerformExtendedAction);
+    }
+    // <summary>
+    /// Displays a custom dialog page with a title and message, and returns a boolean indicating whether the user pressed OK or Cancel.
+    /// </summary>
+    /// <param name="title">The title of the dialog page.</param>
+    /// <param name="message">The message to display on the dialog page.</param>
+    /// <returns>A boolean indicating whether the user pressed OK or Cancel.</returns>
+    protected async Task<ResultData> ShowCustomDialogPage(string title, string message, bool isInputVisible = false)
+    {
+        var dialogPage = new CustomDialogPage(title, message, isInputVisible);
+        await Application.Current?.MainPage?.Navigation.PushModalAsync(dialogPage)!;
+
+        var result = await dialogPage.DialogResultTask.Task; // Await the user's response
+        var inputText = dialogPage.InputText;
+
+        #if DEBUG
+        Debug.WriteLine(result ? "User pressed OK." : "User pressed Cancel.");
+        #endif
+
+        return new ResultData(result, inputText);
+    }
+    
+    public ICommand NavigateExtendedCommand { get; }
+
+    protected virtual async Task PerformExtendedAction(string? arg1, CancellationToken arg2)
+    {
+        throw new NotImplementedException();
+    }
+
+
     /// <summary>
     /// Invokes the specified action on the UI thread.
     /// </summary>
     /// <param name="action">The action to invoke.</param>
     protected void RunInMainThread(Action action) => MainThread.BeginInvokeOnMainThread(action);
-   
+
     // Run code in the UI thread
     // Platform-agnostic, works anywhere in MAUI
     // Slightly slower due to abstraction (but negligible)
@@ -30,40 +69,28 @@ public abstract class AbstractBindableModel: INotifyPropertyChanged
     {
         Application.Current?.Dispatcher.Dispatch(a.Invoke);
     }
-    
-    protected async Task<FileResult> TryPickFileUpTask(string windowTitle, string fileExtension)
+
+    protected async Task<FileResult> TryPickFileUpTask(string windowTitle, string[]? fileExtension)
     {
         var fileTypes = new FilePickerFileType(
             new Dictionary<DevicePlatform, IEnumerable<string>>
             {
                 /*{ DevicePlatform.iOS, new[] { "public.archive" } },
                 { DevicePlatform.Android, new[] { "application/xml" } },*/
-                { DevicePlatform.WinUI, new[] { fileExtension } },
-                { DevicePlatform.MacCatalyst, new[] { fileExtension } } //".xml", "xml"
+                { DevicePlatform.WinUI,  fileExtension  },
+                { DevicePlatform.MacCatalyst,  fileExtension  } //".xml", "xml"
             });
-/*FilePickerFileType customFileType = new FilePickerFileType(
-   new Dictionary<DevicePlatform, IEnumerable<string>>
-   {
-                   { DevicePlatform.iOS, new[] { "public.audio" } }, // UTType values
-                   { DevicePlatform.Android, new[] { "audio/*" } }, // MIME type
-                   { DevicePlatform.WinUI, new[] { ".mp3", ".wav", ".wma", ".m4a", ".flac" } }, // file extension
-                   { DevicePlatform.Tizen, new[] { "* /*" } },
-                   { DevicePlatform.macOS, new[] { ".mp3", ".wav", ".wma", ".m4a", ".flac" } }, // UTType values
-   });*/
         var options = new PickOptions()
         {
             PickerTitle = windowTitle,
-            FileTypes = fileTypes,
+            FileTypes = fileExtension?.Length<1 ? null : fileTypes,
         };
         try
         {
             var result = await FilePicker.Default.PickAsync(options);
             if (result != null)
             {
-                if (result.FileName.EndsWith(fileExtension, StringComparison.OrdinalIgnoreCase))
-                {
-                   return result;
-                }
+                return result;
             }
         }
         catch (Exception ex)
@@ -75,71 +102,45 @@ public abstract class AbstractBindableModel: INotifyPropertyChanged
 
         return null;
     }
-    
-    public async Task<bool> TryLoadContentToBookTask(Book book)
-    {
-        var fileResult = await TryPickFileUpTask("Select book content", "xml");
-        var readContentTask = await ReadContentFromDiskTask(fileResult, maxContentLength: 1000000);
-        if (readContentTask.IsSuccess)
-        {
-            book.Content = readContentTask.MediaData;
-            return true;
-        }
 
-        return false;
+    /// <summary>
+    /// Gets the path to the current user Document Directory on the device.
+    /// </summary>
+    /// <returns>The path to the user Document Directory.</returns>
+    /// <remarks>
+    /// This method returns the URL of the document directory
+    /// and then getting the path from the URL. The document directory is the path to the directory
+    /// for storing user documents. The path returned by this method is the path to the root of this
+    /// directory.
+    /// </remarks>
+    protected string GetPathToDocumentDirectory()
+        => new NSFileManager().GetUrls(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomain.User)[0].Path;
+
+
+    /// <summary>
+    /// Gets the path to a XML file in the document directory.
+    /// </summary>
+    /// <param name="pointedName">The name of the file to get the path for.</param>
+    /// <returns>The path to the XML file in the document directory.</returns>
+    protected string GetPathToFile(string pointedName)
+    {
+        return Path.Combine(GetPathToDocumentDirectory(), StringsHandler.CreateXmlFileName(pointedName));
+    }
+    /// <summary>
+    /// Gets the path to a XML file in the document directory.
+    /// </summary>
+    /// <param name="pointedName">The name of the file to get the path for.</param>
+    /// <returns>The path to the XML file in the document directory.</returns>
+    protected string GetPathToFile(string pointedName, string fileExtenstion)
+    {
+        return Path.Combine(GetPathToDocumentDirectory(), StringsHandler.CreateXmlFileName(pointedName, fileExtenstion));
     }
 
-    public async Task<ResultLoading> ReadContentFromDiskTask(FileResult fileResult, long maxContentLength)
+    protected async Task<string> PickFolderUpTask()
     {
-        var fileInfo = new FileInfo(fileResult.FileName);
-        var media = new MediaData
-        {
-            Name = fileInfo.Name,
-            OriginalPath = fileResult.FullPath,
-            Ext = fileInfo.Extension,
-            IsContentStoredSeparately = true,
-            IsLoaded = false
-        };
-        try
-        {
-            var stream = await fileResult.OpenReadAsync();
-            if (stream.Length < maxContentLength)
-            {
-                media.ObjectByteArray = await ConvertStreamToByteArray(stream);
-                media.IsLoaded = true;
-                media.IsContentStoredSeparately = false;
-            }
-            else
-            {
-                media.IsLoaded = true;
-                media.IsContentStoredSeparately = true;
-            }
-
-            return new ResultLoading() { MediaData = media, IsSuccess = true };
-        }
-        catch
-        {
-            media.ObjectByteArray = null;
-        }
-
-
-        return new ResultLoading() { MediaData = null, IsSuccess = false };
+        return await _folderPicker.PickFolder();
     }
 
-    protected Task<byte[]> ConvertStreamToByteArray(Stream input)
-    {
-        byte[] buffer = new byte[16 * 1024];
-        using (MemoryStream ms = new MemoryStream())
-        {
-            int read;
-            while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
-            {
-                ms.Write(buffer, 0, read);
-            }
-
-            return Task.FromResult(ms.ToArray());
-        }
-    }
     
     #region implementation INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -158,10 +159,22 @@ public abstract class AbstractBindableModel: INotifyPropertyChanged
     }
     #endregion
     
-    
+    private readonly IFolderPicker _folderPicker;
 }
 
-public  class ResultLoading
+public class ResultData
+{
+    public ResultData(bool isOk, string? inputString = null)
+    {
+        IsOk = isOk;
+        InputString = inputString;
+    }
+
+    public bool IsOk { get; private set; }
+    public string? InputString { get; private set; }
+}
+
+public class ResultLoading
 {
     public MediaData? MediaData { get; set; }
     public bool IsSuccess { get; set; }

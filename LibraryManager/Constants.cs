@@ -15,6 +15,7 @@ public static class Constants
     public const string RESET = "Reset";
     public const string SETTINGS = "Settings";
     public const string UNKNOWN_COMMAND = "Unknown command";
+    public const string LIBRARY_HOME_FOLDER = "Library's home folder";
     
     public const string ID = "ID";
     public const string LIBRARY_MANAGER = "LibraryManager";

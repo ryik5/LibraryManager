@@ -176,8 +176,6 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
 
                     OK = Constants.SAVE_CHANGES;
 
-                    await UpdateButtonContentState(Book.Content?.IsLoaded ?? false);
-
                     IsBooksCollectionViewVisible = false;
                     IsEditBookViewVisible = true;
 
@@ -186,11 +184,16 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
                 case Constants.SORT_BOOKS:
                 {
                     if (await MakeSortingList() is { Count: > 0 } props)
-                        _bookManageable.SafetySortBooks(props);
+                      await  _bookManageable.SafetySortBooks(props);
                     break;
                 }
 
                 //TODO : move inside BookManager
+                case Constants.IMPORT_BOOK:
+                {
+                    await _bookManageable.TryLoadBook();
+                    break;
+                }
                 case Constants.EXPORT_BOOK:
                 {
                     if (!ValidSelectedBooks())
@@ -212,9 +215,6 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
                 }
                 case Constants.LOAD_CONTENT:
                 case Constants.CLEAR_CONTENT:
-                    await _bookManageable.RunCommand(commandParameter, new List<Book>() { Book });
-                    await UpdateButtonContentState(Book.Content?.IsLoaded ?? false);
-                    break;
                 case Constants.SAVE_CONTENT:
                     await _bookManageable.RunCommand(commandParameter, new List<Book>() { Book });
                     break;
@@ -231,6 +231,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
             await ShowNavigationErrorInDebug(commandParameter, nameof(BooksViewModel));
         }
 
+        await UpdateButtonContentState(Book.Content?.IsLoaded ?? false);
         RunInMainThread(() =>
             {
                 RaisePropertyChanged(nameof(Library));

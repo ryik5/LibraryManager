@@ -18,6 +18,11 @@
                 <ColumnDefinition Width="0.4*" />
                 <ColumnDefinition Width="0.6*" />
             </Grid.ColumnDefinitions>
+            <Grid.Resources>
+                <Style TargetType="Label">
+                    <Setter Property="VerticalTextAlignment" Value="Center"/>
+                </Style>
+            </Grid.Resources>
 
             <VerticalStackLayout Grid.Column="0"  Margin="10">
 
@@ -37,6 +42,16 @@
                             <Label Text="Text's font size" Grid.Row="0" Grid.Column="0" />
                             <Entry Text="{Binding MessageBox_FontSize}"
                                    Grid.Row="0" Grid.Column="1" Placeholder="Input here font size:" />
+                            
+                            <Label Text="{Binding LabelLibraryHomeFolder, Mode=OneTime}" Grid.Row="1" Grid.Column="0" />
+                            <Button Command="{Binding NavigateExtendedCommand}"
+                                    CommandParameter="{Binding LabelLibraryHomeFolder, Mode=OneTime}"
+                                    Text="{Binding LibraryHomeFolder}"
+                                    ToolTipProperties.Text="{Binding LibraryHomeFolder, Mode=OneWay}"
+                                   Grid.Row="1" Grid.Column="1" 
+                                    Margin="0,10,0,10" 
+                                    BackgroundColor="Transparent" 
+                                    BorderColor="{StaticResource Gray200}"/>
                         </Grid>
                     </Frame>
                 </StackLayout>

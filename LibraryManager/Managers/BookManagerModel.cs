@@ -2,6 +2,8 @@
 using LibraryManager.AbstractObjects;
 using LibraryManager.Extensions;
 using LibraryManager.Utils;
+using LibraryManager.ViewModels;
+using System.Diagnostics;
 using System.Xml;
 
 namespace LibraryManager.Models;
@@ -24,6 +26,7 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
     #region public methods
     public async Task RunCommand(string commandParameter, IList<Book>? selectedBooks)
     {
+        Book book;
         switch (commandParameter)
         {
             case Constants.ADD_BOOK:
@@ -49,15 +52,16 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
 
                 break;
             }
-            case Constants.IMPORT_BOOK:
-            {
-                await TryLoadBook();
-                break;
-            }
+
             case Constants.LOAD_CONTENT:
             {
-                var book = selectedBooks[0];
+                book = selectedBooks[0];
                 var result = await TryLoadContentToBookTask(book);
+                break;
+            }
+            case Constants.SAVE_CONTENT:
+            {
+                await TrySaveBookContentTask(selectedBooks[0]);
                 break;
             }
             case Constants.CLEAR_CONTENT:
@@ -91,7 +95,7 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
 
     public async Task<bool> TryLoadBook()
     {
-        return await DeserializeBookTask(await TryPickFileUpTask("Please select a book file", "xml"));
+        return await DeserializeBookTask(await TryPickFileUpTask("Please select a book file", new string[] { "xml" }));
     }
 
     private async Task<bool> DeserializeBookTask(FileResult fileResult)
@@ -127,23 +131,13 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
     }
 
     /// <summary>
-    /// Sorts the book collection by author and then by title.
+    /// Sorts the book collection by dedicated properties.
     /// </summary>
-    public void SortBooks()
-    {
-        RunInMainThread(() =>
-            Library.BookList.ResetAndAddRange(Library.BookList
-                .OrderBy(b => b.Author)
-                .ThenBy(b => b.Title)));
-    }
-
-    /// <summary>
-    /// Sorts the book collection by author and then by title.
-    /// </summary>
-    public void SafetySortBooks(List<PropertyCustomInfo> sortProperties)
+    public Task SafetySortBooks(List<PropertyCustomInfo> sortProperties)
     {
         RunInMainThread(() =>
             Library.BookList.ResetAndAddRange(GetSortedBookList(sortProperties)));
+        return Task.CompletedTask;
     }
 
 
@@ -235,11 +229,6 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
         return orderedBooks;
     }
 
-    private void BookList_CollectionChanged(object? sender,
-        System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-    {
-        TotalBooksChanged.Invoke(this, new TotalBooksEventArgs { TotalBooks = Library.BookList?.Count ?? 0 });
-    }
 
     private void BookLoader_LoadingBookFinished(object? sender, ActionFinishedEventArgs e)
     {
@@ -283,7 +272,7 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
     /// <param name="strElement">The author to search for.</param>
     /// <returns>An enumerable collection of books that match the search criteria.</returns>
     private IEnumerable<Book> FindBooksByAuthor(string? strElement) => IsNotNullOrEmpty(strElement)
-        ? Library.BookList.Where(b => b.Author.Contains(strElement, CurrentComparisionRule))
+        ? Library.BookList.Where(b => b.Author.Contains(strElement, CURRENT_COMPARISION_RULE))
         : ImmutableArray<Book>.Empty;
 
     /// <summary>
@@ -293,7 +282,7 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
     /// <returns>An enumerable collection of books that match the search criteria.</returns>
     private IEnumerable<Book> FindBooksByTitle(string? strElement)
         => IsNotNullOrEmpty(strElement)
-            ? Library.BookList.Where(b => b.Title.Contains(strElement, CurrentComparisionRule))
+            ? Library.BookList.Where(b => b.Title.Contains(strElement, CURRENT_COMPARISION_RULE))
             : ImmutableArray<Book>.Empty;
 
     /// <summary>
@@ -326,16 +315,16 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
             tmpResult = Library.BookList.Where(b =>
                 b.TotalPages == intElement ||
                 b.Year == intElement ||
-                (b.Author?.Contains(strElement, CurrentComparisionRule) ?? false) ||
-                (b.Title?.Contains(strElement, CurrentComparisionRule) ?? false));
+                (b.Author?.Contains(strElement, CURRENT_COMPARISION_RULE) ?? false) ||
+                (b.Title?.Contains(strElement, CURRENT_COMPARISION_RULE) ?? false));
         else
             tmpResult = isString
                 ? Library.BookList.Where(b =>
-                    (b.Author?.Contains(strElement, CurrentComparisionRule) ?? false) ||
-                    (b.Description?.Contains(strElement, CurrentComparisionRule) ?? false) ||
-                    (b.Genre?.Contains(strElement, CurrentComparisionRule) ?? false) ||
-                    (b.ISBN?.Contains(strElement, CurrentComparisionRule) ?? false) ||
-                    (b.Title?.Contains(strElement, CurrentComparisionRule) ?? false))
+                    (b.Author?.Contains(strElement, CURRENT_COMPARISION_RULE) ?? false) ||
+                    (b.Description?.Contains(strElement, CURRENT_COMPARISION_RULE) ?? false) ||
+                    (b.Genre?.Contains(strElement, CURRENT_COMPARISION_RULE) ?? false) ||
+                    (b.ISBN?.Contains(strElement, CURRENT_COMPARISION_RULE) ?? false) ||
+                    (b.Title?.Contains(strElement, CURRENT_COMPARISION_RULE) ?? false))
                 : ImmutableArray<Book>.Empty;
 
         return tmpResult ?? ImmutableArray<Book>.Empty;
@@ -356,11 +345,105 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
     /// <returns>True if the string is not null or empty; otherwise, false.</returns>
     private bool IsNotNullOrEmpty(string? strElement) => !string.IsNullOrEmpty(strElement);
 
-    private const StringComparison CurrentComparisionRule = StringComparison.OrdinalIgnoreCase;
+    private async Task<bool> TrySaveBookContentTask(Book book)
+    {
+        var customDialog = await ShowCustomDialogPage(Constants.SAVE_CONTENT,
+            Constants.INPUT_NAME, true);
+
+        var contentName = customDialog.IsOk && !string.IsNullOrEmpty(customDialog.InputString)
+            ? customDialog.InputString
+            : $"{book.Content.Name}";
+
+        var pathToContent = GetPathToFile(contentName, book.Content.Ext);
+
+        return await SaveContentToDiskTask(book.Content, pathToContent);
+    }
+
+    private async Task<bool> SaveContentToDiskTask(MediaData bookContent, string pathToContent)
+    {
+        try
+        {
+            await File.WriteAllBytesAsync($"{pathToContent}", bookContent.ObjectByteArray);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            #if DEBUG
+            Debug.WriteLine(ex.Message);
+            #endif
+            return false;
+        }
+    }
+
+    private async Task<bool> TryLoadContentToBookTask(Book book)
+    {
+        var settings = new SettingsViewModel();
+        var length = settings.Book_MaxContentLength;
+        var fileResult = await TryPickFileUpTask("Select book content", new string[] { "xml" });
+        var readContentTask = await ReadContentFromDiskTask(fileResult, maxContentLength: length);
+        if (readContentTask.IsSuccess)
+        {
+            book.Content = readContentTask.MediaData;
+            return true;
+        }
+
+        return false;
+    }
+
+    private async Task<ResultLoading> ReadContentFromDiskTask(FileResult fileResult, long maxContentLength)
+    {
+        var fileInfo = new FileInfo(fileResult.FileName);
+        var media = new MediaData
+        {
+            Name = fileInfo.Name,
+            OriginalPath = fileResult.FullPath,
+            Ext = fileInfo.Extension,
+            IsContentStoredSeparately = true,
+            IsLoaded = false
+        };
+        try
+        {
+            var stream = await fileResult.OpenReadAsync();
+            if (stream.Length < maxContentLength)
+            {
+                // var image = ImageSource.FromStream(() => stream);
+                media.ObjectByteArray = await ConvertStreamToByteArray(stream);
+                media.IsLoaded = true;
+                media.IsContentStoredSeparately = false;
+            }
+            else
+            {
+                media.IsLoaded = true;
+                media.IsContentStoredSeparately = true;
+            }
+
+            return new ResultLoading() { MediaData = media, IsSuccess = true };
+        }
+        catch
+        {
+            media.ObjectByteArray = null;
+        }
 
 
+        return new ResultLoading() { MediaData = null, IsSuccess = false };
+    }
+
+    private Task<byte[]> ConvertStreamToByteArray(Stream input)
+    {
+        byte[] buffer = new byte[16 * 1024];
+        using (MemoryStream ms = new MemoryStream())
+        {
+            int read;
+            while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
+            {
+                ms.Write(buffer, 0, read);
+            }
+
+            return Task.FromResult(ms.ToArray());
+        }
+    }
+
+    private const StringComparison CURRENT_COMPARISION_RULE = StringComparison.OrdinalIgnoreCase;
     private ILibrary _library;
     #endregion
- }
-
-
+}
