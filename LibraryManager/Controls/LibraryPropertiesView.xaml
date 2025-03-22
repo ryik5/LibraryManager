@@ -45,7 +45,7 @@
         <Label Text="Name" Grid.Row="1" Grid.Column="0" />
         <Entry Text="{Binding Library.Name}"
                Placeholder="Library's Name"
-               IsEnabled="{Binding CanOperateWithBooks}"
+               IsEnabled="{Binding CanOperateWithLibrary}"
                Grid.Row="1" Grid.Column="1" />
 
         <Label Text="Total Books" Grid.Row="2" Grid.Column="0" />
@@ -58,7 +58,7 @@
             <Grid> <!-- TODO: Check necessary -->
                 <Editor Text="{Binding Library.Description}"
                         Placeholder="Library's short description"
-                        IsEnabled="{Binding CanOperateWithBooks}"
+                        IsEnabled="{Binding CanOperateWithLibrary}"
                         AutoSize="TextChanges"
                         VerticalOptions="Start"
                         FontSize="18"

@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Xml;
+﻿using System.Xml;
 using LibraryManager.AbstractObjects;
 
 namespace LibraryManager.Models;
@@ -144,7 +143,7 @@ public class LibraryManagerModel : AbstractBindableModel, ILibraryManageable
     /// </summary>
     public void TryCloseLibrary()
     {
-        if (0 < Library.BookList.Count)
+        if (0 < Library.TotalBooks)
             RunInMainThread(() => Library.BookList.Clear());
 
         Library.Name = string.Empty;

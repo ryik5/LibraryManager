@@ -19,12 +19,15 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
         Library.LibraryIdChanged += Handle_LibraryIdChanged;
         Library.BookList.CollectionChanged += BookList_CollectionChanged;
         SelectionChangedCommand = new Command<IList<object>>(HandleOnCollectionViewSelectionChanged);
-        RefreshControls();
         IsBooksCollectionViewVisible = true;
         IsEditBookViewVisible = false;
         _bookManageable = new BookManagerModel(Library);
         ContentState = Constants.LOAD_CONTENT;
         ClearingState = Constants.CLEAR_CONTENT;
+        SelectedBooks?.Clear();
+        Book = null;
+        CanOperateWithLibrary = ValidLibrary();
+        CanEditBook = ValidSelectedBooks();
     }
 
 
@@ -133,6 +136,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
                     Book = null;
                     IsBooksCollectionViewVisible = true;
                     IsEditBookViewVisible = false;
+                    CanEditBook = ValidSelectedBooks();
                     break;
                 }
                 case Constants.SAVE:
@@ -149,11 +153,11 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
                 }
                 case Constants.ADD_BOOK:
                 {
+                    IsBooksCollectionViewVisible = false;
+                    IsEditBookViewVisible = true;
                     OK = Constants.SAVE;
                     ContentState = Constants.LOAD_CONTENT;
                     Book = BookModelMaker.GenerateBook();
-                    IsBooksCollectionViewVisible = false;
-                    IsEditBookViewVisible = true;
                     break;
                 }
                 case Constants.SAVE_CHANGES:
@@ -171,7 +175,11 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
                 case Constants.EDIT_BOOK:
                 {
                     if (!ValidSelectedBooks())
+                    {
+                        RefreshControlsOnAppearing();
                         return;
+                    }
+
                     RunInMainThread(() => Book = (Book)SelectFirstFoundBook().Clone());
 
                     OK = Constants.SAVE_CHANGES;
@@ -184,7 +192,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
                 case Constants.SORT_BOOKS:
                 {
                     if (await MakeSortingList() is { Count: > 0 } props)
-                      await  _bookManageable.SafetySortBooks(props);
+                        await _bookManageable.SafetySortBooks(props);
                     break;
                 }
 
@@ -197,7 +205,10 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
                 case Constants.EXPORT_BOOK:
                 {
                     if (!ValidSelectedBooks())
+                    {
+                        RefreshControlsOnAppearing();
                         return;
+                    }
 
                     // display window with input a new book name
                     var customDialog = await ShowCustomDialogPage(Constants.EXPORT_BOOK,
@@ -240,14 +251,23 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
         );
     }
 
-    public void RefreshControls()
+    public void RefreshControlsOnAppearing()
     {
-        RaisePropertyChanged(nameof(Library));
-        RaisePropertyChanged(nameof(Library.BookList));
-        CanOperateWithLibrary = ValidLibrary();
-        CanEditBook = false;
         SelectedBooks?.Clear();
         Book = null;
+        CanOperateWithLibrary = ValidLibrary();
+        CanEditBook = ValidSelectedBooks();
+        RaisePropertyChanged(nameof(CanOperateWithLibrary));
+        RaisePropertyChanged(nameof(CanEditBook));
+    }
+
+    public async Task RefreshControlsOnDisappearing()
+    {
+        SelectedBooks?.Clear();
+        Book = null;
+        CanEditBook = false;
+        RaisePropertyChanged(nameof(CanOperateWithLibrary));
+        RaisePropertyChanged(nameof(CanEditBook));
     }
 
 
@@ -260,7 +280,6 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
         _disposed = true;
 
         // Perform cleanup: Unsubscribe from any events
-        Library.BookList.CollectionChanged -= BookList_CollectionChanged;
         Library.LibraryIdChanged -= Handle_LibraryIdChanged;
         SelectedBooks?.Clear();
 
@@ -277,22 +296,12 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
 
 
     #region Private methods
-    /// <summary>
-    /// Handles the CollectionChanged event of the BookList.
-    /// </summary>
-    /// <param name="sender">The source of the event.</param>
-    /// <param name="e">The NotifyCollectionChangedEventArgs instance containing the event data.</param>
-    private void BookList_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
-    {
-        TotalBooksChanged?.Invoke(this, new TotalBooksEventArgs { TotalBooks = Library.BookList.Count });
-        SelectedBooks?.Clear();
-        Book = null;
-        Library.TotalBooks = Library.BookList.Count;
-    }
-
     private void Handle_LibraryIdChanged(object? sender, EventArgs e)
     {
-        RefreshControls();
+        SelectedBooks?.Clear();
+        Book = null;
+        RefreshControlsOnAppearing();
+        Library.TotalBooks = Library.BookList.Count;
     }
 
 
@@ -318,16 +327,16 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
         return Task.FromResult(props);
     }
 
-    private void HandleOnCollectionViewSelectionChanged(IList<object> obj)
+    private async void HandleOnCollectionViewSelectionChanged(IList<object> obj)
     {
         SelectedBooks?.Clear();
         SelectedBooks = obj?.Select(b => b as Book)?.ToList();
+        await Handle_SelectedBooks_CollectionChanged();
     }
 
-
-    private async void Handle_SelectedBooks_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    private void BookList_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        await Handle_SelectedBooks_CollectionChanged();
+        Library.TotalBooks = Library.BookList.Count;
     }
 
     private Task Handle_SelectedBooks_CollectionChanged()

@@ -10,31 +10,29 @@ public partial class LibraryPage : ContentPage
     {
         InitializeComponent();
     }
-    
+
     /// <summary>
     /// To ensure the BindingContext is bound correctly
     /// </summary>
     protected override void OnAppearing()
     {
         base.OnAppearing();
-        
+
         // Ensure BindingContext is assigned only if not already set
         BindingContext ??= App.Services.GetService<LibraryViewModel>();
+ 
         if (BindingContext is IRefreshable refresher)
         {
-            refresher.RefreshControls();
-        } }
-
+            refresher.RefreshControlsOnAppearing();
+        }
+    }
+    
     /// <summary>
     /// To ensure the BindingContext is cleared correctly
     /// </summary>
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
-
-        if (BindingContext != null)
-        {
-            BindingContext = null;
-        }
+        BindingContext = null;
     }
 }

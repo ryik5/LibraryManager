@@ -379,7 +379,7 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
     {
         var settings = new SettingsViewModel();
         var length = settings.Book_MaxContentLength;
-        var fileResult = await TryPickFileUpTask("Select book content", new string[] { "xml" });
+        var fileResult = await TryPickFileUpTask("Select book content", null);
         var readContentTask = await ReadContentFromDiskTask(fileResult, maxContentLength: length);
         if (readContentTask.IsSuccess)
         {

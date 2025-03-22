@@ -3,7 +3,9 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:control="clr-namespace:LibraryManager.Controls"
-             x:Class="LibraryManager.Views.BooksPage">
+             x:Class="LibraryManager.Views.BooksPage"
+             xmlns:viewmodel="clr-namespace:LibraryManager.ViewModels"
+             x:DataType="viewmodel:BooksViewModel">
 
     <ContentPage.MenuBarItems>
         <MenuBarItem Text="Books">
@@ -66,6 +68,7 @@
 
             <!-- General Controls -->
             <StackLayout Grid.Row="0"
+                         IsVisible="{Binding IsBooksCollectionViewVisible, Mode=OneWay}"
                          Orientation="Horizontal"
                          HorizontalOptions="Fill"
                          Margin="10,10,10,0"
@@ -73,32 +76,32 @@
                 <Button Text="Add Book"
                         Command="{Binding NavigateCommand}"
                         CommandParameter="Add Book"
-                        IsEnabled="{Binding CanOperateWithLibrary}" />
+                        IsEnabled="{Binding CanOperateWithLibrary, Mode=OneWay}" />
                 <Button Text="Demo 'Add Books'"
                         Command="{Binding NavigateCommand}"
                         CommandParameter="Demo add books"
-                        IsEnabled="{Binding CanOperateWithLibrary}" />
+                        IsEnabled="{Binding CanOperateWithLibrary, Mode=OneWay}" />
                 <Button Text="Edit Book"
                         Command="{Binding NavigateCommand}"
                         CommandParameter="Edit Book"
-                        IsEnabled="{Binding CanEditBook}" />
+                        IsEnabled="{Binding CanEditBook, Mode=OneWay}" />
                 <Button Text="Delete Book(s)"
                         Command="{Binding NavigateCommand}"
                         CommandParameter="Delete the selected book"
-                        IsEnabled="{Binding CanEditBook}" />
+                        IsEnabled="{Binding CanEditBook, Mode=OneWay}" />
                 <Button Text="Import Book"
                         Command="{Binding NavigateCommand}"
                         CommandParameter="Import a book"
-                        IsEnabled="{Binding CanOperateWithLibrary}" />
+                        IsEnabled="{Binding CanOperateWithLibrary, Mode=OneWay}" />
                 <Button Text="Export Book"
                         Command="{Binding NavigateCommand}"
                         CommandParameter="Export the selected book"
-                        IsEnabled="{Binding CanEditBook}" />
+                        IsEnabled="{Binding CanEditBook, Mode=OneWay}" />
 
                 <Button Text="Sort Library"
                         Command="{Binding NavigateCommand}"
                         CommandParameter="Sort Books"
-                        IsEnabled="{Binding CanOperateWithLibrary}" />
+                        IsEnabled="{Binding CanOperateWithLibrary, Mode=OneWay}" />
 
             </StackLayout>
 

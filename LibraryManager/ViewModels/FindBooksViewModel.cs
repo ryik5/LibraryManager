@@ -3,6 +3,7 @@ using LibraryManager.Extensions;
 using LibraryManager.Models;
 using LibraryManager.Views;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Windows.Input;
 
 namespace LibraryManager.ViewModels;
@@ -16,16 +17,17 @@ public class FindBooksViewModel : AbstractViewModel, IRefreshable
         Library = library;
 
         Library.TotalBooksChanged += BookList_CollectionChanged;
-        Library.LibraryIdChanged += Handle_LibraryIdChanged;
         FoundBookList.CollectionChanged += HandleFoundBookListChanged;
         SelectionChangedCommand = new Command<IList<object>>(HandleOnCollectionViewSelectionChanged);
         IsBooksCollectionViewVisible = true;
         IsEditBookViewVisible = false;
         ContentState = Constants.LOAD_CONTENT;
         ClearingState = Constants.CLEAR_CONTENT;
-        RefreshControls();
-
         _bookManageable = new BookManagerModel(Library);
+
+        CanOperateWithBooks = ValidLibrary();
+        SelectedBooks?.Clear();
+        CanEditBook = false;
     }
 
 
@@ -169,10 +171,12 @@ public class FindBooksViewModel : AbstractViewModel, IRefreshable
                 case Constants.FIND_BOOKS:
                 {
                     if (!ValidLibrary())
+                    {
+                        RefreshControlsOnAppearing();
                         return;
+                    }
 
                     await FindBooksTask();
-                    await CleanSelectedBooksTask();
 
                     break;
                 }
@@ -202,7 +206,10 @@ public class FindBooksViewModel : AbstractViewModel, IRefreshable
                 case Constants.EDIT_BOOK:
                 {
                     if (!ValidSelectedBooks())
+                    {
+                        RefreshControlsOnAppearing();
                         return;
+                    }
 
                     RunInMainThread(() => Book = (Book)SelectFirstFoundBook().Clone());
 
@@ -254,32 +261,35 @@ public class FindBooksViewModel : AbstractViewModel, IRefreshable
             await ShowNavigationErrorInDebug(commandParameter, nameof(FindBooksViewModel));
         }
 
-        RunInMainThread(() =>
-            {
-                RaisePropertyChanged(nameof(Library));
-                RaisePropertyChanged(nameof(Library.BookList));
-            }
-        );
+        RunInMainThread(() => RaisePropertyChanged(nameof(Library)));
     }
 
-    public void RefreshControls()
+
+    public void RefreshControlsOnAppearing()
     {
-        RaisePropertyChanged(nameof(Library));
-        RaisePropertyChanged(nameof(Library.BookList));
         CanOperateWithBooks = ValidLibrary();
+        SelectedBooks?.Clear();
         CanEditBook = false;
-        SelectedBooks = null;
+        RaisePropertyChanged(nameof(Library));
+        RaisePropertyChanged(nameof(CanOperateWithBooks));
+        RaisePropertyChanged(nameof(CanEditBook));
+    }
+
+    public async Task RefreshControlsOnDisappearing()
+    {
+        SelectedBooks?.Clear();
         Book = null;
+        CanEditBook = false;
     }
     #endregion
 
 
     #region Private methods
-    private bool ValidSelectedBooks() => MoreZero(SelectedBooks?.Count ?? 0);
+    private bool ValidSelectedBooks() => NotZero(SelectedBooks?.Count);
 
-    private bool ValidLibrary() => Library?.Id != 0 && MoreZero(Library.TotalBooks);
+    private bool ValidLibrary() => NotZero(Library?.Id );
 
-    private bool MoreZero(int number)
+    private bool NotZero(int? number)
     {
         if (number == 0)
             return false;
@@ -303,25 +313,30 @@ public class FindBooksViewModel : AbstractViewModel, IRefreshable
         FoundBookList.ResetAndAddRange(foundBooks);
     }
 
+    private void BookList_CollectionChanged(object? sender, TotalBooksEventArgs e)
+    {
+        FoundBookList.Clear();
+        CanOperateWithBooks = ValidLibrary();
+    }
+
     /// <summary>
     /// Handles the CollectionChanged event of the BookList.
     /// </summary>
     /// <param name="sender">The source of the event.</param>
     /// <param name="e">The NotifyCollectionChangedEventArgs instance containing the event data.</param>
-    private async void HandleFoundBookListChanged(object? sender,
-        System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    private void HandleFoundBookListChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        await CleanSelectedBooksTask();
+        SelectedBooks?.Clear();
+        SelectedBooks = null;
+        Book = null;
+        CanEditBook = false;;
     }
-
-    private void BookList_CollectionChanged(object? sender, TotalBooksEventArgs e) => CleanFoundBooks();
-
-    private void Handle_LibraryIdChanged(object? sender, EventArgs e) => CleanFoundBooks();
 
     private void HandleOnCollectionViewSelectionChanged(IList<object> obj)
     {
         SelectedBooks?.Clear();
         SelectedBooks = obj?.Select(b => b as Book)?.ToList();
+        CanEditBook = ValidSelectedBooks();
     }
 
     private Book? SelectFirstFoundBook() => ValidSelectedBooks() ? SelectedBooks[0] : null;
@@ -331,16 +346,11 @@ public class FindBooksViewModel : AbstractViewModel, IRefreshable
         CleanSelectedBooks();
         return Task.CompletedTask;
     }
-
-    private void CleanFoundBooks()
-    {
-        CleanSelectedBooks();
-        CanOperateWithBooks = ValidLibrary();
-        FoundBookList.Clear();
-    }
+    
 
     private void CleanSelectedBooks()
     {
+        SelectedBooks?.Clear();
         SelectedBooks = null;
         Book = null;
         CanEditBook = false;

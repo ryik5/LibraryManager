@@ -3,7 +3,9 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:control="clr-namespace:LibraryManager.Controls"
-             x:Class="LibraryManager.Views.FindBooksPage">
+             x:Class="LibraryManager.Views.FindBooksPage"
+             xmlns:viewmodel="clr-namespace:LibraryManager.ViewModels"
+             x:DataType="viewmodel:FindBooksViewModel">
 
     <ContentPage.MenuBarItems>
 
@@ -57,19 +59,21 @@
                          Margin="10,10,10,0" HeightRequest="35">
 
                 <Entry Text="{Binding SearchText}"
+                       IsEnabled="{Binding CanOperateWithBooks, Mode=OneWay}"
                        Placeholder="Input word to seek"
-                       Margin="10,0,10,0"
+                        Margin="10,0,10,0"
                        FontSize="18"
                        MinimumWidthRequest="150" />
 
                 <Button Text="Find"
                         Command="{Binding NavigateCommand}"
-                        IsEnabled="{Binding CanOperateWithBooks}"
+                        IsEnabled="{Binding CanOperateWithBooks, Mode=OneWay}"
                         CommandParameter="Find Books"
                         MinimumWidthRequest="85"
                         Margin="10,0,0,0" />
 
                 <control:TextCheckBox MinimumWidthRequest="100"
+                                      IsEnabled="{Binding CanOperateWithBooks, Mode=OneWay}"
                                       VerticalOptions="Center"
                                       Margin="10,0,10,0"
                                       IsChecked="{Binding SearchOnFly, Mode=TwoWay}"
@@ -77,6 +81,7 @@
 
                 <Picker ItemsSource="{Binding SearchFields}"
                         SelectedItem="{Binding SelectedSearchField}"
+                        IsEnabled="{Binding CanOperateWithBooks, Mode=OneWay}"
                         MinimumWidthRequest="100"
                         FontSize="18"
                         Margin="10,0,10,0" />
@@ -86,13 +91,13 @@
                         CommandParameter="Edit Book"
                         MinimumWidthRequest="100"
                         Margin="10,0,20,0"
-                        IsEnabled="{Binding CanEditBook}" />
+                        IsEnabled="{Binding CanEditBook, Mode=OneWay}" />
 
                 <Button Text="Delete Book(s)"
                         Command="{Binding NavigateCommand}"
                         CommandParameter="Delete the selected book"
                         MinimumWidthRequest="100"
-                        IsEnabled="{Binding CanEditBook}" />
+                        IsEnabled="{Binding CanEditBook, Mode=OneWay}" />
 
             </StackLayout>
 

@@ -17,12 +17,13 @@ public partial class BooksPage : ContentPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
-
         // Avoid assigning a new instance unnecessarily
         BindingContext ??= App.Services.GetService<BooksViewModel>();
+        BooksCollectionView.BindingContext ??= App.Services.GetService<BooksViewModel>();
+
         if (BindingContext is IRefreshable refresher)
         {
-            refresher.RefreshControls();
+            refresher.RefreshControlsOnAppearing();
         }
     }
 
@@ -32,7 +33,6 @@ public partial class BooksPage : ContentPage
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
-
         BindingContext = null;
     }
 }

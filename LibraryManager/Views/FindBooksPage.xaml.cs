@@ -20,9 +20,10 @@ public partial class FindBooksPage : ContentPage
 
         // Avoid assigning a new instance unnecessarily
         BindingContext ??= App.Services.GetService<FindBooksViewModel>();
+        BooksCollectionView.BindingContext ??= App.Services.GetService<FindBooksViewModel>();
         if (BindingContext is IRefreshable refresher)
         {
-            refresher.RefreshControls();
+            refresher.RefreshControlsOnAppearing();
         }
     }
 
@@ -32,7 +33,6 @@ public partial class FindBooksPage : ContentPage
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
-
         BindingContext = null;
     }
 }

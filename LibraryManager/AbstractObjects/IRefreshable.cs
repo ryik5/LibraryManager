@@ -2,5 +2,6 @@ namespace LibraryManager.AbstractObjects;
 
 public interface IRefreshable
 {
-    void RefreshControls();
+    void RefreshControlsOnAppearing();
+    Task RefreshControlsOnDisappearing();
 }

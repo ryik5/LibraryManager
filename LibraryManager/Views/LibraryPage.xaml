@@ -86,15 +86,15 @@
                 <Button Text="Save Library"
                         Command="{Binding NavigateCommand}"
                         CommandParameter="Save Library"
-                        IsEnabled="{Binding CanOperateWithBooks}" />
+                        IsEnabled="{Binding CanOperateWithLibrary}" />
                 <Button Text="Save As Library"
                         Command="{Binding NavigateCommand}"
                         CommandParameter="Save the library with a new name"
-                        IsEnabled="{Binding CanOperateWithBooks}" />
+                        IsEnabled="{Binding CanOperateWithLibrary}" />
                 <Button Text="Close Library"
                         Command="{Binding NavigateCommand}"
                         CommandParameter="Close the current library"
-                        IsEnabled="{Binding CanOperateWithBooks}" />
+                        IsEnabled="{Binding CanOperateWithLibrary}" />
 
             </StackLayout>
 

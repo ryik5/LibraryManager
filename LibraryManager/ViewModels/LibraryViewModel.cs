@@ -14,7 +14,7 @@ public class LibraryViewModel : AbstractViewModel, IDisposable, IRefreshable
         Library.TotalBooksChanged += BookList_CollectionChanged;
         Library.LibraryIdChanged += Handle_LibraryIdChanged;
         _libraryManager = new LibraryManagerModel(Library);
-
+        CanOperateWithLibrary = ValidLibrary();
         /*MessagingCenter.Subscribe<BooksViewModel>(this, "Navigate", async (sender) =>
         {
             Console.WriteLine("Received navigation request from BooksViewModel.");
@@ -30,10 +30,10 @@ public class LibraryViewModel : AbstractViewModel, IDisposable, IRefreshable
         set => SetProperty(ref _library, value);
     }
 
-    public bool CanOperateWithBooks
+    public bool CanOperateWithLibrary
     {
-        get => _canOperateWithBooks;
-        set => SetProperty(ref _canOperateWithBooks, value);
+        get => _canOperateWithLibrary;
+        set => SetProperty(ref _canOperateWithLibrary, value);
     }
 
     public Binding LibraryControlsView { get; }
@@ -42,32 +42,7 @@ public class LibraryViewModel : AbstractViewModel, IDisposable, IRefreshable
 
 
     #region Public Methods
-    /*    Match macOS behavior on Mac Catalyst
-       If you need to match macOS app behavior and use the same system paths on Mac Catalyst, the recommended way of obtaining such paths is shown below:
-           Environment.SpecialFolder.ApplicationData
-           Instead of Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData, Environment.SpecialFolderOption.None), use new NSFileManager().GetUrls(NSSearchPathDirectory.ApplicationSupportDirectory, NSSearchPathDomain.User)[0].Path.
-           Environment.SpecialFolder.Desktop
-           Instead of Environment.GetFolderPath(Environment.SpecialFolder.Desktop, Environment.SpecialFolderOption.None), use new NSFileManager().GetUrls(NSSearchPathDirectory.DesktopDirectory, NSSearchPathDomain.User)[0].Path.
-           Environment.SpecialFolder.DesktopDirectory
-           Instead of Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory, Environment.SpecialFolderOption.None), use new NSFileManager().GetUrls(NSSearchPathDirectory.DesktopDirectory, NSSearchPathDomain.User)[0].Path.
-           Environment.SpecialFolder.Fonts
-           Instead of Environment.GetFolderPath(Environment.SpecialFolder.Fonts, Environment.SpecialFolderOption.None), use Path.Combine(new NSFileManager().GetUrls(NSSearchPathDirectory.LibraryDirectory, NSSearchPathDomain.User)[0].Path, "Fonts").
-           Environment.SpecialFolder.LocalApplicationData
-           Instead of Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData, Environment.SpecialFolderOption.None), use new NSFileManager().GetUrls(NSSearchPathDirectory.ApplicationSupportDirectory, NSSearchPathDomain.User)[0].Path.
-           Environment.SpecialFolder.MyMusic
-           Instead of Environment.GetFolderPath(Environment.SpecialFolder.MyMusic, Environment.SpecialFolderOption.None), use new NSFileManager().GetUrls(NSSearchPathDirectory.MusicDirectory, NSSearchPathDomain.User)[0].Path.
-           Environment.SpecialFolder.MyPictures
-           Instead of Environment.GetFolderPath(Environment.SpecialFolder.MyPictures, Environment.SpecialFolderOption.None), use new NSFileManager().GetUrls(NSSearchPathDirectory.PicturesDirectory, NSSearchPathDomain.User)[0].Path.
-           Environment.SpecialFolder.MyVideos
-           Instead of Environment.GetFolderPath(Environment.SpecialFolder.MyVideos, Environment.SpecialFolderOption.None), use new NSFileManager().GetUrls(NSSearchPathDirectory.MoviesDirectory, NSSearchPathDomain.User)[0].Path.
-           Environment.SpecialFolder.ProgramFiles
-           Instead of Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles, Environment.SpecialFolderOption.None), use "/Applications".
-           Environment.SpecialFolder.System
-           Instead of Environment.GetFolderPath(Environment.SpecialFolder.System, Environment.SpecialFolderOption.None), use "/System".
-           Environment.SpecialFolder.Templates
-           Instead of Environment.GetFolderPath(Environment.SpecialFolder.Templates, Environment.SpecialFolderOption.None), use Path.Combine(NSFileManager.HomeDirectory, "Templates").
-     */
-
+ 
     protected override async Task PerformAction(string? commandParameter)
     {
         await ShowNavigationCommandInDebug(commandParameter, nameof(LibraryPage));
@@ -159,7 +134,7 @@ public class LibraryViewModel : AbstractViewModel, IDisposable, IRefreshable
 
             await Task.Run(() => RunInMainThread(() =>
             {
-                CanOperateWithBooks = ValidLibrary();
+                CanOperateWithLibrary = ValidLibrary();
                 Library.TotalBooks = Library.BookList.Count;
                 RaisePropertyChanged(nameof(Library));
                 RaisePropertyChanged(nameof(Library.BookList));
@@ -171,11 +146,16 @@ public class LibraryViewModel : AbstractViewModel, IDisposable, IRefreshable
         }
     }
 
-    public void RefreshControls()
+    public void RefreshControlsOnAppearing()
     {
+        CanOperateWithLibrary = ValidLibrary();
         RaisePropertyChanged(nameof(Library));
-        RaisePropertyChanged(nameof(Library.BookList));
-        CanOperateWithBooks = ValidLibrary();
+        RaisePropertyChanged(nameof(Library.TotalBooks));
+        RaisePropertyChanged(nameof(CanOperateWithLibrary));
+    }
+    public async Task RefreshControlsOnDisappearing()
+    {
+        RaisePropertyChanged(nameof(CanOperateWithLibrary));
     }
 
     // Dispose method for external calls
@@ -201,11 +181,11 @@ public class LibraryViewModel : AbstractViewModel, IDisposable, IRefreshable
 
     #region Private methods
     /// <summary>
-    /// Handles the LibraryIdChanged event by updating the CanOperateWithBooks property.
+    /// Handles the LibraryIdChanged event by updating the CanOperateWithLibrary property.
     /// </summary>
     private void Handle_LibraryIdChanged(object? sender, EventArgs e)
     {
-        CanOperateWithBooks = ValidLibrary();
+        CanOperateWithLibrary = ValidLibrary();
     }
 
     private void BookList_CollectionChanged(object? sender, TotalBooksEventArgs e)
@@ -252,7 +232,7 @@ public class LibraryViewModel : AbstractViewModel, IDisposable, IRefreshable
 
     #region Private Members
     private ILibrary _library;
-    private bool _canOperateWithBooks = true;
+    private bool _canOperateWithLibrary = true;
     private readonly ILibraryManageable _libraryManager;
     private bool _disposed; // Safeguard for multiple calls to Dispose.
     private int _libraryHashCode;
