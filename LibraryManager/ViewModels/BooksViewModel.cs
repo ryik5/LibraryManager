@@ -18,6 +18,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
 
         Library.LibraryIdChanged += Handle_LibraryIdChanged;
         Library.BookList.CollectionChanged += Handle_BookListCollectionChanged;
+        Library.TotalBooksChanged += Handle_TotalBooksChanged;
         SelectionChangedCommand = new Command<IList<object>>(Handle_OnCollectionViewSelectionChanged);
         IsBooksCollectionViewVisible = true;
         IsEditBookViewVisible = false;
@@ -29,6 +30,8 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
         CanOperateWithLibrary = ValidLibrary();
         CanEditBook = ValidSelectedBooks();
     }
+
+
 
 
     #region Public properties
@@ -71,7 +74,6 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
         set => SetProperty(ref _canClearContent, value);
     }
 
-
     public bool IsBooksCollectionViewVisible
     {
         get => _isBooksCollectionViewVisible;
@@ -95,10 +97,18 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
         get => _canOperateWithLibrary;
         set => SetProperty(ref _canOperateWithLibrary, value);
     }
-
+    
     public event EventHandler<TotalBooksEventArgs>? TotalBooksChanged;
     #endregion
 
+    #region StatusBar
+    public string CurrentInfo
+    {
+        get => _currentInfo;
+        set => SetProperty(ref _currentInfo, value);
+    }
+    
+    #endregion
 
     #region CommandParameters
     public string OK
@@ -334,6 +344,11 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
     {
         Library.TotalBooks = Library.BookList.Count;
     }
+    
+    private void Handle_TotalBooksChanged(object? sender, TotalBooksEventArgs e)
+    {
+        CurrentInfo= $"Total books: {Library.TotalBooks}";
+    }
 
     private Task Handle_SelectedBooks_CollectionChanged(IList<object> list)
     {
@@ -384,5 +399,6 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
     private string _savingState;
     private string _clearingState;
     private bool _canClearContent;
+    private string _currentInfo;
     #endregion
 }

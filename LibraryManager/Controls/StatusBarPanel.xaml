@@ -2,26 +2,30 @@
 
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="LibraryManager.Controls.StatusBarPanel">
+             x:Class="LibraryManager.Controls.StatusBarPanel"
+             HeightRequest="40"
+             VerticalOptions="Center">
     
-    <ContentView.ControlTemplate>
-        <ControlTemplate>
             <Grid>
+                <Grid.Resources>
+                    <Style TargetType="Label">
+                        <Setter Property="FontSize" Value="16" />
+                        <Setter Property="VerticalTextAlignment" Value="Center"/>
+                    </Style>
+                </Grid.Resources>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="50"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="100" />
                 </Grid.ColumnDefinitions>
-                <Label SemanticProperties.Description="CommonInfo"
-                    Text="{Binding Source={RelativeSource TemplatedParent}, Path=CommonInfo}" 
+                <Label
+                    Text="{Binding  CommonInfo}" 
                     Grid.Column="0"/>
                 <Label 
-                    Text="{Binding Source={RelativeSource TemplatedParent}, Path=CurrentInfo}" 
+                    Text="{Binding CurrentInfo}" 
                     Grid.Column="1"/>
                 <Label 
-                    Text="{Binding Source={RelativeSource TemplatedParent}, Path=Status}" 
+                    Text="{Binding Status}" 
                     Grid.Column="2"/>
             </Grid>
-        </ControlTemplate>
-        </ContentView.ControlTemplate>
 </ContentView>

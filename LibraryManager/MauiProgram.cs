@@ -20,7 +20,11 @@ public static class MauiProgram
                 fonts.AddFont("Manrope.ttf", "ManropeExtraLight");
             });
 
-
+        /*// Configuration
+        using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("LibraryManager.appsettings.json");
+        var config = new ConfigurationBuilder().AddJsonStream(stream).Build();
+        builder.Configuration.AddConfiguration(config);*/
+        
         var library = new Library
         {  
             Id = 0,
@@ -29,6 +33,7 @@ public static class MauiProgram
             BookList = new ObservableCollection<Book>()
         };
         var settings = new SettingsViewModel();
+        
         builder.Services.AddTransient<IFolderPicker, Platforms.MacCatalyst.FolderPicker>();
         builder.Services.AddTransient<Book>();
         builder.Services.AddTransient<App>();
