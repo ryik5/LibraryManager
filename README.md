@@ -1,6 +1,6 @@
 # Library Manager (MAUI)
 
-Library Manager is a cross-platform application developed in **C#** using the **.NET MAUI** framework. This project is a migration of the original **WPF-based Library Manager** ([BookLibraryManager](https://github.com/ryik5/BookLibraryManager)) to MAUI, allowing it to run on multiple platforms, including **Windows, macOS, Android, and iOS**.
+Library Manager is a cross-platform application developed in **C#** using the **.NET MAUI** framework. This project is a migration of the original **WPF-based Library Manager** ([BookLibraryManager](https://github.com/ryik5/BookLibraryManager)) to MAUI, allowing it to run on multiple platforms, including **Windows, MacOS, Android, and iOS**.
 
 ## Features
 
