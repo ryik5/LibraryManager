@@ -5,11 +5,11 @@ Library Manager is a cross-platform application developed in **C#** using the **
 ## Features
 
 - **Book Management**: Add, edit, and remove books from the library.
-- **Categories & Authors**: Organize books by categories and authors.
+- **Categories & Authors**: Organize books by categories and authors (Planned).
 - **Search & Filter**: Easily find books using various search and filter options.
-- **Multi-Platform Support**: Runs on Windows, MacOSX, Android, and iOS.
+- **Multi-Platform Support**: Runs on Windows(WPF), MacOSX, Android (Planned), and iOS (Planned).
 - **Modern UI**: Built using **.NET MAUI** for a responsive and adaptive user interface.
-- **Local Storage**: Saves book data locally using SQLite (in the future). Now it uses XML.
+- **Local Storage**: Saves book data locally using SQLite (Planned). Now it uses XML.
 - **Cross-Platform Synchronization** (Planned): Future versions may include cloud sync support.
 
 ## Installation
@@ -17,7 +17,7 @@ Library Manager is a cross-platform application developed in **C#** using the **
 ### Prerequisites
 
 - Install [.NET SDK 8.0 or later](https://dotnet.microsoft.com/download/dotnet/8.0)
-- Install **Visual Studio 2022** with **.NET MAUI workload**
+- Install **Visual Studio 2022**(for Windows) with **.NET MAUI workload**
 - Ensure the target platform SDKs (Android, iOS, MacOSX) and dependencies (Xcode, Xcode CLI, .NET, .NET CLI) are installed if developing for those platforms
 
 ### Clone the Repository
@@ -62,10 +62,11 @@ dotnet build -t:Run -f net8.0-ios
 ## Usage
 
 1. **Launch the Application**: Open Library Manager on your preferred platform.
-2. **Add a New Book**: Click on the "Add Book" button, enter details, and save.
-3. **Edit/Delete Books**: Select a book from the list to modify or remove it.
-4. **Filter/Search**: Use the search bar or category filters to find books quickly.
-5. **Manage Authors & Categories**: Organize books efficiently by assigning authors and categories.
+2. **Create/Load a Library**: Click on the "Create Library" or "Load Library" and pick up the previously saved library
+3. **Add a New Book**: Click on the "Add Book" button, enter details, and save.
+4. **Edit/Delete Books**: Select a book from the list to modify or remove it.
+5. **Filter/Search**: Use the search bar or category filters to find books quickly.
+6. **Manage Authors & Categories**: Organize books efficiently by assigning authors and categories. (Planned)
 
 ## Screenshots
 
@@ -85,9 +86,3 @@ Contributions are welcome! Feel free to submit issues or pull requests.
 ## Contact
 
 For questions or support, please contact **me** on **[github](https://github.com/ryik5)**.
-<<<<<<< HEAD
-
-
-S
-=======
->>>>>>> origin/master
