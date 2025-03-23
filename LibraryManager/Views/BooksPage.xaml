@@ -3,8 +3,8 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:control="clr-namespace:LibraryManager.Controls"
-             x:Class="LibraryManager.Views.BooksPage"
              xmlns:viewmodel="clr-namespace:LibraryManager.ViewModels"
+             x:Class="LibraryManager.Views.BooksPage"
              x:DataType="viewmodel:BooksViewModel">
 
     <ContentPage.MenuBarItems>
@@ -50,11 +50,13 @@
         </MenuBarItem>
     </ContentPage.MenuBarItems>
 
+
     <ContentPage.Content>
         <Grid BackgroundColor="{StaticResource White}" Padding="10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
@@ -128,7 +130,7 @@
                 Grid.Row="2"
                 IsVisible="{Binding IsEditBookViewVisible, Mode=OneWay}"
                 HeightRequest="35"
-                Margin="200,00,0,10"
+                Margin="200,00,0,30"
 
                 HorizontalOptions="Start"
                 VerticalOptions="End"
@@ -147,7 +149,7 @@
                 Grid.Row="3"
                 IsVisible="{Binding IsEditBookViewVisible, Mode=OneWay}"
                 HeightRequest="35"
-                Margin="0,00,0,10"
+                Margin="0,00,0,30"
                 BindingContext="{Binding}"
                 HorizontalOptions="Center"
                 VerticalOptions="End"
@@ -158,6 +160,10 @@
                 IsCancelVisibile="True"
                 CancelText="{Binding Cancel, Mode=OneWay}" />
 
+            <Label Grid.Row="4" 
+                   BackgroundColor="{StaticResource Quaternary}" 
+                   Margin="-10,-10,-10,-10" 
+                   HeightRequest="30"/>
         </Grid>
     </ContentPage.Content>
 

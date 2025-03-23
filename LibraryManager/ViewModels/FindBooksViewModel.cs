@@ -148,6 +148,7 @@ public class FindBooksViewModel : AbstractViewModel, IRefreshable
     #endregion
     #endregion
 
+
     #region Public Methods
     protected override async Task PerformAction(string? commandParameter)
     {
@@ -177,14 +178,11 @@ public class FindBooksViewModel : AbstractViewModel, IRefreshable
                     }
 
                     await FindBooksTask();
-
                     break;
                 }
 
                 case Constants.CANCEL:
                 {
-                    await CleanSelectedBooksTask();
-
                     IsBooksCollectionViewVisible = true;
                     IsEditBookViewVisible = false;
                     break;
@@ -197,7 +195,6 @@ public class FindBooksViewModel : AbstractViewModel, IRefreshable
                         RunInMainThread(() => { SelectFirstFoundBook()?.Set(Book); });
                     }
 
-                    await CleanSelectedBooksTask();
                     IsBooksCollectionViewVisible = true;
                     IsEditBookViewVisible = false;
                     break;
@@ -216,7 +213,6 @@ public class FindBooksViewModel : AbstractViewModel, IRefreshable
                     IsBooksCollectionViewVisible = false;
                     IsEditBookViewVisible = true;
                     await UpdateButtonContentState(Book.Content?.IsLoaded ?? false);
-
                     break;
                 }
 
@@ -287,7 +283,7 @@ public class FindBooksViewModel : AbstractViewModel, IRefreshable
     #region Private methods
     private bool ValidSelectedBooks() => NotZero(SelectedBooks?.Count);
 
-    private bool ValidLibrary() => NotZero(Library?.Id );
+    private bool ValidLibrary() => NotZero(Library?.Id);
 
     private bool NotZero(int? number)
     {
@@ -329,7 +325,8 @@ public class FindBooksViewModel : AbstractViewModel, IRefreshable
         SelectedBooks?.Clear();
         SelectedBooks = null;
         Book = null;
-        CanEditBook = false;;
+        CanEditBook = false;
+        ;
     }
 
     private void Handle_OnCollectionViewSelectionChanged(IList<object> obj)
@@ -362,6 +359,7 @@ public class FindBooksViewModel : AbstractViewModel, IRefreshable
         return Task.CompletedTask;
     }
     #endregion
+
 
     #region Private fields
     private ObservableCollection<Book> _foundBookList = new();

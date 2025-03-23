@@ -99,6 +99,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
     public event EventHandler<TotalBooksEventArgs>? TotalBooksChanged;
     #endregion
 
+
     #region CommandParameters
     public string OK
     {
@@ -133,7 +134,6 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
                 }
                 case Constants.CANCEL:
                 {
-                    Book = null;
                     IsBooksCollectionViewVisible = true;
                     IsEditBookViewVisible = false;
                     CanEditBook = ValidSelectedBooks();
@@ -148,7 +148,6 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
 
                     IsBooksCollectionViewVisible = true;
                     IsEditBookViewVisible = false;
-                    Book = null;
                     break;
                 }
                 case Constants.ADD_BOOK:
@@ -167,7 +166,6 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
                         RunInMainThread(() => { SelectFirstFoundBook()?.Set(Book); });
                     }
 
-                    Book = null;
                     IsBooksCollectionViewVisible = true;
                     IsEditBookViewVisible = false;
                     break;

@@ -39,8 +39,8 @@
                 <VisualStateGroup x:Name="CommonStates">
                     <VisualState x:Name="Pressed">
                         <VisualState.Setters>
-                            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Secondary}, Dark={StaticResource Tertiary}}" />
-                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Tertiary}, Dark={StaticResource Secondary}}" />
+                            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Senary}}" />
+                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Quaternary}, Dark={StaticResource Secondary}}" />
                             <Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
                         </VisualState.Setters>
                     </VisualState>
@@ -56,6 +56,12 @@
                             <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Quaternary}, Dark={StaticResource Senary}}" />
                             <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Senary}, Dark={StaticResource Quaternary}}" />
                             <Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="PointerOver">
+                        <VisualState.Setters>
+                            <Setter Property="BorderWidth" Value="2" />
+                            <Setter Property="BorderColor"  Value="{AppThemeBinding Light={StaticResource Secondary}, Dark={StaticResource Quinary}}"  />
                         </VisualState.Setters>
                     </VisualState>
                 </VisualStateGroup>
