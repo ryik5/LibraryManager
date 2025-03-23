@@ -28,22 +28,20 @@ public static class MauiProgram
             Description = "",
             BookList = new ObservableCollection<Book>()
         };
-        
+        var settings = new SettingsViewModel();
         builder.Services.AddTransient<IFolderPicker, Platforms.MacCatalyst.FolderPicker>();
-       // builder.Services.AddTransient<MainPage>();
+        builder.Services.AddTransient<Book>();
         builder.Services.AddTransient<App>();
-        
-        
         
         // Register all shared ViewModels and objects
         builder.Services.AddSingleton<ILibrary>(library);
+        
+        builder.Services.AddSingleton(settings);
         builder.Services.AddSingleton<LibraryViewModel>();
         builder.Services.AddSingleton<BooksViewModel>();
         builder.Services.AddSingleton<FindBooksViewModel>();
         builder.Services.AddSingleton<AboutViewModel>();
         builder.Services.AddSingleton<ToolsViewModel>();
-        builder.Services.AddTransient<Book>();
-
         #if DEBUG
         builder.Logging.AddDebug();
         #endif

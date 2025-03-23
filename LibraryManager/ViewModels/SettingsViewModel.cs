@@ -24,7 +24,7 @@ public class SettingsViewModel : AbstractBindableModel
         SortingDirections = new[] { Constants.SORTING_ASCENDING, Constants.SORTING_DESCENDING };
         BookProperties = new Library().GetBookProperties();
         _folderPicker = new FolderPicker();
-        LoadAllSettings();
+        LoadAllSettings().ConfigureAwait(false);
     }
 
     protected override async Task PerformExtendedAction(string? arg1, CancellationToken arg2)
@@ -32,9 +32,8 @@ public class SettingsViewModel : AbstractBindableModel
         switch (arg1)
         {
             case Constants.LIBRARY_HOME_FOLDER:
-                LibraryHomeFolder=await _folderPicker.PickFolder();
+                LibraryHomeFolder = await _folderPicker.PickFolder();
                 break;
-            
         }
     }
 
@@ -222,7 +221,7 @@ public class SettingsViewModel : AbstractBindableModel
         get => _book_MaxContentLength_ToolTip;
         set => SetProperty(ref _book_MaxContentLength_ToolTip, value);
     }
-    
+
     public string LibraryHomeFolder
     {
         get => _libraryHomeFolder;
@@ -237,20 +236,16 @@ public class SettingsViewModel : AbstractBindableModel
     /// <summary>
     /// Resets all application settings to their default values.
     /// </summary>
-    public void ResetAllSettings()
+    public async Task ResetAllSettings()
     {
-        foreach (var setting in DefaultSettings)
-        {
-            PreferencesExtensions.SetPreference(setting.Key, setting.Value); // Use static method
-        }
-
-        LoadAllSettings(); // Refresh view model properties
+        await ResetPreferencesExtensions();
+        await LoadAllSettings(); // Refresh view model properties
     }
 
     /// <summary>
     /// Loads all settings into the view model.
     /// </summary>
-    public void LoadAllSettings()
+    public Task LoadAllSettings()
     {
         MessageBox_FontSize = Preferences.Get(nameof(MessageBox_FontSize),
             (double)DefaultSettings[nameof(MessageBox_FontSize)]);
@@ -280,15 +275,17 @@ public class SettingsViewModel : AbstractBindableModel
             (long)DefaultSettings[nameof(Book_MaxContentLength)]);
         Book_MaxContentLength_ToolTip = Preferences.Get(nameof(Book_MaxContentLength_ToolTip),
             (string)DefaultSettings[nameof(Book_MaxContentLength_ToolTip)]);
-        
+
         LibraryHomeFolder = Preferences.Get(nameof(LibraryHomeFolder),
             (string)DefaultSettings[nameof(LibraryHomeFolder)]);
+
+        return Task.CompletedTask;
     }
 
     /// <summary>
     /// Saves all view model values to preferences.
     /// </summary>
-    public void SaveSettings()
+    public Task SaveSettings()
     {
         Preferences.Set(nameof(MessageBox_FontSize), MessageBox_FontSize);
         Preferences.Set(nameof(SearchField), (int)SearchField);
@@ -305,6 +302,8 @@ public class SettingsViewModel : AbstractBindableModel
         Preferences.Set(nameof(Book_MaxContentLength), Book_MaxContentLength);
         Preferences.Set(nameof(Book_MaxContentLength_ToolTip), Book_MaxContentLength_ToolTip);
         Preferences.Set(nameof(LibraryHomeFolder), LibraryHomeFolder);
+
+        return Task.CompletedTask;
     }
     #endregion
 
@@ -340,6 +339,15 @@ public class SettingsViewModel : AbstractBindableModel
         RaisePropertyChanged(nameof(PropertyName));
     }
 
+    private Task ResetPreferencesExtensions()
+    {
+        foreach (var setting in DefaultSettings)
+        {
+            PreferencesExtensions.SetPreference(setting.Key, setting.Value); // Use static method
+        }
+
+        return Task.CompletedTask;
+    }
 
     /// <summary>
     /// Returns a tooltip text describing the file size.
@@ -413,7 +421,7 @@ public class SettingsViewModel : AbstractBindableModel
     private string _book_MaxContentLength_ToolTip;
     private string _libraryHomeFolder;
     private readonly IFolderPicker _folderPicker;
-    
+
     private readonly Dictionary<string, object> DefaultSettings = new() // Default values for preferences
     {
         { nameof(MessageBox_FontSize), 18.0 },

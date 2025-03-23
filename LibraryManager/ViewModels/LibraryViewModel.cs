@@ -8,9 +8,11 @@ namespace LibraryManager.ViewModels;
 
 public class LibraryViewModel : AbstractViewModel, IDisposable, IRefreshable
 {
-    public LibraryViewModel(ILibrary library)
+    public LibraryViewModel(ILibrary library, SettingsViewModel settings)
     {
         Library = library; // Constructor injection ensures proper dependency handling
+        _settings= settings;
+        
         Library.TotalBooksChanged += Handle_TotalBooksChanged;
         Library.LibraryIdChanged += Handle_LibraryIdChanged;
         _libraryManager = new LibraryManagerModel(Library);
@@ -231,6 +233,7 @@ public class LibraryViewModel : AbstractViewModel, IDisposable, IRefreshable
 
     #region Private Members
     private ILibrary _library;
+    private readonly SettingsViewModel _settings;
     private bool _canOperateWithLibrary = true;
     private readonly ILibraryManageable _libraryManager;
     private bool _disposed; // Safeguard for multiple calls to Dispose.

@@ -1,13 +1,13 @@
 using LibraryManager.Views;
-using System.Diagnostics;
 
 namespace LibraryManager.ViewModels;
 
 public class ToolsViewModel : AbstractViewModel
 {
-    public ToolsViewModel()
+    public ToolsViewModel(SettingsViewModel settings)
     {
-        Settings = new SettingsViewModel();
+        Settings = settings;
+        Settings.LoadAllSettings().ConfigureAwait(false);
         IsSettingsViewVisible = true;
     }
 
@@ -41,10 +41,11 @@ public class ToolsViewModel : AbstractViewModel
     #endregion
     #endregion
 
+
     #region Public Methods
     protected override async Task PerformAction(string? commandParameter)
     {
-        await   ShowNavigationCommandInDebug(commandParameter,nameof(ToolsPage));
+        await ShowNavigationCommandInDebug(commandParameter, nameof(ToolsPage));
 
         if (string.IsNullOrWhiteSpace(commandParameter))
             return;
@@ -76,15 +77,16 @@ public class ToolsViewModel : AbstractViewModel
                     break;
 
                 case Constants.SAVE:
-                    Settings.SaveSettings();
+                    await
+                        Settings.SaveSettings();
                     break;
 
                 case Constants.CANCEL:
-                    Settings.LoadAllSettings();
+                    await Settings.LoadAllSettings();
                     break;
 
                 case Constants.RESET:
-                    Settings.ResetAllSettings();
+                    await Settings.ResetAllSettings();
                     break;
 
                 default:

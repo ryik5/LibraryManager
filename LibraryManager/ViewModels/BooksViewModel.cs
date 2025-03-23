@@ -10,9 +10,9 @@ namespace LibraryManager.ViewModels;
 
 public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
 {
-    public BooksViewModel(ILibrary library)
+    public BooksViewModel(ILibrary library, SettingsViewModel settings)
     {
-        _settings = new SettingsViewModel();
+        _settings = settings;
 
         Library = library;
 
