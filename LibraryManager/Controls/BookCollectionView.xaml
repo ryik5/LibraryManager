@@ -6,14 +6,35 @@
              x:Class="LibraryManager.Controls.BookCollectionView">
     <ContentView.ControlTemplate>
         <ControlTemplate>
-
             <CollectionView x:Name="BooksCollectionView"
-                            ItemsSource="{Binding Source={RelativeSource TemplatedParent}, Path=BookCollection}" 
+                            ItemsSource="{Binding Source={RelativeSource TemplatedParent}, Path=BookCollection}"
                             SelectionMode="Multiple"
-                            SelectionChangedCommand="{Binding Source={RelativeSource TemplatedParent}, Path=SelectionInBookCollectionChangedCommand}" 
+                            SelectionChangedCommand="{Binding Source={RelativeSource TemplatedParent}, Path=SelectionInBookCollectionChangedCommand}"
                             SelectionChangedCommandParameter="{Binding Path=SelectedItems, Source={RelativeSource Self}}"
-                            HorizontalScrollBarVisibility="Always"
-                            VerticalScrollBarVisibility="Always">
+                            ItemSizingStrategy="MeasureAllItems"
+                            EmptyView="No books in Collection">
+
+
+                <CollectionView.Header>
+                    <!--Doesn't work the proper way-->
+                    <Grid HorizontalOptions="Fill" ColumnDefinitions="150,500,70,110,70,100,100,100,Auto"
+                          Background="{StaticResource Senary}" Padding="5">
+                        <Grid.Resources>
+                            <Style TargetType="Label">
+                                <Setter Property="HorizontalTextAlignment" Value="Center" />
+                            </Style>
+                        </Grid.Resources>
+                        <Label Grid.Column="0" FontSize="18" Text="Author" />
+                        <Label Grid.Column="1" FontSize="18" Text="Title" />
+                        <Label Grid.Column="2" FontSize="18" Text="Year" />
+                        <Label Grid.Column="3" FontSize="18" Text="Genre" />
+                        <Label Grid.Column="4" FontSize="18" Text="Pages" />
+                        <Label Grid.Column="5" FontSize="18" Text="Description" />
+                        <Label Grid.Column="6" FontSize="18" Text="ISBN" />
+                        <Label Grid.Column="7" FontSize="18" Text="File Name" />
+                        <Label Grid.Column="8" FontSize="18" Text="StoredSeparately" />
+                    </Grid>
+                </CollectionView.Header>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <control:BookGridView BindingContext="{Binding}">
@@ -41,7 +62,6 @@
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-
         </ControlTemplate>
     </ContentView.ControlTemplate>
 </ContentView>

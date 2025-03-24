@@ -6,23 +6,24 @@
              x:Class="LibraryManager.Controls.BookGridView"
              x:DataType="model:Book">
 
-    <Grid Padding="5">
-
-        <!-- Grid Layout for Row Content -->
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*" />
-            <ColumnDefinition Width="4*" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        <Label FontSize="18"
-               Text="{Binding Author}"
-               Grid.Column="0" />
-        <Label FontSize="18" HorizontalTextAlignment="Start"
-               Text="{Binding Title}"
-               Grid.Column="1" />
-        <Label FontSize="18" HorizontalTextAlignment="Start"
-               Text="{Binding Year}"
-               Grid.Column="2" />
+   
+    <!--Doesn't work the proper way-->
+    <Grid HorizontalOptions="Fill" ColumnDefinitions="150,500,70,110,70,100,100,100,Auto">
+        <Grid.Resources>
+            <Style TargetType="Label">
+                <Setter Property="Padding" Value="5"/>
+            </Style>
+        </Grid.Resources>
+        <Label Grid.Column="0" FontSize="18" Text="{Binding Author}" FontAttributes="Bold" LineBreakMode="TailTruncation"/>
+        <Label Grid.Column="1" FontSize="18" Text="{Binding Title}" LineBreakMode="TailTruncation"/>
+        <Label Grid.Column="2" FontSize="18" Text="{Binding Year}" LineBreakMode="TailTruncation" HorizontalTextAlignment="Center"/>
+        <Label Grid.Column="3" FontSize="18" Text="{Binding Genre}" LineBreakMode="TailTruncation" HorizontalTextAlignment="Center"/>
+        <Label Grid.Column="4" FontSize="18" Text="{Binding TotalPages}" LineBreakMode="TailTruncation" HorizontalTextAlignment="Center"/>
+        <Label Grid.Column="5" FontSize="18" Text="{Binding Description}" LineBreakMode="TailTruncation"/>
+        <Label Grid.Column="6" FontSize="18" Text="{Binding ISBN}" LineBreakMode="TailTruncation" HorizontalTextAlignment="Center"/>
+        <Label Grid.Column="7" FontSize="18" Text="{Binding Content.Name}" 
+               ToolTipProperties.Text="{Binding Content.OriginalPath, Mode=OneWay}" LineBreakMode="TailTruncation"/>
+        <Label Grid.Column="8" FontSize="18" Text="{Binding Content.IsContentStoredSeparately}" LineBreakMode="TailTruncation"/>
     </Grid>
 
 </ContentView>
