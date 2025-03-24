@@ -2,11 +2,9 @@
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:viewmodel="clr-namespace:LibraryManager.ViewModels"
              xmlns:control="clr-namespace:LibraryManager.Controls"
-             x:Class="LibraryManager.Views.LibraryPage"
-             x:DataType="viewmodel:LibraryViewModel">
-
+             x:Class="LibraryManager.Views.LibraryPage">
+    
     <ContentPage.MenuBarItems>
         <MenuBarItem Text="Library">
             <!--  To make menu like menu with SubMenu -->
@@ -56,56 +54,69 @@
     </ContentPage.MenuBarItems>
 
     <ContentPage.Content>
-        <Grid BackgroundColor="{StaticResource White}" Padding="10">
+        <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="55" />
-                <RowDefinition />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
+            <Grid Grid.Row="0" BackgroundColor="{StaticResource White}" Padding="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="55" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
 
-            <!-- Controls -->
-            <StackLayout Grid.Row="0"
-                         Orientation="Horizontal"
-                         FlowDirection="MatchParent"
-                         HorizontalOptions="Fill"
-                         Margin="10">
-                <StackLayout.Resources>
-                    <Style TargetType="Button">
-                        <Setter Property="FontSize" Value="18" />
-                        <Setter Property="BorderWidth" Value="1" />
-                        <Setter Property="Margin" Value="0,0,10,0" />
-                    </Style>
-                </StackLayout.Resources>
+                <!-- Controls -->
+                <StackLayout Grid.Row="0"
+                             Orientation="Horizontal"
+                             FlowDirection="MatchParent"
+                             HorizontalOptions="Fill"
+                             Margin="10">
+                    <StackLayout.Resources>
+                        <Style TargetType="Button">
+                            <Setter Property="FontSize" Value="18" />
+                            <Setter Property="BorderWidth" Value="1" />
+                            <Setter Property="Margin" Value="0,0,10,0" />
+                        </Style>
+                    </StackLayout.Resources>
 
-                <Button Text="Create Library"
-                        Command="{Binding NavigateCommand}"
-                        CommandParameter="Create a new library"
-                        ToolTipProperties.Text="Click to Create a new library" />
-                <Button Text="Load Library"
-                        Command="{Binding NavigateCommand}"
-                        CommandParameter="Load the library" />
-                <Button Text="Save Library"
-                        Command="{Binding NavigateCommand}"
-                        CommandParameter="Save Library"
-                        IsEnabled="{Binding CanOperateWithLibrary}" />
-                <Button Text="Save As Library"
-                        Command="{Binding NavigateCommand}"
-                        CommandParameter="Save the library with a new name"
-                        IsEnabled="{Binding CanOperateWithLibrary}" />
-                <Button Text="Close Library"
-                        Command="{Binding NavigateCommand}"
-                        CommandParameter="Close the current library"
-                        IsEnabled="{Binding CanOperateWithLibrary}" />
+                    <Button Text="Create Library"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="Create a new library"
+                            ToolTipProperties.Text="Click to Create a new library" />
+                    <Button Text="Load Library"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="Load the library" />
+                    <Button Text="Save Library"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="Save Library"
+                            IsEnabled="{Binding CanOperateWithLibrary}" />
+                    <Button Text="Save As Library"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="Save the library with a new name"
+                            IsEnabled="{Binding CanOperateWithLibrary}" />
+                    <Button Text="Close Library"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="Close the current library"
+                            IsEnabled="{Binding CanOperateWithLibrary}" />
 
-            </StackLayout>
+                </StackLayout>
 
-            <!-- View -->
-            <control:LibraryPropertiesView
-                Grid.Row="1"
-                HeightRequest="400"
-                VerticalOptions="Start"
-                BindingContext="{Binding }"
-                Margin="20,30,0,20" />
+                <!-- View -->
+                <control:LibraryPropertiesView
+                    Grid.Row="1"
+                    HeightRequest="400"
+                    VerticalOptions="Start"
+                    BindingContext="{Binding }"
+                    Margin="20,30,0,20" />
 
+            </Grid>
+
+            <!-- StatusBar -->
+            <control:StatusBarPanel Grid.Row="1" BindingContext="{Binding}"
+                                    StatusBar="{Binding StatusBar, Mode=OneWay}"
+                                    BackgroundColor="{StaticResource Quaternary}"
+                                    Margin="0" />
         </Grid>
+
     </ContentPage.Content>
 </ContentPage>

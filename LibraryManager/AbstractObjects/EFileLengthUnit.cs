@@ -1,4 +1,4 @@
-﻿namespace LibraryManager.Models;
+﻿namespace LibraryManager.AbstractObjects;
 
 /// <summary>
 /// Specifies the measurement unit of file length.

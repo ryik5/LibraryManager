@@ -1,4 +1,4 @@
-﻿namespace LibraryManager.Models;
+﻿namespace LibraryManager.AbstractObjects;
 
 /// <summary>
 /// Enumerates the possible button configurations for a message box.

@@ -10,13 +10,14 @@ namespace LibraryManager.ViewModels;
 
 public class FindBooksViewModel : AbstractViewModel, IRefreshable
 {
-    public FindBooksViewModel(ILibrary library, SettingsViewModel settings)
+    public FindBooksViewModel(ILibrary library, SettingsViewModel settings, StatusBarViewModel statusBar)
     {
         SearchFields = Enum.GetValues(typeof(EBibliographicKindInformation)).Cast<EBibliographicKindInformation>()
             .ToList();
+        _settings = settings;
+        StatusBar = statusBar;
         Library = library;
-        _settings= settings;
- 
+
         Library.TotalBooksChanged += Handle_TotalBooksChanged;
         FoundBookList.CollectionChanged += Handle_FoundBookListChanged;
         SelectionChangedCommand = new Command<IList<object>>(Handle_OnCollectionViewSelectionChanged);
@@ -121,6 +122,12 @@ public class FindBooksViewModel : AbstractViewModel, IRefreshable
     {
         get => _canOperateWithBooks;
         set => SetProperty(ref _canOperateWithBooks, value);
+    }
+
+    public IStatusBar StatusBar
+    {
+        get => _statusBar;
+        set => SetProperty(ref _statusBar, value);
     }
 
     #region CommandParameters
@@ -378,5 +385,6 @@ public class FindBooksViewModel : AbstractViewModel, IRefreshable
     private bool _canClearContent;
     private string _clearingState;
     private readonly SettingsViewModel _settings;
+    private IStatusBar _statusBar;
     #endregion
 }

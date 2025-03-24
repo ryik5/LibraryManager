@@ -1,4 +1,6 @@
-﻿namespace LibraryManager.Models;
+﻿using LibraryManager.Models;
+
+namespace LibraryManager.AbstractObjects;
 
 /// <summary>
 /// Defines an interface for loading a library.

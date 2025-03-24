@@ -1,4 +1,4 @@
-﻿namespace LibraryManager.Models;
+﻿namespace LibraryManager.AbstractObjects;
 
 /// <summary>
 /// Interface for saving a library.

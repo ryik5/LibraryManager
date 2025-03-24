@@ -1,4 +1,4 @@
-﻿namespace LibraryManager.Models;
+﻿namespace LibraryManager.AbstractObjects;
 
 /// <summary>
 /// Represents a view model that supports pagination and selection.

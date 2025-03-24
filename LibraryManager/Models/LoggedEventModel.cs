@@ -1,4 +1,6 @@
-﻿namespace LibraryManager.Models;
+﻿using LibraryManager.AbstractObjects;
+
+namespace LibraryManager.Models;
 
 /// <summary>
 /// Represents a logged event with a specified log level, message, and timestamp.

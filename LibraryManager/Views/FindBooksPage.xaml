@@ -3,9 +3,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:control="clr-namespace:LibraryManager.Controls"
-             x:Class="LibraryManager.Views.FindBooksPage"
-             xmlns:viewmodel="clr-namespace:LibraryManager.ViewModels"
-             x:DataType="viewmodel:FindBooksViewModel">
+             x:Class="LibraryManager.Views.FindBooksPage">
 
     <ContentPage.MenuBarItems>
 
@@ -36,124 +34,137 @@
     </ContentPage.MenuBarItems>
 
     <ContentPage.Content>
-        <Grid BackgroundColor="{StaticResource White}" Padding="10">
+        <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <Grid.Resources>
-                <Style TargetType="Button">
-                    <Setter Property="FontSize" Value="18" />
-                    <Setter Property="BorderWidth" Value="1" />
-                    <Setter Property="Margin" Value="0,0,10,0" />
-                </Style>
-            </Grid.Resources>
+            <Grid Grid.Row="0" BackgroundColor="{StaticResource White}" Padding="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.Resources>
+                    <Style TargetType="Button">
+                        <Setter Property="FontSize" Value="18" />
+                        <Setter Property="BorderWidth" Value="1" />
+                        <Setter Property="Margin" Value="0,0,10,0" />
+                    </Style>
+                </Grid.Resources>
 
-            <!-- General Controls -->
-            <StackLayout Grid.Row="0"
-                         IsVisible="{Binding IsBooksCollectionViewVisible, Mode=OneWay}"
-                         Orientation="Horizontal"
-                         HorizontalOptions="Fill"
-                         Margin="10,10,10,0" HeightRequest="35">
+                <!-- General Controls -->
+                <StackLayout Grid.Row="0"
+                             IsVisible="{Binding IsBooksCollectionViewVisible, Mode=OneWay}"
+                             Orientation="Horizontal"
+                             HorizontalOptions="Fill"
+                             Margin="10,10,10,0" HeightRequest="35">
 
-                <Entry Text="{Binding SearchText}"
-                       IsEnabled="{Binding CanOperateWithBooks, Mode=OneWay}"
-                       Placeholder="Input word to seek"
-                        Margin="10,0,10,0"
-                       FontSize="18"
-                       MinimumWidthRequest="150" />
+                    <Entry Text="{Binding SearchText}"
+                           IsEnabled="{Binding CanOperateWithBooks, Mode=OneWay}"
+                           Placeholder="Input word to seek"
+                           Margin="10,0,10,0"
+                           FontSize="18"
+                           MinimumWidthRequest="150" />
 
-                <Button Text="Find"
-                        Command="{Binding NavigateCommand}"
-                        IsEnabled="{Binding CanOperateWithBooks, Mode=OneWay}"
-                        CommandParameter="Find Books"
-                        MinimumWidthRequest="85"
-                        Margin="10,0,0,0" />
+                    <Button Text="Find"
+                            Command="{Binding NavigateCommand}"
+                            IsEnabled="{Binding CanOperateWithBooks, Mode=OneWay}"
+                            CommandParameter="Find Books"
+                            MinimumWidthRequest="85"
+                            Margin="10,0,0,0" />
 
-                <control:TextCheckBox MinimumWidthRequest="100"
-                                      IsEnabled="{Binding CanOperateWithBooks, Mode=OneWay}"
-                                      VerticalOptions="Center"
-                                      Margin="10,0,10,0"
-                                      IsChecked="{Binding SearchOnFly, Mode=TwoWay}"
-                                      Text="Search-on-fly" />
+                    <control:TextCheckBox MinimumWidthRequest="100"
+                                          IsEnabled="{Binding CanOperateWithBooks, Mode=OneWay}"
+                                          VerticalOptions="Center"
+                                          Margin="10,0,10,0"
+                                          IsChecked="{Binding SearchOnFly, Mode=TwoWay}"
+                                          Text="Search-on-fly" />
 
-                <Picker ItemsSource="{Binding SearchFields}"
-                        SelectedItem="{Binding SelectedSearchField}"
-                        IsEnabled="{Binding CanOperateWithBooks, Mode=OneWay}"
-                        MinimumWidthRequest="100"
-                        FontSize="18"
-                        Margin="10,0,10,0" />
+                    <Picker ItemsSource="{Binding SearchFields}"
+                            SelectedItem="{Binding SelectedSearchField}"
+                            IsEnabled="{Binding CanOperateWithBooks, Mode=OneWay}"
+                            MinimumWidthRequest="100"
+                            FontSize="18"
+                            Margin="10,0,10,0" />
 
-                <Button Text="Edit Book"
-                        Command="{Binding NavigateCommand}"
-                        CommandParameter="Edit Book"
-                        MinimumWidthRequest="100"
-                        Margin="10,0,20,0"
-                        IsEnabled="{Binding CanEditBook, Mode=OneWay}" />
+                    <Button Text="Edit Book"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="Edit Book"
+                            MinimumWidthRequest="100"
+                            Margin="10,0,20,0"
+                            IsEnabled="{Binding CanEditBook, Mode=OneWay}" />
 
-                <Button Text="Delete Book(s)"
-                        Command="{Binding NavigateCommand}"
-                        CommandParameter="Delete the selected book"
-                        MinimumWidthRequest="100"
-                        IsEnabled="{Binding CanEditBook, Mode=OneWay}" />
+                    <Button Text="Delete Book(s)"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="Delete the selected book"
+                            MinimumWidthRequest="100"
+                            IsEnabled="{Binding CanEditBook, Mode=OneWay}" />
 
-            </StackLayout>
+                </StackLayout>
 
-            <!-- Displays Found Books-->
-            <control:BookCollectionView
-                Grid.Row="1"
-                x:Name="BooksCollectionView"
-                BookCollection="{Binding FoundBookList, Mode=OneWay}"
-                SelectionInBookCollectionChangedCommand="{Binding SelectionChangedCommand, Mode=OneWay}"
-                IsVisible="{Binding IsBooksCollectionViewVisible, Mode=OneWay}"
-                BindingContext="{Binding}"
-                Margin="10,10,5,30" />
+                <!-- Displays Found Books-->
+                <control:BookCollectionView
+                    Grid.Row="1"
+                    x:Name="BooksCollectionView"
+                    BookCollection="{Binding FoundBookList, Mode=OneWay}"
+                    SelectionInBookCollectionChangedCommand="{Binding SelectionChangedCommand, Mode=OneWay}"
+                    IsVisible="{Binding IsBooksCollectionViewVisible, Mode=OneWay}"
+                    BindingContext="{Binding}"
+                    Margin="10,10,5,30" />
 
-            <!-- Add/Edit Book View -->
-            <control:EditBookView
-                Grid.Row="1"
-                Book="{Binding Book,Mode=TwoWay}"
-                BindingContext="{Binding}"
-                IsVisible="{Binding IsEditBookViewVisible, Mode=OneWay}"
-                Margin="10,20,20,10" />
+                <!-- Add/Edit Book View -->
+                <control:EditBookView
+                    Grid.Row="1"
+                    Book="{Binding Book,Mode=TwoWay}"
+                    BindingContext="{Binding}"
+                    IsVisible="{Binding IsEditBookViewVisible, Mode=OneWay}"
+                    Margin="10,20,20,10" />
 
-            <!-- Load Book's content controls -->
-            <control:ThreeButtonsPanel
-                Grid.Row="2"
-                IsVisible="{Binding IsEditBookViewVisible, Mode=OneWay}"
-                HeightRequest="35"
-                Margin="200,00,0,10"
+                <!-- Load Book's content controls -->
+                <control:ThreeButtonsPanel
+                    Grid.Row="2"
+                    IsVisible="{Binding IsEditBookViewVisible, Mode=OneWay}"
+                    HeightRequest="35"
+                    Margin="200,00,0,10"
 
-                HorizontalOptions="Start"
-                VerticalOptions="End"
-                NavigateCommand="{Binding NavigateCommand, Mode=OneTime}"
+                    HorizontalOptions="Start"
+                    VerticalOptions="End"
+                    NavigateCommand="{Binding NavigateCommand, Mode=OneTime}"
 
-                IsOkVisibile="True"
-                OkText="{Binding ContentState, Mode=OneWay}"
+                    IsOkVisibile="True"
+                    OkText="{Binding ContentState, Mode=OneWay}"
 
-                IsNoVisibile="False"
+                    IsNoVisibile="False"
 
-                IsCancelVisibile="{Binding CanClearContent, Mode=OneWay}"
-                CancelText="{Binding ClearingState, Mode=OneWay}" />
+                    IsCancelVisibile="{Binding CanClearContent, Mode=OneWay}"
+                    CancelText="{Binding ClearingState, Mode=OneWay}" />
 
-            <!-- Add/Edit Book Controls -->
-            <control:ThreeButtonsPanel
-                Grid.Row="3"
-                IsVisible="{Binding IsEditBookViewVisible, Mode=OneWay}"
-                HeightRequest="35"
-                Margin="0,50,0,10"
-                BindingContext="{Binding}"
-                HorizontalOptions="Center"
-                VerticalOptions="End"
-                NavigateCommand="{Binding NavigateCommand, Mode=OneTime}"
-                IsOkVisibile="True"
-                OkText="{Binding OK, Mode=OneWay}"
-                IsNoVisibile="False"
-                IsCancelVisibile="True"
-                CancelText="{Binding Cancel, Mode=OneWay}" />
+                <!-- Add/Edit Book Controls -->
+                <control:ThreeButtonsPanel
+                    Grid.Row="3"
+                    IsVisible="{Binding IsEditBookViewVisible, Mode=OneWay}"
+                    HeightRequest="35"
+                    Margin="0,50,0,10"
+                    BindingContext="{Binding}"
+                    HorizontalOptions="Center"
+                    VerticalOptions="End"
+                    NavigateCommand="{Binding NavigateCommand, Mode=OneTime}"
+                    IsOkVisibile="True"
+                    OkText="{Binding OK, Mode=OneWay}"
+                    IsNoVisibile="False"
+                    IsCancelVisibile="True"
+                    CancelText="{Binding Cancel, Mode=OneWay}" />
 
+            </Grid>
+
+            <!-- StatusBar -->
+            <control:StatusBarPanel Grid.Row="1" BindingContext="{Binding}"
+                                    StatusBar="{Binding StatusBar, Mode=OneWay}"
+                                    BackgroundColor="{StaticResource Quaternary}"
+                                    Margin="0" />
         </Grid>
+
     </ContentPage.Content>
 </ContentPage>

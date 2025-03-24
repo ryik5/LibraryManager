@@ -1,4 +1,6 @@
-﻿namespace LibraryManager.Models;
+﻿using LibraryManager.Models;
+
+namespace LibraryManager.AbstractObjects;
 
 /// <summary>
 /// Represents a library interface that provides functionalities to add, remove, sort, and display Library.

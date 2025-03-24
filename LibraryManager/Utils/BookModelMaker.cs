@@ -1,6 +1,4 @@
-﻿
-
-using LibraryManager.Models;
+﻿using LibraryManager.Models;
 
 namespace LibraryManager.Utils;
 

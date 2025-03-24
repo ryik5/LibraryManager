@@ -1,8 +1,6 @@
-﻿using System.IO;
-using System.Xml;
-using System.Xml.Serialization;
+﻿using System.Xml;
 
-namespace LibraryManager.Models;
+namespace LibraryManager.Utils;
 
 /// <summary>
 /// A utility class for serializing and deserializing objects to and from XML files.

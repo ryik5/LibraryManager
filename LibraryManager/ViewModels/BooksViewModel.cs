@@ -10,10 +10,10 @@ namespace LibraryManager.ViewModels;
 
 public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
 {
-    public BooksViewModel(ILibrary library, SettingsViewModel settings)
+    public BooksViewModel(ILibrary library, SettingsViewModel settings, StatusBarViewModel statusBar)
     {
         _settings = settings;
-
+        StatusBar = statusBar;
         Library = library;
 
         Library.LibraryIdChanged += Handle_LibraryIdChanged;
@@ -30,8 +30,6 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
         CanOperateWithLibrary = ValidLibrary();
         CanEditBook = ValidSelectedBooks();
     }
-
-
 
 
     #region Public properties
@@ -97,18 +95,16 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
         get => _canOperateWithLibrary;
         set => SetProperty(ref _canOperateWithLibrary, value);
     }
-    
+
+    public IStatusBar StatusBar
+    {
+        get => _statusBar;
+        set => SetProperty(ref _statusBar, value);
+    }
+
     public event EventHandler<TotalBooksEventArgs>? TotalBooksChanged;
     #endregion
 
-    #region StatusBar
-    public string CurrentInfo
-    {
-        get => _currentInfo;
-        set => SetProperty(ref _currentInfo, value);
-    }
-    
-    #endregion
 
     #region CommandParameters
     public string OK
@@ -344,10 +340,10 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
     {
         Library.TotalBooks = Library.BookList.Count;
     }
-    
-    private void Handle_TotalBooksChanged(object? sender, TotalBooksEventArgs e)
+
+    private async void Handle_TotalBooksChanged(object? sender, TotalBooksEventArgs e)
     {
-        CurrentInfo= $"Total books: {Library.TotalBooks}";
+       await StatusBar.SetTotalBooks(Library.TotalBooks);
     }
 
     private Task Handle_SelectedBooks_CollectionChanged(IList<object> list)
@@ -399,6 +395,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
     private string _savingState;
     private string _clearingState;
     private bool _canClearContent;
-    private string _currentInfo;
+    private string _statusInfo;
+    private IStatusBar _statusBar;
     #endregion
 }

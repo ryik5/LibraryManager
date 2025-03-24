@@ -1,3 +1,5 @@
+using LibraryManager.ViewModels;
+
 namespace LibraryManager.Controls;
 
 public partial class StatusBarPanel : ContentView
@@ -6,24 +8,24 @@ public partial class StatusBarPanel : ContentView
     {
         InitializeComponent();
     }
-    
-    public static readonly BindableProperty CurrentInfoProperty =
-        BindableProperty.Create(nameof(CurrentInfo), typeof(string), typeof(StatusBarPanel), default,
-            propertyChanged: OnCurrentInfoChanged);
-    
-    public string CurrentInfo
+
+
+    public static readonly BindableProperty StatusBarProperty =
+        BindableProperty.Create(nameof(StatusBar), typeof(StatusBarViewModel), typeof(StatusBarPanel), default,
+            propertyChanged: OnStatusBarChanged);
+
+    public StatusBarViewModel StatusBar
     {
-        get => (string)GetValue(CurrentInfoProperty);
-        set => SetValue(CurrentInfoProperty, value);
+        get => (StatusBarViewModel)GetValue(StatusBarProperty);
+        set => SetValue(StatusBarProperty, value);
     }
-    
-    private static void OnCurrentInfoChanged(BindableObject bindable, object oldValue, object newValue)
+
+    private static void OnStatusBarChanged(BindableObject bindable, object oldvalue, object newValue)
     {
         if (!(bindable is StatusBarPanel statusBarPanel))
             return;
-        if (!(newValue is string value))
+        if (!(newValue is StatusBarViewModel value))
             return;
-        statusBarPanel.CurrentInfo = value;
+        statusBarPanel.StatusBar = value;
     }
-
 }

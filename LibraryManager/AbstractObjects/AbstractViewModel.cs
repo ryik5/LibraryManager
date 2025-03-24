@@ -1,12 +1,8 @@
 using System.Diagnostics;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
-using Foundation;
-using LibraryManager.AbstractObjects;
-using LibraryManager.Utils;
-using LibraryManager.Views;
 
-namespace LibraryManager.ViewModels;
+namespace LibraryManager.AbstractObjects;
 
 public abstract class AbstractViewModel : AbstractBindableModel
 {

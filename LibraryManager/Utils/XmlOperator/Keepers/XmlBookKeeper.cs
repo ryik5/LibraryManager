@@ -1,4 +1,7 @@
-﻿namespace LibraryManager.Models;
+﻿using LibraryManager.AbstractObjects;
+using LibraryManager.Models;
+
+namespace LibraryManager.Utils;
 
 /// <summary>
 /// Saver of the Book as XML file on the local disk.

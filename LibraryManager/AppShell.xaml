@@ -11,7 +11,7 @@
     FlyoutBehavior="Locked"
     FlyoutHeaderBehavior="Fixed"
     FlyoutBackgroundColor="{StaticResource Quaternary}"
-    FlyoutWidth="{OnPlatform Android=180, iOS=200, WinUI=250, MacCatalyst=150}"
+    FlyoutWidth="{OnPlatform Android=180, iOS=200, WinUI=150, MacCatalyst=150}"
     x:DataType="local:AppShell">
 
     <Shell.FlyoutHeader>

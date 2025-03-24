@@ -1,4 +1,4 @@
-﻿namespace LibraryManager.Models;
+﻿namespace LibraryManager.AbstractObjects;
 
 /// <author>YR 2025-01-25</author>
 public enum EContentType

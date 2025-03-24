@@ -1,4 +1,6 @@
-﻿namespace LibraryManager.Models;
+﻿using LibraryManager.Models;
+
+namespace LibraryManager.AbstractObjects;
 
 /// <author>YR 2025-01-09</author>
 public interface IBookLoader 

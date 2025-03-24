@@ -8,11 +8,12 @@ namespace LibraryManager.ViewModels;
 
 public class LibraryViewModel : AbstractViewModel, IDisposable, IRefreshable
 {
-    public LibraryViewModel(ILibrary library, SettingsViewModel settings)
+    public LibraryViewModel(ILibrary library, SettingsViewModel settings, StatusBarViewModel statusBar)
     {
+        _settings = settings;
+        StatusBar = statusBar;
         Library = library; // Constructor injection ensures proper dependency handling
-        _settings= settings;
-        
+
         Library.TotalBooksChanged += Handle_TotalBooksChanged;
         Library.LibraryIdChanged += Handle_LibraryIdChanged;
         _libraryManager = new LibraryManagerModel(Library);
@@ -39,12 +40,18 @@ public class LibraryViewModel : AbstractViewModel, IDisposable, IRefreshable
     }
 
     public Binding LibraryControlsView { get; }
+
+    public IStatusBar StatusBar
+    {
+        get => _statusBar;
+        set => SetProperty(ref _statusBar, value);
+    }
+
     public event EventHandler<TotalBooksEventArgs> TotalBooksChanged;
     #endregion
 
 
     #region Public Methods
- 
     protected override async Task PerformAction(string? commandParameter)
     {
         await ShowNavigationCommandInDebug(commandParameter, nameof(LibraryPage));
@@ -155,6 +162,7 @@ public class LibraryViewModel : AbstractViewModel, IDisposable, IRefreshable
         RaisePropertyChanged(nameof(Library.TotalBooks));
         RaisePropertyChanged(nameof(CanOperateWithLibrary));
     }
+
     public async Task RefreshControlsOnDisappearing()
     {
         RaisePropertyChanged(nameof(CanOperateWithLibrary));
@@ -190,9 +198,10 @@ public class LibraryViewModel : AbstractViewModel, IDisposable, IRefreshable
         CanOperateWithLibrary = ValidLibrary();
     }
 
-    private void Handle_TotalBooksChanged(object? sender, TotalBooksEventArgs e)
+    private async void Handle_TotalBooksChanged(object? sender, TotalBooksEventArgs e)
     {
-        RaisePropertyChanged(nameof(Library.TotalBooks));
+        RefreshControlsOnAppearing();
+        await StatusBar.SetTotalBooks(Library.TotalBooks);
     }
 
     /// <summary>
@@ -238,5 +247,6 @@ public class LibraryViewModel : AbstractViewModel, IDisposable, IRefreshable
     private readonly ILibraryManageable _libraryManager;
     private bool _disposed; // Safeguard for multiple calls to Dispose.
     private int _libraryHashCode;
+    private IStatusBar _statusBar;
     #endregion
 }

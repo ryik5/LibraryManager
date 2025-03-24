@@ -1,7 +1,8 @@
-﻿using System.Collections.ObjectModel;
+﻿using LibraryManager.Models;
+using System.Collections.ObjectModel;
 using System.Reflection;
 
-namespace LibraryManager.Models;
+namespace LibraryManager.AbstractObjects;
 /// <summary>
 /// Represents a library interface.
 /// </summary>

@@ -1,4 +1,7 @@
-﻿namespace LibraryManager.Models;
+﻿using LibraryManager.AbstractObjects;
+using LibraryManager.Models;
+
+namespace LibraryManager.Utils;
 
 /// <summary>
 /// Loader of the Book from XML file stored on a local disk.

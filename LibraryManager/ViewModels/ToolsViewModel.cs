@@ -1,3 +1,4 @@
+using LibraryManager.AbstractObjects;
 using LibraryManager.Views;
 
 namespace LibraryManager.ViewModels;

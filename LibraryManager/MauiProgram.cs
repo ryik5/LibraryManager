@@ -1,4 +1,5 @@
 ﻿using LibraryManager.AbstractObjects;
+using LibraryManager.Controls;
 using System.Collections.ObjectModel;
 using LibraryManager.Models;
 using LibraryManager.ViewModels;
@@ -24,29 +25,34 @@ public static class MauiProgram
         using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("LibraryManager.appsettings.json");
         var config = new ConfigurationBuilder().AddJsonStream(stream).Build();
         builder.Configuration.AddConfiguration(config);*/
-        
+
         var library = new Library
-        {  
-            Id = 0,
-            Name = "",
+        {
+            Id =new Random().Next(),
+            Name = "Empty Library",
             Description = "",
             BookList = new ObservableCollection<Book>()
         };
         var settings = new SettingsViewModel();
-        
+        var statusBar = new StatusBarViewModel();
+
         builder.Services.AddTransient<IFolderPicker, Platforms.MacCatalyst.FolderPicker>();
         builder.Services.AddTransient<Book>();
         builder.Services.AddTransient<App>();
-        
+
         // Register all shared ViewModels and objects
         builder.Services.AddSingleton<ILibrary>(library);
-        
+
+        builder.Services.AddSingleton(statusBar);
+        builder.Services.AddTransient<StatusBarPanel>();
+
         builder.Services.AddSingleton(settings);
         builder.Services.AddSingleton<LibraryViewModel>();
         builder.Services.AddSingleton<BooksViewModel>();
         builder.Services.AddSingleton<FindBooksViewModel>();
-        builder.Services.AddSingleton<AboutViewModel>();
-        builder.Services.AddSingleton<ToolsViewModel>();
+
+        builder.Services.AddTransient<AboutViewModel>();
+        builder.Services.AddTransient<ToolsViewModel>();
         #if DEBUG
         builder.Logging.AddDebug();
         #endif

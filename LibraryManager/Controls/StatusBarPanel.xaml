@@ -5,27 +5,30 @@
              x:Class="LibraryManager.Controls.StatusBarPanel"
              HeightRequest="40"
              VerticalOptions="Center">
-    
-            <Grid>
-                <Grid.Resources>
-                    <Style TargetType="Label">
-                        <Setter Property="FontSize" Value="16" />
-                        <Setter Property="VerticalTextAlignment" Value="Center"/>
-                    </Style>
-                </Grid.Resources>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="50"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="100" />
-                </Grid.ColumnDefinitions>
-                <Label
-                    Text="{Binding  CommonInfo}" 
-                    Grid.Column="0"/>
-                <Label 
-                    Text="{Binding CurrentInfo}" 
-                    Grid.Column="1"/>
-                <Label 
-                    Text="{Binding Status}" 
-                    Grid.Column="2"/>
-            </Grid>
+
+    <Grid>
+        <Grid.Resources>
+            <Style TargetType="Label">
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="VerticalTextAlignment" Value="Center" />
+                <Setter Property="HorizontalTextAlignment" Value="Start" />
+            </Style>
+        </Grid.Resources>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="50" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Label Padding="5,0,5,0"
+               Text="{Binding  StatusBar.CommonInfo}"
+               Grid.Column="0" />
+        <Label Grid.Column="1" Text="I" Padding="1,0,5,0" />
+        <Label Padding="5,0,10,0"
+               Text="{Binding StatusBar.CurrentInfo}"
+               Grid.Column="1" />
+        <Label Grid.Column="2" Text="I" Padding="1,0,5,0" />
+        <Label Padding="10,0,10,0"
+               Text="{Binding StatusBar.StatusInfo}"
+               Grid.Column="2" />
+    </Grid>
 </ContentView>
