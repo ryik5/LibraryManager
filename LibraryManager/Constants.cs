@@ -16,7 +16,7 @@ public static class Constants
     public const string SETTINGS = "Settings";
     public const string UNKNOWN_COMMAND = "Unknown command";
     public const string LIBRARY_HOME_FOLDER = "Library's home folder";
-    
+
     public const string ID = "ID";
     public const string LIBRARY_MANAGER = "LibraryManager";
     public const string LIBRARY_MANAGER_PIPE_SERVER = "LibraryManagerPipeServer";
@@ -60,16 +60,17 @@ public static class Constants
     #endregion
 
     #region book details: FindBookViewModel, CreatorBookDetailsViewModel, EditorBookDetailsViewModel
-     public const string ADD_BOOK = "Add Book";
-     public const string DEMO_ADD_BOOKS = "Demo add books";
-     public const string LAST_ADDED_BOOK = "Last added book";
-     public const string ADDING_BOOK_WAS_CANCELLED = "Adding book was canceled";
-     public const string EDIT_BOOK = "Edit Book";
-     public const string ORIGINAL_STATE_BOOK = "Original state of the book";
-     public const string LOADED_FOR_EDITING = "is loaded for editing";
-     public const string LAST_EDITED_BOOK = "Last edited book";
-     public const string EDITING_BOOK_WAS_CANCELLED = "Editing book was canceled";
- 
+    public const string ADD_BOOK = "Add Book";
+    public const string DEMO_ADD_BOOKS = "Demo add books";
+    public const string LAST_ADDED_BOOK = "Last added book";
+    public const string ADDING_BOOK_WAS_CANCELLED = "Adding book was canceled";
+    public const string EDIT_BOOK = "Edit Book";
+    public const string ORIGINAL_STATE_BOOK = "Original state of the book";
+    public const string LOADED_FOR_EDITING = "is loaded for editing";
+    public const string LAST_EDITED_BOOK = "Last edited book";
+    public const string EDITING_BOOK_WAS_CANCELLED = "Editing book was canceled";
+    public const string LOAD_COVER = "Load Cover";
+
     public const string FIND_BOOKS = "Find Books";
     public const string SORT_BOOKS = "Sort Books";
     public const string SORTING_ASCENDING = "a...Z";

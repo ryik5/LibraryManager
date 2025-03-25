@@ -23,7 +23,7 @@ public abstract class AbstractBindableModel : INotifyPropertyChanged
     /// <param name="title">The title of the dialog page.</param>
     /// <param name="message">The message to display on the dialog page.</param>
     /// <returns>A boolean indicating whether the user pressed OK or Cancel.</returns>
-    protected async Task<ResultData> ShowCustomDialogPage(string title, string message, bool isInputVisible = false)
+    protected async Task<ResultInput> ShowCustomDialogPage(string title, string message, bool isInputVisible = false)
     {
         var dialogPage = new CustomDialogPage(title, message, isInputVisible);
         await Application.Current?.MainPage?.Navigation.PushModalAsync(dialogPage)!;
@@ -35,7 +35,7 @@ public abstract class AbstractBindableModel : INotifyPropertyChanged
         Debug.WriteLine(result ? "User pressed OK." : "User pressed Cancel.");
         #endif
 
-        return new ResultData(result, inputText);
+        return new ResultInput(result, inputText);
     }
     
     public ICommand NavigateExtendedCommand { get; }
@@ -127,7 +127,7 @@ public abstract class AbstractBindableModel : INotifyPropertyChanged
         return Path.Combine(GetPathToDocumentDirectory(), StringsHandler.CreateXmlFileName(pointedName));
     }
     /// <summary>
-    /// Gets the path to a XML file in the document directory.
+    /// Gets the path to an XML file in the document directory.
     /// </summary>
     /// <param name="pointedName">The name of the file to get the path for.</param>
     /// <returns>The path to the XML file in the document directory.</returns>
@@ -162,9 +162,9 @@ public abstract class AbstractBindableModel : INotifyPropertyChanged
     private readonly IFolderPicker _folderPicker;
 }
 
-public class ResultData
+public class ResultInput
 {
-    public ResultData(bool isOk, string? inputString = null)
+    public ResultInput(bool isOk, string? inputString = null)
     {
         IsOk = isOk;
         InputString = inputString;
@@ -174,8 +174,14 @@ public class ResultData
     public string? InputString { get; private set; }
 }
 
-public class ResultLoading
+public class ResultMediaData
 {
     public MediaData? MediaData { get; set; }
+    public bool IsSuccess { get; set; }
+}
+
+public class ResultBook
+{
+    public Book? Book { get;  set; }
     public bool IsSuccess { get; set; }
 }

@@ -214,7 +214,7 @@ public class Book : AbstractBindableModel, ICloneable, IXmlSerializable
     public void ReadXml(XmlReader reader)
     {
         var isRead = true;
-        while (reader.Read() && isRead)
+        while (isRead && reader.Read())
         {
             switch (reader.NodeType)
             {
@@ -258,7 +258,7 @@ public class Book : AbstractBindableModel, ICloneable, IXmlSerializable
                             }
 
                             isRead = false;
-                            reader.ReadEndElement(); // Added to ensure proper reading of the 'Source' element
+                            //                reader.ReadEndElement(); // Added to ensure proper reading of the 'Source' element
                             break;
                     }
 

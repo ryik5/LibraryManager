@@ -2,11 +2,17 @@
 
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:convertor="clr-namespace:LibraryManager.Convertors"
              x:Class="LibraryManager.Controls.EditBookView">
-    
+
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <convertor:ByteArrayToImageSourceConverter x:Key="ByteArrayToImageSourceConverter" />
+        </ResourceDictionary>
+    </ContentView.Resources>
     <ContentView.ControlTemplate>
         <ControlTemplate>
-            <Grid>
+            <Grid ColumnDefinitions="Auto,*,300" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
                 <Grid.Resources>
                     <Style TargetType="Label">
                         <Setter Property="VerticalOptions" Value="Center" />
@@ -18,23 +24,7 @@
                         <Setter Property="Margin" Value="5" />
                     </Style>
                 </Grid.Resources>
-
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-
+                
                 <Label Text="Author" Grid.Row="0" Grid.Column="0" />
                 <Entry Text="{Binding Source={RelativeSource TemplatedParent}, Path=Book.Author}" 
                        Placeholder="Author"
@@ -101,6 +91,14 @@
                           HeightRequest="20"
                           Margin="0" />
 
+                <Button Grid.Row="8" Grid.Column="2" Text="Load Cover"
+                        Command="{Binding Source={RelativeSource TemplatedParent}, Path=NavigateCommand}"
+                        CommandParameter="Load Cover"/>
+                <Image Grid.Row="0" Grid.Column="2" Grid.RowSpan="7"
+                       Source="{Binding Source={RelativeSource TemplatedParent}, Path=Book.Content.BookCoverByteArray, Mode=OneWay, Converter={StaticResource ByteArrayToImageSourceConverter}}"
+                       Aspect="AspectFill"
+                       MaximumHeightRequest="200"
+                       MaximumWidthRequest="200" />
             </Grid>
         </ControlTemplate>
     </ContentView.ControlTemplate>

@@ -44,4 +44,12 @@ public partial class BookCollectionView : ContentView
     {
         InitializeComponent();
     }
+
+    private void OnCollectionViewSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (sender is CollectionView cv)
+        { 
+            // TODO : fix reselection
+        }
+    }
 }

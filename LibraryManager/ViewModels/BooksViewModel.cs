@@ -45,6 +45,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
         set => SetProperty(ref _selectedBooks, value);
     }
 
+    // TODO : Check. It should be ObservableCollection<object>   - !!! 'object'
     public ICommand SelectionChangedCommand { get; }
 
     public Book Book
@@ -52,8 +53,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
         get => _book;
         set => SetProperty(ref _book, value);
     }
-
-    // TODO : Move to Ancestor class
+    
     public string ContentState
     {
         get => _contentState;
@@ -231,6 +231,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
                 case Constants.LOAD_CONTENT:
                 case Constants.CLEAR_CONTENT:
                 case Constants.SAVE_CONTENT:
+                case Constants.LOAD_COVER:
                     await _bookManageable.RunCommand(commandParameter, new List<Book>() { Book });
                     break;
                 default: //jobs perform without creating views
@@ -251,6 +252,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
             {
                 RaisePropertyChanged(nameof(Library));
                 RaisePropertyChanged(nameof(Library.BookList));
+                RaisePropertyChanged(nameof(Book));
             }
         );
     }

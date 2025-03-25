@@ -22,6 +22,7 @@ public class MediaData : AbstractBindableModel, IXmlSerializable
             IsContentStoredSeparately = false;
             IsLoaded = false;
             ObjectByteArray = null;
+            BookCoverByteArray = null;
 
             return;
         }
@@ -32,6 +33,7 @@ public class MediaData : AbstractBindableModel, IXmlSerializable
         IsContentStoredSeparately = mediaData.IsContentStoredSeparately;
         IsLoaded = mediaData.IsLoaded;
         ObjectByteArray = mediaData.ObjectByteArray;
+        BookCoverByteArray = mediaData.BookCoverByteArray;
     }
 
     /// <summary>
@@ -64,6 +66,11 @@ public class MediaData : AbstractBindableModel, IXmlSerializable
     /// </summary>
     public byte[] ObjectByteArray { get; set; }
 
+    /// <summary>
+    /// Gets or sets the byte array of the file.
+    /// </summary>
+    public byte[] BookCoverByteArray { get; set; }
+
     public override string ToString()
     {
         return $"{Name},{OriginalPath},{Ext},{IsContentStoredSeparately},{IsLoaded}";
@@ -80,11 +87,15 @@ public class MediaData : AbstractBindableModel, IXmlSerializable
         var isRead = true;
         bool isParsed;
         bool result;
+        const int LEN = 4096;
+        byte[] buffer;
+        int read;
         while (reader.Read() && isRead)
         {
             switch (reader.NodeType)
             {
                 case XmlNodeType.Element:
+                {
                     switch (reader.Name)
                     {
                         case "Name":
@@ -105,9 +116,7 @@ public class MediaData : AbstractBindableModel, IXmlSerializable
                             IsLoaded = isParsed && result;
                             break;
                         case "Source":
-                            const int LEN = 4096;
-                            var buffer = new byte[LEN];
-                            int read;
+                            buffer = new byte[LEN];
                             using (var ms = new MemoryStream())
                             {
                                 var depth = reader.Depth;
@@ -119,22 +128,47 @@ public class MediaData : AbstractBindableModel, IXmlSerializable
                                         while ((read = reader.ReadContentAsBase64(buffer, 0, LEN)) > 0)
                                             ms.Write(buffer, 0, read);
                                     }
-                                    else if (reader.NodeType == XmlNodeType.EndElement && reader.Name == "Source")
+                                    else if (reader.NodeType == XmlNodeType.EndElement)
                                     {
                                         break;
                                     }
-                                } while (reader.Read() && reader.NodeType != XmlNodeType.EndElement);
+                                } while (reader.NodeType != XmlNodeType.EndElement && reader.Read());
 
                                 ms.Position = 0;
                                 ObjectByteArray = ms.ToArray();
+                            }
+
+                            reader.ReadEndElement(); // Added to ensure proper reading of the 'Source' element
+                            break;
+                        case "BookCover":
+                            buffer = new byte[LEN];
+                            using (var ms = new MemoryStream())
+                            {
+                                var depth = reader.Depth;
+
+                                do
+                                {
+                                    if (reader.NodeType == XmlNodeType.Text)
+                                    {
+                                        while ((read = reader.ReadContentAsBase64(buffer, 0, LEN)) > 0)
+                                            ms.Write(buffer, 0, read);
+                                    }
+                                    else if (reader.NodeType == XmlNodeType.EndElement && reader.Name == "BookCover")
+                                    {
+                                        break;
+                                    }
+                                } while (reader.NodeType != XmlNodeType.EndElement&&reader.Read()  );
+
+                                ms.Position = 0;
+                                BookCoverByteArray = ms.ToArray();
                             }
 
                             isRead = false;
                             reader.ReadEndElement(); // Added to ensure proper reading of the 'Source' element
                             break;
                     }
-
                     break;
+                }
             }
         }
     }
@@ -154,9 +188,13 @@ public class MediaData : AbstractBindableModel, IXmlSerializable
         writer.WriteElementString("IsLoaded", $"{IsLoaded}");
 
         writer.WriteStartElement("Source");
-
         if (ObjectByteArray != null && IsLoaded)
             writer.WriteBase64(ObjectByteArray, 0, ObjectByteArray.Length);
+        writer.WriteEndElement();
+
+        writer.WriteStartElement("BookCover");
+        if (BookCoverByteArray != null)
+            writer.WriteBase64(BookCoverByteArray, 0, BookCoverByteArray.Length);
         writer.WriteEndElement();
 
         writer.WriteEndElement();

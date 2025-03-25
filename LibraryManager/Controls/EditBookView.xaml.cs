@@ -1,4 +1,5 @@
 using LibraryManager.Models;
+using System.Windows.Input;
 
 namespace LibraryManager.Controls;
 
@@ -14,6 +15,18 @@ public partial class EditBookView : ContentView
         set => SetValue(BookProperty, value);
     }
 
+    
+    public static readonly BindableProperty NavigateCommandProperty = BindableProperty.Create(nameof(NavigateCommand),
+        typeof(ICommand), typeof(EditBookView),
+        defaultBindingMode: BindingMode.OneTime);
+
+    public ICommand NavigateCommand
+    {
+        get => (ICommand)GetValue(NavigateCommandProperty);
+        set => SetValue(NavigateCommandProperty, value);
+    }
+    
+    
     public EditBookView()
     {
         InitializeComponent();

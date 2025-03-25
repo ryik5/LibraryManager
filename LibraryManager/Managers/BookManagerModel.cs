@@ -59,6 +59,12 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
                 var result = await TryLoadContentToBookTask(book);
                 break;
             }
+            case Constants.LOAD_COVER:
+            {
+                book = selectedBooks[0];
+                var result = await TryLoadCoverBookTask(book);
+                break;
+            }
             case Constants.SAVE_CONTENT:
             {
                 await TrySaveBookContentTask(selectedBooks[0]);
@@ -380,54 +386,97 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
         var settings = new SettingsViewModel();
         var length = settings.Book_MaxContentLength;
         var fileResult = await TryPickFileUpTask("Select book content", null);
-        var readContentTask = await ReadContentFromDiskTask(fileResult, maxContentLength: length);
-        if (readContentTask.IsSuccess)
-        {
-            book.Content = readContentTask.MediaData;
-            return true;
-        }
+        var readContentTask = await ReadContentFromDiskTask(book,fileResult, maxContentLength: length);
 
-        return false;
+        return readContentTask.IsSuccess;
     }
-
-    private async Task<ResultLoading> ReadContentFromDiskTask(FileResult fileResult, long maxContentLength)
+    
+   private async Task<ResultBook> ReadContentFromDiskTask(Book book,FileResult fileResult, long maxContentLength)
     {
         var fileInfo = new FileInfo(fileResult.FileName);
-        var media = new MediaData
+        if (book.Content is null)
         {
-            Name = fileInfo.Name,
-            OriginalPath = fileResult.FullPath,
-            Ext = fileInfo.Extension,
-            IsContentStoredSeparately = true,
-            IsLoaded = false
-        };
+            book.Content = new MediaData
+            {
+                Name = fileInfo.Name,
+                OriginalPath = fileResult.FullPath,
+                Ext = fileInfo.Extension,
+                IsContentStoredSeparately = true,
+                IsLoaded = false
+            };
+        }
+        else
+        {
+            book.Content.Name= fileInfo.Name;
+            book.Content.OriginalPath= fileResult.FullPath;
+            book.Content.Ext= fileInfo.Extension;
+            book.Content.IsContentStoredSeparately= true;
+            book.Content.IsLoaded= false;
+        }
+
         try
         {
             var stream = await fileResult.OpenReadAsync();
             if (stream.Length < maxContentLength)
             {
-                // var image = ImageSource.FromStream(() => stream);
-                media.ObjectByteArray = await ConvertStreamToByteArray(stream);
-                media.IsLoaded = true;
-                media.IsContentStoredSeparately = false;
+                 book.Content.ObjectByteArray = await ConvertStreamToByteArray(stream);
+                book.Content.IsLoaded = true;
+                book.Content.IsContentStoredSeparately = false;
             }
             else
             {
-                media.IsLoaded = true;
-                media.IsContentStoredSeparately = true;
+                book.Content.IsLoaded = true;
+                book.Content.IsContentStoredSeparately = true;
             }
 
-            return new ResultLoading() { MediaData = media, IsSuccess = true };
+            return new ResultBook { Book = book, IsSuccess = true };
         }
         catch
         {
-            media.ObjectByteArray = null;
+            book.Content.ObjectByteArray = null;
         }
 
 
-        return new ResultLoading() { MediaData = null, IsSuccess = false };
+        return new ResultBook { Book = book, IsSuccess = false };
     }
 
+     
+    private async Task<bool> TryLoadCoverBookTask(Book book)
+    {
+        var settings = new SettingsViewModel();
+        
+        // TODO : add parameter for a book cover length
+       var length = 10_000_000;  // settings.Book_MaxContentLength;
+        var fileResult = await TryPickFileUpTask("Load book cover",new []{"jpg","png", "jpeg", "gif", "bmp", "tiff", ""});
+        var readContentTask = await LoadDataFromDiskTask(book,fileResult, maxContentLength: length);
+
+        return readContentTask.IsSuccess;
+    }
+
+    private async Task<ResultBook> LoadDataFromDiskTask(Book? book, FileResult fileResult, long maxContentLength)
+    {
+        book.Content ??= new MediaData();
+        var result = false;
+        var oldCover = book.Content.BookCoverByteArray;
+        try
+        {
+            var stream = await fileResult.OpenReadAsync();
+            if (stream.Length < maxContentLength)
+            {
+                book.Content.BookCoverByteArray = await ConvertStreamToByteArray(stream);
+                result = true;
+            }
+        }
+        catch
+        {
+            book.Content.BookCoverByteArray = oldCover;
+            result=false;
+        }
+
+        return new ResultBook { Book = book, IsSuccess = result };
+    }
+
+ 
     private Task<byte[]> ConvertStreamToByteArray(Stream input)
     {
         byte[] buffer = new byte[16 * 1024];

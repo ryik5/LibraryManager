@@ -151,7 +151,7 @@ public class Library : AbstractBindableModel, ILibrary, IXmlSerializable
                         break;
                     case nameof(BookList):
                         BookList = new ObservableCollection<Book>();
-                        while (reader.Name == "Book" || reader.Name == nameof(BookList))
+                        while (reader.Name == "Book" || reader.Name == nameof(BookList)||!reader.EOF)
                         {
                             var book = new Book() { Author = "", Title = "", TotalPages = 0, Id = 0 };
                             book.ReadXml(reader);
