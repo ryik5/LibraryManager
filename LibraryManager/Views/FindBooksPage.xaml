@@ -64,6 +64,7 @@
                     <Entry Text="{Binding SearchText}"
                            IsEnabled="{Binding CanOperateWithBooks, Mode=OneWay}"
                            Placeholder="Input word to seek"
+                           ToolTipProperties.Text="Input a part of the word to seek"
                            Margin="10,0,10,0"
                            FontSize="18"
                            MinimumWidthRequest="150" />
@@ -77,6 +78,7 @@
 
                     <control:TextCheckBox MinimumWidthRequest="100"
                                           IsEnabled="{Binding CanOperateWithBooks, Mode=OneWay}"
+                                          ToolTipProperties.Text="Check to search on fly"
                                           VerticalOptions="Center"
                                           Margin="10,0,10,0"
                                           IsChecked="{Binding SearchOnFly, Mode=TwoWay}"

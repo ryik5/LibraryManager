@@ -8,22 +8,23 @@
 
    
     <!--Doesn't work the proper way-->
-    <Grid HorizontalOptions="Fill" ColumnDefinitions="150,500,70,110,70,100,100,100,Auto">
+    <Grid ColumnDefinitions="150,500,70,110,70,150,100,180,300" Padding="5">
         <Grid.Resources>
             <Style TargetType="Label">
                 <Setter Property="Padding" Value="5"/>
+                <Setter Property="LineBreakMode" Value="MiddleTruncation"/>
             </Style>
         </Grid.Resources>
-        <Label Grid.Column="0" FontSize="18" Text="{Binding Author}" FontAttributes="Bold" LineBreakMode="TailTruncation"/>
-        <Label Grid.Column="1" FontSize="18" Text="{Binding Title}" LineBreakMode="TailTruncation"/>
-        <Label Grid.Column="2" FontSize="18" Text="{Binding Year}" LineBreakMode="TailTruncation" HorizontalTextAlignment="Center"/>
-        <Label Grid.Column="3" FontSize="18" Text="{Binding Genre}" LineBreakMode="TailTruncation" HorizontalTextAlignment="Center"/>
-        <Label Grid.Column="4" FontSize="18" Text="{Binding TotalPages}" LineBreakMode="TailTruncation" HorizontalTextAlignment="Center"/>
-        <Label Grid.Column="5" FontSize="18" Text="{Binding Description}" LineBreakMode="TailTruncation"/>
-        <Label Grid.Column="6" FontSize="18" Text="{Binding ISBN}" LineBreakMode="TailTruncation" HorizontalTextAlignment="Center"/>
-        <Label Grid.Column="7" FontSize="18" Text="{Binding Content.Name}" 
-               ToolTipProperties.Text="{Binding Content.OriginalPath, Mode=OneWay}" LineBreakMode="TailTruncation"/>
-        <Label Grid.Column="8" FontSize="18" Text="{Binding Content.IsContentStoredSeparately}" LineBreakMode="TailTruncation"/>
+        <Label Grid.Column="0" FontSize="18" Text="{Binding Author}" FontAttributes="Bold"/>
+        <Label Grid.Column="1" FontSize="18" Text="{Binding Title}"/>
+        <Label Grid.Column="2" FontSize="18" Text="{Binding Year}" HorizontalTextAlignment="Center"/>
+        <Label Grid.Column="3" FontSize="18" Text="{Binding Genre}" HorizontalTextAlignment="Center"/>
+        <Label Grid.Column="4" FontSize="18" Text="{Binding TotalPages}" HorizontalTextAlignment="Center"/>
+        <Label Grid.Column="5" FontSize="18" Text="{Binding ISBN}" HorizontalTextAlignment="Center"/>
+        <Label Grid.Column="6" FontSize="18" Text="{Binding Content.Name}" 
+               ToolTipProperties.Text="{Binding Content.OriginalPath, Mode=OneWay}"/>
+        <Label Grid.Column="7" FontSize="18" Text="{Binding Content.IsContentStoredSeparately}" HorizontalTextAlignment="Center"/>
+        <Label Grid.Column="8" FontSize="18" Text="{Binding Description}"/>
     </Grid>
 
 </ContentView>

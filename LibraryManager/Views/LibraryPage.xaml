@@ -11,7 +11,8 @@
             <!--<MenuFlyoutSubItem Text="Library">-->
             <MenuFlyoutItem Text="Create Library"
                             Command="{Binding NavigateCommand}"
-                            CommandParameter="Create a new library" />
+                            CommandParameter="Create a new library"
+                            ToolTipProperties.Text="Click to Create a new library" />
             <MenuFlyoutItem Text="Load Library"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Load the library" />

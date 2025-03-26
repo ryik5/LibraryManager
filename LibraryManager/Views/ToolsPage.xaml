@@ -47,6 +47,7 @@
 
             <!-- Menu -->
             <control:ThreeButtonsPanel Grid.Row="0" HeightRequest="35"
+                                       ToolTipProperties.Text="Select a Page to navigate"
                                        Margin="20,20,0,20"
                                        BindingContext="{Binding}"
                                        HorizontalOptions="Start"

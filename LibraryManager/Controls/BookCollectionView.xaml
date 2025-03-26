@@ -7,10 +7,13 @@
     <ContentView.ControlTemplate>
         <ControlTemplate>
             
+            <Border>
             <CollectionView x:Name="BooksCollectionView"
                             ItemsSource="{Binding Source={RelativeSource TemplatedParent}, Path=BookCollection}"
                             SelectionMode="Multiple"
                             SelectionChanged="OnCollectionViewSelectionChanged"
+                            ItemsUpdatingScrollMode="KeepLastItemInView"
+                            HorizontalScrollBarVisibility="Always"
                             SelectionChangedCommand="{Binding Source={RelativeSource TemplatedParent}, Path=SelectionInBookCollectionChangedCommand}"
                             SelectionChangedCommandParameter="{Binding Path=SelectedItems, Source={RelativeSource Self}}"
                             ItemSizingStrategy="MeasureAllItems"
@@ -18,7 +21,7 @@
                 
                 <CollectionView.Header>
                     <!--Doesn't work the proper way-->
-                    <Grid HorizontalOptions="Fill" ColumnDefinitions="150,500,70,110,70,150,100,180,Auto"
+                    <Grid ColumnDefinitions="150,500,70,110,70,150,100,180,300"
                           Background="{StaticResource Senary}" Padding="5">
                         <Grid.Resources>
                             <Style TargetType="Label">
@@ -33,12 +36,16 @@
                         <Label Grid.Column="2" FontSize="18" Text="Year" />
                         <Label Grid.Column="3" FontSize="18" Text="Genre" />
                         <Label Grid.Column="4" FontSize="18" Text="Pages" />
-                        <Label Grid.Column="5" FontSize="18" Text="Description" />
-                        <Label Grid.Column="6" FontSize="18" Text="ISBN" />
-                        <Label Grid.Column="7" FontSize="18" Text="File Name" HorizontalTextAlignment="Start" />
-                        <Label Grid.Column="8" FontSize="18" Text="StoredSeparately" />
+                        <Label Grid.Column="5" FontSize="18" Text="ISBN" />
+                        <Label Grid.Column="6" FontSize="18" Text="File Name" HorizontalTextAlignment="Start" />
+                        <Label Grid.Column="7" FontSize="18" Text="Out of Library" />
+                        <Label Grid.Column="8" FontSize="18" Text="Description"  HorizontalTextAlignment="Start"/>
                     </Grid>
                 </CollectionView.Header>
+                
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical" HorizontalItemSpacing="50" />
+                </CollectionView.ItemsLayout>
                 
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
@@ -68,7 +75,8 @@
                 </CollectionView.ItemTemplate>
                 
             </CollectionView>
-            
+            </Border>
+
         </ControlTemplate>
     </ContentView.ControlTemplate>
 </ContentView>
