@@ -12,6 +12,8 @@
                             ItemsSource="{Binding Source={RelativeSource TemplatedParent}, Path=BookCollection}"
                             SelectedItems="{Binding Source={RelativeSource TemplatedParent}, Path=SelectedBooks}"
                             WidthRequest="{Binding Source={RelativeSource TemplatedParent}, Path=Width,Mode=OneWay}"
+                            SelectionChangedCommand="{Binding Source={RelativeSource TemplatedParent}, Path=NavigateCommand,Mode=OneWay}"
+                            SelectionChangedCommandParameter="SelectionChanged"
                             SelectionMode="Multiple"
                             HorizontalScrollBarVisibility="Never"
                             VerticalScrollBarVisibility="Never"

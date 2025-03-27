@@ -4,11 +4,10 @@ using LibraryManager.Models;
 using LibraryManager.Views;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Windows.Input;
 
 namespace LibraryManager.ViewModels;
 
-public class FindBooksViewModel : AbstractViewModel, IRefreshable
+public class FindBooksViewModel : AbstractBookViewModel, IRefreshable
 {
     public FindBooksViewModel(ILibrary library, SettingsViewModel settings, StatusBarViewModel statusBar)
     {
@@ -28,28 +27,15 @@ public class FindBooksViewModel : AbstractViewModel, IRefreshable
 
         CanOperateWithBooks = ValidLibrary();
         CanEditBook = false;
+        OK = Constants.SAVE_CHANGES;
     }
 
 
     #region Public Properties
-    public ILibrary Library { get; set; }
-
     public ObservableCollection<Book> FoundBookList
     {
         get => _foundBookList;
         set => SetProperty(ref _foundBookList, value);
-    }
-
-    public ObservableCollection<object> SelectedBooks
-    {
-        get => _selectedobjects;
-        set => SetProperty(ref _selectedobjects, value);
-    }
-
-    public Book Book
-    {
-        get => _book;
-        set => SetProperty(ref _book, value);
     }
 
     /// <summary>
@@ -127,10 +113,6 @@ public class FindBooksViewModel : AbstractViewModel, IRefreshable
     }
 
     #region CommandParameters
-    public string OK => Constants.SAVE_CHANGES;
-
-    public string Cancel => Constants.CANCEL;
-
     // TODO : 
     public string ContentState
     {
@@ -177,7 +159,7 @@ public class FindBooksViewModel : AbstractViewModel, IRefreshable
                 {
                     if (!ValidLibrary())
                     {
-                        RefreshControlsOnAppearing();
+                        await RefreshControlsOnAppearing();
                         return;
                     }
 
@@ -196,7 +178,7 @@ public class FindBooksViewModel : AbstractViewModel, IRefreshable
                 {
                     if (Book.IsValid())
                     {
-                        RunInMainThread(() => { SelectFirstFoundBook()?.Set(Book); });
+                        await RunInMainThreadAsync(() => { SelectFirstFoundBook()?.Set(Book); });
                     }
 
                     IsBooksCollectionViewVisible = true;
@@ -210,11 +192,11 @@ public class FindBooksViewModel : AbstractViewModel, IRefreshable
                 {
                     if (!ValidSelectedBooks())
                     {
-                        RefreshControlsOnAppearing();
+                        await RefreshControlsOnAppearing();
                         return;
                     }
 
-                    RunInMainThread(() => Book = (Book)SelectFirstFoundBook().Clone());
+                    await RunInMainThreadAsync(() => Book = (Book)SelectFirstFoundBook().Clone());
 
                     IsBooksCollectionViewVisible = false;
                     IsEditBookViewVisible = true;
@@ -226,7 +208,7 @@ public class FindBooksViewModel : AbstractViewModel, IRefreshable
                 {
                     RunInMainThread(() => _selectedBooks = GetSelectedBooks());
                     // Performing actions by the BooksManager
-                    await _bookManageable.RunCommand(commandParameter, _selectedBooks);
+                    _bookManageable.RunCommand(commandParameter, _selectedBooks).ConfigureAwait(false);
 
                     RunInMainThread(() =>
                         {
@@ -252,7 +234,7 @@ public class FindBooksViewModel : AbstractViewModel, IRefreshable
                 default: //jobs perform without creating views
                 {
                     // Performing actions by the BooksManager
-                    RunInMainThread(() => _selectedBooks = GetSelectedBooks());
+                    await RunInMainThreadAsync(() => _selectedBooks = GetSelectedBooks());
                     await _bookManageable.RunCommand(commandParameter, _selectedBooks);
 
                     break;
@@ -264,14 +246,14 @@ public class FindBooksViewModel : AbstractViewModel, IRefreshable
             await ShowNavigationErrorInDebug(commandParameter, nameof(FindBooksViewModel));
         }
 
-        RunInMainThread(() => RaisePropertyChanged(nameof(Library)));
+        await RunInMainThreadAsync(() => RaisePropertyChanged(nameof(Library)));
     }
 
 
-    public void RefreshControlsOnAppearing()
+    public async Task RefreshControlsOnAppearing()
     {
         CanOperateWithBooks = ValidLibrary();
-        SelectedBooks?.Clear();
+        await RunInMainThreadAsync(() => SelectedBooks.Clear());
         CanEditBook = false;
         RaisePropertyChanged(nameof(Library));
         RaisePropertyChanged(nameof(CanOperateWithBooks));
@@ -280,7 +262,7 @@ public class FindBooksViewModel : AbstractViewModel, IRefreshable
 
     public async Task RefreshControlsOnDisappearing()
     {
-        SelectedBooks?.Clear();
+        await RunInMainThreadAsync(() => SelectedBooks.Clear());
         Book = null;
         CanEditBook = false;
     }
@@ -288,7 +270,7 @@ public class FindBooksViewModel : AbstractViewModel, IRefreshable
 
 
     #region Private methods
-    private bool ValidSelectedBooks() => NotZero(GetSelectedBooks()?.Count);
+    private bool ValidSelectedBooks() => NotZero(SelectedBooks?.Count);
 
     private bool ValidLibrary() => NotZero(Library?.Id);
 
@@ -318,7 +300,7 @@ public class FindBooksViewModel : AbstractViewModel, IRefreshable
 
     private void Handle_TotalBooksChanged(object? sender, TotalBooksEventArgs e)
     {
-        FoundBookList.Clear();
+        // FoundBookList.Clear();
         CanOperateWithBooks = ValidLibrary();
     }
 
@@ -335,7 +317,7 @@ public class FindBooksViewModel : AbstractViewModel, IRefreshable
         ;
     }
 
-    private Book? SelectFirstFoundBook() => 0 < SelectedBooks.Count ? GetSelectedBooks()[0] : null;
+    private Book? SelectFirstFoundBook() => 0 < SelectedBooks.Count ? SelectedBooks[0] as Book : null;
 
 
     private Task UpdateButtonContentState(bool isContentLoaded)
@@ -345,15 +327,13 @@ public class FindBooksViewModel : AbstractViewModel, IRefreshable
         return Task.CompletedTask;
     }
 
-    private IList<Book> GetSelectedBooks() => SelectedBooks?.Select(b => b as Book)?.ToList();
+    private IList<Book> GetSelectedBooks() => SelectedBooks.Select(b => b as Book)?.ToList();
     #endregion
 
 
     #region Private fields
     private ObservableCollection<Book> _foundBookList = new();
     private IList<Book> _selectedBooks = new List<Book>();
-    private ObservableCollection<object> _selectedobjects = new ObservableCollection<object>();
-    private Book _book;
     private readonly BookManagerModel _bookManageable;
     private string _searchText;
     private bool _searchOnFly;

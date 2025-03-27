@@ -14,19 +14,18 @@ public partial class LibraryPage : ContentPage
     /// <summary>
     /// To ensure the BindingContext is bound correctly
     /// </summary>
-    protected override void OnAppearing()
+    protected async override void OnAppearing()
     {
         base.OnAppearing();
 
         // Ensure BindingContext is assigned only if not already set
         BindingContext ??= App.Services.GetService<LibraryViewModel>();
- 
         if (BindingContext is IRefreshable refresher)
         {
-            refresher.RefreshControlsOnAppearing();
+            await refresher.RefreshControlsOnAppearing();
         }
     }
-    
+
     /// <summary>
     /// To ensure the BindingContext is cleared correctly
     /// </summary>

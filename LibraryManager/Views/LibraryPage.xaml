@@ -99,7 +99,6 @@
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Close the current library"
                             IsEnabled="{Binding CanOperateWithLibrary}" />
-
                 </StackLayout>
 
                 <!-- View -->

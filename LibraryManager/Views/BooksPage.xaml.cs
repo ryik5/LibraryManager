@@ -14,14 +14,15 @@ public partial class BooksPage : ContentPage
     /// <summary>
     /// To ensure the BindingContext is bound correctly
     /// </summary>
-    protected override void OnAppearing()
+    protected async override void OnAppearing()
     {
         base.OnAppearing();
         // Avoid assigning a new instance unnecessarily
         BindingContext ??= App.Services.GetService<BooksViewModel>();
+        BooksCollectionView.BindingContext ??= App.Services.GetService<BooksViewModel>();
         if (BindingContext is IRefreshable refresher)
         {
-            refresher.RefreshControlsOnAppearing();
+            await refresher.RefreshControlsOnAppearing();
         }
     }
 

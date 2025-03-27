@@ -46,7 +46,7 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
                 {
                     foreach (var bookToDelete in selectedBooks)
                     {
-                        TryRemoveBook(bookToDelete);
+                        TryRemoveBook(bookToDelete).ConfigureAwait(false);
                     }
                 }
 
@@ -166,7 +166,10 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
     /// </summary>
     /// <param name="book">The book to remove.</param>
     /// <returns>True if the book was successfully removed; otherwise, false.</returns>
-    public bool TryRemoveBook(Book book) => RunInMainThread(() => Library.BookList.RemoveItem(book));
+    public async Task TryRemoveBook(Book book) =>await RunInMainThreadAsync(() =>
+    {
+        try { Library.BookList.RemoveItem(book); } catch  {}
+    });
 
     /// <summary>
     /// Finds books in the library by a specified book element.

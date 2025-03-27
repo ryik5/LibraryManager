@@ -14,7 +14,7 @@ public partial class FindBooksPage : ContentPage
     /// <summary>
     /// To ensure the BindingContext is bound correctly
     /// </summary>
-    protected override void OnAppearing()
+    protected async override void OnAppearing()
     {
         base.OnAppearing();
 
@@ -23,7 +23,7 @@ public partial class FindBooksPage : ContentPage
         BooksCollectionView.BindingContext ??= App.Services.GetService<FindBooksViewModel>();
         if (BindingContext is IRefreshable refresher)
         {
-            refresher.RefreshControlsOnAppearing();
+            await refresher.RefreshControlsOnAppearing();
         }
     }
 

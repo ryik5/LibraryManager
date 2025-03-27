@@ -33,7 +33,7 @@ public interface IBookManageable
     /// </summary>
     /// <param name="book">The book to remove.</param>
     /// <returns>true if the book was successfully removed; otherwise, false.</returns>
-    bool TryRemoveBook(Book book);
+    Task TryRemoveBook(Book book);
 
     /// <summary>
     /// Loads a book from the specified file path.

@@ -3,12 +3,11 @@ using System.Diagnostics;
 using LibraryManager.Models;
 using LibraryManager.Utils;
 using LibraryManager.Views;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
 namespace LibraryManager.ViewModels;
 
-public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
+public class BooksViewModel : AbstractBookViewModel, IDisposable, IRefreshable
 {
     public BooksViewModel(ILibrary library, SettingsViewModel settings, StatusBarViewModel statusBar)
     {
@@ -30,24 +29,6 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
 
 
     #region Public properties
-    public ILibrary Library
-    {
-        get => _library;
-        set => SetProperty(ref _library, value);
-    }
-
-    public ObservableCollection<object> SelectedBooks
-    {
-        get => _selectedObjects;
-        set => SetProperty(ref _selectedObjects, value);
-    }
-
-    public Book Book
-    {
-        get => _book;
-        set => SetProperty(ref _book, value);
-    }
-
     public string ContentState
     {
         get => _contentState;
@@ -98,17 +79,6 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
     #endregion
 
 
-    #region CommandParameters
-    public string OK
-    {
-        get => _ok;
-        set => SetProperty(ref _ok, value);
-    }
-
-    public string Cancel => Constants.CANCEL;
-    #endregion
-
-
     #region Public Methods
     protected override async Task PerformAction(string? commandParameter)
     {
@@ -130,6 +100,10 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
                     await TryGoToPage(commandParameter);
                     break;
                 }
+                case Constants.SELECTION_CHANGED:
+                    CanOperateWithLibrary = ValidLibrary();
+                    CanEditBook = ValidSelectedBooks();
+                    break;
                 case Constants.CANCEL:
                 {
                     IsBooksCollectionViewVisible = true;
@@ -161,7 +135,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
                 {
                     if (Book.IsValid())
                     {
-                        RunInMainThread(() => { SelectFirstFoundBook()?.Set(Book); });
+                        await RunInMainThreadAsync(() => { SelectFirstFoundBook()?.Set(Book); });
                     }
 
                     IsBooksCollectionViewVisible = true;
@@ -174,11 +148,11 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
                 {
                     if (!ValidSelectedBooks())
                     {
-                        RefreshControlsOnAppearing();
+                        await RefreshControlsOnAppearing();
                         return;
                     }
 
-                    RunInMainThread(() => Book = (Book)SelectFirstFoundBook().Clone());
+                    await RunInMainThreadAsync(() => Book = (Book)SelectFirstFoundBook().Clone());
 
                     OK = Constants.SAVE_CHANGES;
 
@@ -205,7 +179,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
                 {
                     if (!ValidSelectedBooks())
                     {
-                        RefreshControlsOnAppearing();
+                        await RefreshControlsOnAppearing();
                         return;
                     }
 
@@ -213,7 +187,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
                     var customDialog = await ShowCustomDialogPage(Constants.EXPORT_BOOK,
                         Constants.INPUT_NAME, true);
 
-                    RunInMainThread(() => Book = SelectFirstFoundBook());
+                    await RunInMainThreadAsync(() => Book = SelectFirstFoundBook());
 
                     var bookName = customDialog.IsOk && !string.IsNullOrEmpty(customDialog.InputString)
                         ? customDialog.InputString
@@ -233,7 +207,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
                 default: //jobs perform without creating views
                 {
                     // Performing actions at the BooksManager
-                    RunInMainThread(() => _selectedBooks = GetSelectedBooks());
+                    await RunInMainThreadAsync(() => _selectedBooks = GetSelectedBooks());
                     await _bookManageable.RunCommand(commandParameter, _selectedBooks);
                     break;
                 }
@@ -245,7 +219,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
         }
 
         await UpdateButtonContentState(Book.Content?.IsLoaded ?? false);
-        RunInMainThread(() =>
+        await RunInMainThreadAsync(() =>
             {
                 RaisePropertyChanged(nameof(Library));
                 RaisePropertyChanged(nameof(Library.BookList));
@@ -254,19 +228,17 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
         );
     }
 
-    public void RefreshControlsOnAppearing()
+    public async Task RefreshControlsOnAppearing()
     {
-        SelectedBooks?.Clear();
+        await RunInMainThreadAsync(() => SelectedBooks.Clear());
         Book = null;
         CanOperateWithLibrary = ValidLibrary();
         CanEditBook = ValidSelectedBooks();
-        RaisePropertyChanged(nameof(CanOperateWithLibrary));
-        RaisePropertyChanged(nameof(CanEditBook));
     }
 
     public async Task RefreshControlsOnDisappearing()
     {
-        SelectedBooks?.Clear();
+        await RunInMainThreadAsync(() => SelectedBooks.Clear());
         Book = null;
         CanEditBook = false;
         RaisePropertyChanged(nameof(CanOperateWithLibrary));
@@ -365,7 +337,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
 
         return true;
     }
-    
+
     private Task UpdateButtonContentState(bool isContentLoaded)
     {
         ContentState = isContentLoaded ? Constants.SAVE_CONTENT : Constants.LOAD_CONTENT;
@@ -379,17 +351,13 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
 
     #region Private fields
     private readonly IBookManageable _bookManageable;
-    private ILibrary _library;
-    private ObservableCollection<object> _selectedObjects = new ObservableCollection<object>();
     private IList<Book> _selectedBooks;
-    private Book _book;
     private SettingsViewModel _settings;
     private bool _isBooksCollectionViewVisible;
     private bool _isEditBookViewVisible;
     private bool _disposed; // Safeguard for multiple calls to Dispose.
     private string _contentState;
     private bool _canEditBook;
-    private string _ok;
     private bool _canOperateWithLibrary;
     private string _clearingState;
     private bool _canClearContent;

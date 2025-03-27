@@ -151,7 +151,7 @@ public class LibraryViewModel : AbstractViewModel, IDisposable, IRefreshable
         }
     }
 
-    public void RefreshControlsOnAppearing()
+    public async Task RefreshControlsOnAppearing()
     {
         CanOperateWithLibrary = ValidLibrary();
         RaisePropertyChanged(nameof(Library));
