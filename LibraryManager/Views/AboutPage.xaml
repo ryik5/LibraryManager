@@ -5,14 +5,14 @@
              xmlns:viewmodel="clr-namespace:LibraryManager.ViewModels"
              x:Class="LibraryManager.Views.AboutPage"
              x:DataType="viewmodel:AboutViewModel">
-    
+
     <ContentPage.MenuBarItems>
         <MenuBarItem Text="Navigate">
 
             <MenuFlyoutItem Text="Library"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="LibraryPage" />
-            
+
             <MenuFlyoutItem Text="Books"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="BooksPage" />
@@ -24,7 +24,7 @@
             <MenuFlyoutItem Text="Tools"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="ToolsPage" />
-            
+
             <MenuFlyoutSeparator />
         </MenuBarItem>
     </ContentPage.MenuBarItems>
@@ -91,14 +91,13 @@
 
                     <Label Text="For more information and to access the source code, visit: "
                            FontSize="20" />
-                    <Button Text="GitHub Repository"
+                    <Button Text="GitHub"
+                            HorizontalOptions="Center"
                             FontSize="18"
-                            TextColor="{StaticResource Primary}"
-                            BackgroundColor="Transparent"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="https://github.com/ryik5/LibraryManager"
-                            Padding="0" />
-
+                            Padding="5" BorderWidth="1">
+                    </Button>
 
                     <Image Source="qr.png"
                            WidthRequest="100"

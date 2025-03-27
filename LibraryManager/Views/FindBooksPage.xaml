@@ -107,14 +107,18 @@
                 </StackLayout>
 
                 <!-- Displays Found Books-->
-                <control:BookCollectionView
-                    Grid.Row="1"
-                    x:Name="BooksCollectionView"
-                    BookCollection="{Binding FoundBookList, Mode=OneWay}"
-                    SelectionInBookCollectionChangedCommand="{Binding SelectionChangedCommand, Mode=OneWay}"
-                    IsVisible="{Binding IsBooksCollectionViewVisible, Mode=OneWay}"
-                    BindingContext="{Binding}"
-                    Margin="10,10,5,30" />
+                <ScrollView Grid.Row="1"
+                            IsVisible="{Binding IsBooksCollectionViewVisible, Mode=OneWay}"
+                            HorizontalScrollBarVisibility="Always"
+                            VerticalScrollBarVisibility="Always">
+                    <control:BookCollectionView
+                        HorizontalOptions="Start"
+                        x:Name="BooksCollectionView"
+                        BookCollection="{Binding FoundBookList,Mode=OneWay}"
+                        SelectedBooks="{Binding SelectedBooks, Mode=TwoWay}"
+                        NavigateCommand="{Binding NavigateCommand, Mode=OneTime}"
+                        Margin="10,10,5,20" />
+                </ScrollView>
 
                 <!-- Add/Edit Book View -->
                 <control:EditBookView

@@ -3,8 +3,8 @@ using System.Diagnostics;
 using LibraryManager.Models;
 using LibraryManager.Utils;
 using LibraryManager.Views;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Windows.Input;
 
 namespace LibraryManager.ViewModels;
 
@@ -19,14 +19,11 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
         Library.LibraryIdChanged += Handle_LibraryIdChanged;
         Library.BookList.CollectionChanged += Handle_BookListCollectionChanged;
         Library.TotalBooksChanged += Handle_TotalBooksChanged;
-        SelectionChangedCommand = new Command<IList<object>>(Handle_OnCollectionViewSelectionChanged);
         IsBooksCollectionViewVisible = true;
         IsEditBookViewVisible = false;
         _bookManageable = new BookManagerModel(Library);
         ContentState = Constants.LOAD_CONTENT;
         ClearingState = Constants.CLEAR_CONTENT;
-        SelectedBooks?.Clear();
-        Book = null;
         CanOperateWithLibrary = ValidLibrary();
         CanEditBook = ValidSelectedBooks();
     }
@@ -39,21 +36,18 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
         set => SetProperty(ref _library, value);
     }
 
-    public IList<Book> SelectedBooks
+    public ObservableCollection<object> SelectedBooks
     {
-        get => _selectedBooks;
-        set => SetProperty(ref _selectedBooks, value);
+        get => _selectedObjects;
+        set => SetProperty(ref _selectedObjects, value);
     }
-
-    // TODO : Check. It should be ObservableCollection<object>   - !!! 'object'
-    public ICommand SelectionChangedCommand { get; }
 
     public Book Book
     {
         get => _book;
         set => SetProperty(ref _book, value);
     }
-    
+
     public string ContentState
     {
         get => _contentState;
@@ -101,8 +95,6 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
         get => _statusBar;
         set => SetProperty(ref _statusBar, value);
     }
-
-    public event EventHandler<TotalBooksEventArgs>? TotalBooksChanged;
     #endregion
 
 
@@ -176,6 +168,8 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
                     IsEditBookViewVisible = false;
                     break;
                 }
+//                case Constants.CLICK: // TODO : Handle it
+                case Constants.DOUBLECLICK:
                 case Constants.EDIT_BOOK:
                 {
                     if (!ValidSelectedBooks())
@@ -193,6 +187,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
 
                     break;
                 }
+                //TODO : move inside BookManager
                 case Constants.SORT_BOOKS:
                 {
                     if (await MakeSortingList() is { Count: > 0 } props)
@@ -228,6 +223,7 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
 
                     break;
                 }
+                //TODO : move inside BookManager
                 case Constants.LOAD_CONTENT:
                 case Constants.CLEAR_CONTENT:
                 case Constants.SAVE_CONTENT:
@@ -237,7 +233,8 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
                 default: //jobs perform without creating views
                 {
                     // Performing actions at the BooksManager
-                    await _bookManageable.RunCommand(commandParameter, SelectedBooks);
+                    RunInMainThread(() => _selectedBooks = GetSelectedBooks());
+                    await _bookManageable.RunCommand(commandParameter, _selectedBooks);
                     break;
                 }
             }
@@ -341,22 +338,22 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
     private void Handle_BookListCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         Library.TotalBooks = Library.BookList.Count;
+        SelectedBooks.Clear();
     }
 
     private async void Handle_TotalBooksChanged(object? sender, TotalBooksEventArgs e)
     {
-       await StatusBar.SetTotalBooks(Library.TotalBooks);
+        await StatusBar.SetTotalBooks(Library.TotalBooks);
     }
 
     private Task Handle_SelectedBooks_CollectionChanged(IList<object> list)
     {
-        SelectedBooks?.Clear();
-        SelectedBooks = list?.Select(b => b as Book)?.ToList();
         CanEditBook = ValidSelectedBooks();
         Book = null;
         return Task.CompletedTask;
     }
 
+    private Book? SelectFirstFoundBook() => MoreZero(SelectedBooks?.Count ?? 0) ? GetSelectedBooks()[0] : null;
     private bool ValidSelectedBooks() => MoreZero(SelectedBooks?.Count ?? 0);
 
     private bool ValidLibrary() => MoreZero(Library?.Id ?? 0);
@@ -368,21 +365,22 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
 
         return true;
     }
-
-    private Book? SelectFirstFoundBook() => MoreZero(SelectedBooks?.Count ?? 0) ? SelectedBooks[0] : null;
-
+    
     private Task UpdateButtonContentState(bool isContentLoaded)
     {
         ContentState = isContentLoaded ? Constants.SAVE_CONTENT : Constants.LOAD_CONTENT;
         CanClearContent = isContentLoaded;
         return Task.CompletedTask;
     }
+
+    private IList<Book> GetSelectedBooks() => SelectedBooks?.Select(b => b as Book)?.ToList();
     #endregion
 
 
     #region Private fields
     private readonly IBookManageable _bookManageable;
     private ILibrary _library;
+    private ObservableCollection<object> _selectedObjects = new ObservableCollection<object>();
     private IList<Book> _selectedBooks;
     private Book _book;
     private SettingsViewModel _settings;
@@ -392,12 +390,9 @@ public class BooksViewModel : AbstractViewModel, IDisposable, IRefreshable
     private string _contentState;
     private bool _canEditBook;
     private string _ok;
-    private object _onSelectionObject;
     private bool _canOperateWithLibrary;
-    private string _savingState;
     private string _clearingState;
     private bool _canClearContent;
-    private string _statusInfo;
     private IStatusBar _statusBar;
     #endregion
 }

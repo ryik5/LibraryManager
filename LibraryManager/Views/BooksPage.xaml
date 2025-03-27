@@ -79,13 +79,13 @@
                     <Button Text="Add Book"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Add Book"
-                            IsEnabled="{Binding CanOperateWithLibrary, Mode=OneWay}" 
-                            ToolTipProperties.Text="Add a book to the library"/>
+                            IsEnabled="{Binding CanOperateWithLibrary, Mode=OneWay}"
+                            ToolTipProperties.Text="Add a book to the library" />
                     <Button Text="Demo 'Add Books'"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Demo add books"
                             IsEnabled="{Binding CanOperateWithLibrary, Mode=OneWay}"
-                            ToolTipProperties.Text="Add 10 books with randomly filled fields to the library"/>
+                            ToolTipProperties.Text="Add 10 books with randomly filled fields to the library" />
                     <Button Text="Edit Book"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Edit Book"
@@ -111,14 +111,18 @@
                 </StackLayout>
 
                 <!-- Displays Books-->
-                <control:BookCollectionView
-                    Grid.Row="1"
-                    x:Name="BooksCollectionView"
-                    IsVisible="{Binding IsBooksCollectionViewVisible, Mode=OneWay}"
-                    BookCollection="{Binding Library.BookList,Mode=OneWay}"
-                    SelectionInBookCollectionChangedCommand="{Binding SelectionChangedCommand,Mode=OneWay}"
-                    BindingContext="{Binding}"
-                    Margin="10,10,5,20" />
+                <ScrollView Grid.Row="1"
+                            IsVisible="{Binding IsBooksCollectionViewVisible, Mode=OneWay}"
+                            HorizontalScrollBarVisibility="Always"
+                            VerticalScrollBarVisibility="Always">
+                    <control:BookCollectionView
+                        HorizontalOptions="Start"
+                        x:Name="BooksCollectionView"
+                        BookCollection="{Binding Library.BookList,Mode=OneWay}"
+                        SelectedBooks="{Binding SelectedBooks, Mode=TwoWay}"
+                        NavigateCommand="{Binding NavigateCommand, Mode=OneTime}"
+                        Margin="10,10,5,20" />
+                </ScrollView>
 
                 <!-- Add/Edit Book View -->
                 <control:EditBookView

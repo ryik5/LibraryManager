@@ -19,8 +19,6 @@ public partial class BooksPage : ContentPage
         base.OnAppearing();
         // Avoid assigning a new instance unnecessarily
         BindingContext ??= App.Services.GetService<BooksViewModel>();
-        BooksCollectionView.BindingContext ??= App.Services.GetService<BooksViewModel>();
-
         if (BindingContext is IRefreshable refresher)
         {
             refresher.RefreshControlsOnAppearing();

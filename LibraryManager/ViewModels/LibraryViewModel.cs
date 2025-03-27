@@ -39,15 +39,11 @@ public class LibraryViewModel : AbstractViewModel, IDisposable, IRefreshable
         set => SetProperty(ref _canOperateWithLibrary, value);
     }
 
-    public Binding LibraryControlsView { get; }
-
     public IStatusBar StatusBar
     {
         get => _statusBar;
         set => SetProperty(ref _statusBar, value);
     }
-
-    public event EventHandler<TotalBooksEventArgs> TotalBooksChanged;
     #endregion
 
 

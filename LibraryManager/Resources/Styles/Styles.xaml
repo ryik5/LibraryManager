@@ -24,15 +24,12 @@
     </Style>
 
     <Style TargetType="Button">
-        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Primary}}" />
-        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Tertiary}, Dark={StaticResource White}}" />
-        <Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
         <Setter Property="FontFamily" Value="ManropeExtraLight"/>
         <Setter Property="FontSize" Value="18"/>
         <Setter Property="CornerRadius" Value="8"/>
         <Setter Property="Padding" Value="14,10"/>
-        <Setter Property="MinimumHeightRequest" Value="44"/>
-        <Setter Property="MinimumWidthRequest" Value="44"/>
+        <Setter Property="MinimumHeightRequest" Value="10"/>
+        <Setter Property="MinimumWidthRequest" Value="10"/>
         <Setter Property="BorderWidth" Value="1" />
         <Setter Property="VisualStateManager.VisualStateGroups">
             <VisualStateGroupList>
@@ -47,7 +44,7 @@
                     <VisualState x:Name="Normal">
                               <VisualState.Setters>
                                   <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Tertiary}}" />
-                                  <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Quaternary}, Dark={StaticResource Primary}}" />
+                                  <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Primary}}" />
                                   <Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
                               </VisualState.Setters>
                     </VisualState>
@@ -60,6 +57,8 @@
                     </VisualState>
                     <VisualState x:Name="PointerOver">
                         <VisualState.Setters>
+                            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Primary}}" />
+                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Tertiary}, Dark={StaticResource White}}" />
                             <Setter Property="BorderWidth" Value="2" />
                             <Setter Property="BorderColor"  Value="{AppThemeBinding Light={StaticResource Secondary}, Dark={StaticResource Quinary}}"  />
                         </VisualState.Setters>
