@@ -18,7 +18,7 @@ public static class Constants
     public const string LIBRARY_HOME_FOLDER = "Library's home folder";
     public const string DOUBLECLICK = "DoubleClick";
     public const string CLICK = "Click";
-    
+    public const string SELECTION_CHANGED= "SelectionChanged";
 
     public const string ID = "ID";
     public const string LIBRARY_MANAGER = "LibraryManager";
