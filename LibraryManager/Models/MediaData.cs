@@ -73,7 +73,32 @@ public class MediaData : AbstractBindableModel, IXmlSerializable
 
     public override string ToString()
     {
-        return $"{Name},{OriginalPath},{Ext},{IsContentStoredSeparately},{IsLoaded}";
+        return
+            $"{Name},{OriginalPath},{Ext},{IsContentStoredSeparately},{IsLoaded},{(ObjectByteArray is null ? null : string.Join(",", ObjectByteArray))},{(BookCoverByteArray is null ? null : string.Join(",", BookCoverByteArray))}";
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (obj?.GetType() != GetType())
+            return false;
+
+
+        if (obj is MediaData m)
+            return ToString().Equals(m.ToString());
+
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        unchecked
+        {
+            int hash = 13;
+
+            hash = (hash * 7) + (!ReferenceEquals(null, ToString()) ? ToString().GetHashCode() : 0);
+
+            return hash;
+        }
     }
 
 
@@ -157,7 +182,7 @@ public class MediaData : AbstractBindableModel, IXmlSerializable
                                     {
                                         break;
                                     }
-                                } while (reader.NodeType != XmlNodeType.EndElement&&reader.Read()  );
+                                } while (reader.NodeType != XmlNodeType.EndElement && reader.Read());
 
                                 ms.Position = 0;
                                 BookCoverByteArray = ms.ToArray();

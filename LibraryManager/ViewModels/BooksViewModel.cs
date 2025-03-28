@@ -135,7 +135,11 @@ public class BooksViewModel : AbstractBookViewModel, IDisposable, IRefreshable
                 {
                     if (Book.IsValid())
                     {
-                        await RunInMainThreadAsync(() => { SelectFirstFoundBook()?.Set(Book); });
+                        await RunInMainThreadAsync(() =>
+                        {
+                            var book = Library.BookList.FirstOrDefault(b => b.Id == Book.Id);
+                            book?.Set(Book);
+                        });
                     }
 
                     IsBooksCollectionViewVisible = true;
@@ -152,7 +156,7 @@ public class BooksViewModel : AbstractBookViewModel, IDisposable, IRefreshable
                         return;
                     }
 
-                    await RunInMainThreadAsync(() => Book = (Book)SelectFirstFoundBook().Clone());
+                    await RunInMainThreadAsync(() => Book = SelectFirstFoundBook().Clone());
 
                     OK = Constants.SAVE_CHANGES;
 
@@ -203,6 +207,7 @@ public class BooksViewModel : AbstractBookViewModel, IDisposable, IRefreshable
                 case Constants.SAVE_CONTENT:
                 case Constants.LOAD_COVER:
                     await _bookManageable.RunCommand(commandParameter, new List<Book>() { Book });
+                    RaisePropertyChanged(nameof(Book));
                     break;
                 default: //jobs perform without creating views
                 {
@@ -302,11 +307,6 @@ public class BooksViewModel : AbstractBookViewModel, IDisposable, IRefreshable
         return Task.FromResult(props);
     }
 
-    private async void Handle_OnCollectionViewSelectionChanged(IList<object> list)
-    {
-        await Handle_SelectedBooks_CollectionChanged(list);
-    }
-
     private void Handle_BookListCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         Library.TotalBooks = Library.BookList.Count;
@@ -317,15 +317,8 @@ public class BooksViewModel : AbstractBookViewModel, IDisposable, IRefreshable
     {
         await StatusBar.SetTotalBooks(Library.TotalBooks);
     }
-
-    private Task Handle_SelectedBooks_CollectionChanged(IList<object> list)
-    {
-        CanEditBook = ValidSelectedBooks();
-        Book = null;
-        return Task.CompletedTask;
-    }
-
-    private Book? SelectFirstFoundBook() => MoreZero(SelectedBooks?.Count ?? 0) ? GetSelectedBooks()[0] : null;
+    
+    private Book? SelectFirstFoundBook() => GetSelectedBooks()[0];
     private bool ValidSelectedBooks() => MoreZero(SelectedBooks?.Count ?? 0);
 
     private bool ValidLibrary() => MoreZero(Library?.Id ?? 0);

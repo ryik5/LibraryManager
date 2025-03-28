@@ -6,7 +6,7 @@ using System.Xml.Serialization;
 namespace LibraryManager.Models;
 
 [Serializable]
-public class Book : AbstractBindableModel, ICloneable, IXmlSerializable
+public class Book : AbstractBindableModel, IXmlSerializable
 {
     #region Public Properties
     /// <summary>
@@ -89,7 +89,6 @@ public class Book : AbstractBindableModel, ICloneable, IXmlSerializable
         set => SetProperty(ref _description, value);
     }
 
-
     /// <summary>
     /// Gets or sets the genre of the <see cref="Book"/>.
     /// </summary>
@@ -136,14 +135,16 @@ public class Book : AbstractBindableModel, ICloneable, IXmlSerializable
         Description = book?.Description;
         Genre = book?.Genre;
         ISBN = book?.ISBN;
-        if (book?.Content is null)
+
+        if (Content is null)
         {
-            Content = null;
+            var media = new MediaData();
+            media.Set(book?.Content);
+            Content = media;
         }
         else
         {
-            Content = new();
-            Content.Set(book.Content);
+            Content.Set(book?.Content);
         }
     }
 
@@ -177,11 +178,34 @@ public class Book : AbstractBindableModel, ICloneable, IXmlSerializable
         return $"{Id},{Author},{Title},{Year},{TotalPages},{Description},{Genre},{ISBN},{Content}";
     }
 
+    public override bool Equals(object obj)
+    {
+        if (obj?.GetType() != GetType())
+            return false;
+
+        if (obj is Book b)
+            return ToString().Equals(b.ToString());
+
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        unchecked
+        {
+            int hash = 13;
+
+            hash = (hash * 7) + (!ReferenceEquals(null, ToString()) ? ToString().GetHashCode() : 0);
+
+            return hash;
+        }
+    }
+
     /// <summary>
     /// Creates a deep copy of the current <see cref="Book"/> object.
     /// </summary>
     /// <returns>A new <see cref="Book"/> object that is a copy of the current object.</returns>
-    public object Clone()
+    public Book Clone()
     {
         var content = new MediaData();
         if (Content is null)
@@ -203,7 +227,6 @@ public class Book : AbstractBindableModel, ICloneable, IXmlSerializable
         };
         return clone;
     }
-
 
     public XmlSchema? GetSchema() => throw new NotImplementedException();
 

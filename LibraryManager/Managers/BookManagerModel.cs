@@ -166,9 +166,15 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
     /// </summary>
     /// <param name="book">The book to remove.</param>
     /// <returns>True if the book was successfully removed; otherwise, false.</returns>
-    public async Task TryRemoveBook(Book book) =>await RunInMainThreadAsync(() =>
+    public async Task TryRemoveBook(Book book) => await RunInMainThreadAsync(() =>
     {
-        try { Library.BookList.RemoveItem(book); } catch  {}
+        try
+        {
+            Library.BookList.RemoveItem(book);
+        }
+        catch
+        {
+        }
     });
 
     /// <summary>
@@ -389,12 +395,12 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
         var settings = new SettingsViewModel();
         var length = settings.Book_MaxContentLength;
         var fileResult = await TryPickFileUpTask("Select book content", null);
-        var readContentTask = await ReadContentFromDiskTask(book,fileResult, maxContentLength: length);
+        var readContentTask = await ReadContentFromDiskTask(book, fileResult, maxContentLength: length);
 
         return readContentTask.IsSuccess;
     }
-    
-   private async Task<ResultBook> ReadContentFromDiskTask(Book book,FileResult fileResult, long maxContentLength)
+
+    private async Task<ResultBook> ReadContentFromDiskTask(Book book, FileResult fileResult, long maxContentLength)
     {
         var fileInfo = new FileInfo(fileResult.FileName);
         if (book.Content is null)
@@ -410,11 +416,11 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
         }
         else
         {
-            book.Content.Name= fileInfo.Name;
-            book.Content.OriginalPath= fileResult.FullPath;
-            book.Content.Ext= fileInfo.Extension;
-            book.Content.IsContentStoredSeparately= true;
-            book.Content.IsLoaded= false;
+            book.Content.Name = fileInfo.Name;
+            book.Content.OriginalPath = fileResult.FullPath;
+            book.Content.Ext = fileInfo.Extension;
+            book.Content.IsContentStoredSeparately = true;
+            book.Content.IsLoaded = false;
         }
 
         try
@@ -422,7 +428,7 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
             var stream = await fileResult.OpenReadAsync();
             if (stream.Length < maxContentLength)
             {
-                 book.Content.ObjectByteArray = await ConvertStreamToByteArray(stream);
+                book.Content.ObjectByteArray = await ConvertStreamToByteArray(stream);
                 book.Content.IsLoaded = true;
                 book.Content.IsContentStoredSeparately = false;
             }
@@ -443,15 +449,16 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
         return new ResultBook { Book = book, IsSuccess = false };
     }
 
-     
+
     private async Task<bool> TryLoadCoverBookTask(Book book)
     {
         var settings = new SettingsViewModel();
-        
+
         // TODO : add parameter for a book cover length
-       var length = 10_000_000;  // settings.Book_MaxContentLength;
-        var fileResult = await TryPickFileUpTask("Load book cover",new []{"jpg","png", "jpeg", "gif", "bmp", "tiff", ""});
-        var readContentTask = await LoadDataFromDiskTask(book,fileResult, maxContentLength: length);
+        var length = 10_000_000; // settings.Book_MaxContentLength;
+        var fileResult =
+            await TryPickFileUpTask("Load book cover", new[] { "jpg", "png", "jpeg", "gif", "bmp", "tiff", "" });
+        var readContentTask = await LoadDataFromDiskTask(book, fileResult, maxContentLength: length);
 
         return readContentTask.IsSuccess;
     }
@@ -473,13 +480,13 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
         catch
         {
             book.Content.BookCoverByteArray = oldCover;
-            result=false;
+            result = false;
         }
 
         return new ResultBook { Book = book, IsSuccess = result };
     }
 
- 
+
     private Task<byte[]> ConvertStreamToByteArray(Stream input)
     {
         byte[] buffer = new byte[16 * 1024];
