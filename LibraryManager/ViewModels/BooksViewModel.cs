@@ -23,7 +23,7 @@ public class BooksViewModel : AbstractBookViewModel, IDisposable, IRefreshable
         _bookManageable = new BookManagerModel(Library);
         ContentState = Constants.LOAD_CONTENT;
         ClearingState = Constants.CLEAR_CONTENT;
-        CanOperateWithLibrary = ValidLibrary();
+        CanOperateWithBooks = ValidLibrary();
         CanEditBook = ValidSelectedBooks();
     }
 
@@ -45,36 +45,6 @@ public class BooksViewModel : AbstractBookViewModel, IDisposable, IRefreshable
     {
         get => _canClearContent;
         set => SetProperty(ref _canClearContent, value);
-    }
-
-    public bool IsBooksCollectionViewVisible
-    {
-        get => _isBooksCollectionViewVisible;
-        set => SetProperty(ref _isBooksCollectionViewVisible, value);
-    }
-
-    public bool IsEditBookViewVisible
-    {
-        get => _isEditBookViewVisible;
-        set => SetProperty(ref _isEditBookViewVisible, value);
-    }
-
-    public bool CanEditBook
-    {
-        get => _canEditBook;
-        set => SetProperty(ref _canEditBook, value);
-    }
-
-    public bool CanOperateWithLibrary
-    {
-        get => _canOperateWithLibrary;
-        set => SetProperty(ref _canOperateWithLibrary, value);
-    }
-
-    public IStatusBar StatusBar
-    {
-        get => _statusBar;
-        set => SetProperty(ref _statusBar, value);
     }
     #endregion
 
@@ -101,7 +71,7 @@ public class BooksViewModel : AbstractBookViewModel, IDisposable, IRefreshable
                     break;
                 }
                 case Constants.SELECTION_CHANGED:
-                    CanOperateWithLibrary = ValidLibrary();
+                    CanOperateWithBooks = ValidLibrary();
                     CanEditBook = ValidSelectedBooks();
                     break;
                 case Constants.CANCEL:
@@ -237,7 +207,7 @@ public class BooksViewModel : AbstractBookViewModel, IDisposable, IRefreshable
     {
         await RunInMainThreadAsync(() => SelectedBooks.Clear());
         Book = null;
-        CanOperateWithLibrary = ValidLibrary();
+        CanOperateWithBooks = ValidLibrary();
         CanEditBook = ValidSelectedBooks();
     }
 
@@ -246,7 +216,7 @@ public class BooksViewModel : AbstractBookViewModel, IDisposable, IRefreshable
         await RunInMainThreadAsync(() => SelectedBooks.Clear());
         Book = null;
         CanEditBook = false;
-        RaisePropertyChanged(nameof(CanOperateWithLibrary));
+        RaisePropertyChanged(nameof(CanOperateWithBooks));
         RaisePropertyChanged(nameof(CanEditBook));
     }
 
@@ -283,8 +253,7 @@ public class BooksViewModel : AbstractBookViewModel, IDisposable, IRefreshable
         RefreshControlsOnAppearing();
         Library.TotalBooks = Library.BookList.Count;
     }
-
-
+    
     /// <summary>
     /// Makes sorting property name list.
     /// </summary>
@@ -317,7 +286,7 @@ public class BooksViewModel : AbstractBookViewModel, IDisposable, IRefreshable
     {
         await StatusBar.SetTotalBooks(Library.TotalBooks);
     }
-    
+
     private Book? SelectFirstFoundBook() => GetSelectedBooks()[0];
     private bool ValidSelectedBooks() => MoreZero(SelectedBooks?.Count ?? 0);
 
@@ -346,14 +315,9 @@ public class BooksViewModel : AbstractBookViewModel, IDisposable, IRefreshable
     private readonly IBookManageable _bookManageable;
     private IList<Book> _selectedBooks;
     private SettingsViewModel _settings;
-    private bool _isBooksCollectionViewVisible;
-    private bool _isEditBookViewVisible;
     private bool _disposed; // Safeguard for multiple calls to Dispose.
     private string _contentState;
-    private bool _canEditBook;
-    private bool _canOperateWithLibrary;
     private string _clearingState;
     private bool _canClearContent;
-    private IStatusBar _statusBar;
     #endregion
 }

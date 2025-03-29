@@ -79,12 +79,12 @@
                     <Button Text="Add Book"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Add Book"
-                            IsEnabled="{Binding CanOperateWithLibrary, Mode=OneWay}"
+                            IsEnabled="{Binding CanOperateWithBooks, Mode=OneWay}"
                             ToolTipProperties.Text="Add a book to the library" />
                     <Button Text="Demo 'Add Books'"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Demo add books"
-                            IsEnabled="{Binding CanOperateWithLibrary, Mode=OneWay}"
+                            IsEnabled="{Binding CanOperateWithBooks, Mode=OneWay}"
                             ToolTipProperties.Text="Add 10 books with randomly filled fields to the library" />
                     <Button Text="Edit Book"
                             Command="{Binding NavigateCommand}"
@@ -97,7 +97,7 @@
                     <Button Text="Import Book"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Import a book"
-                            IsEnabled="{Binding CanOperateWithLibrary, Mode=OneWay}" />
+                            IsEnabled="{Binding CanOperateWithBooks, Mode=OneWay}" />
                     <Button Text="Export Book"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Export the selected book"
@@ -106,7 +106,7 @@
                     <Button Text="Sort Library"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Sort Books"
-                            IsEnabled="{Binding CanOperateWithLibrary, Mode=OneWay}" />
+                            IsEnabled="{Binding CanOperateWithBooks, Mode=OneWay}" />
 
                 </StackLayout>
 

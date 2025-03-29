@@ -81,37 +81,9 @@ public class FindBooksViewModel : AbstractBookViewModel, IRefreshable
                 FindBooks();
         }
     }
+    #endregion
 
-    public bool IsBooksCollectionViewVisible
-    {
-        get => _isBooksCollectionViewVisible;
-        set => SetProperty(ref _isBooksCollectionViewVisible, value);
-    }
-
-    public bool IsEditBookViewVisible
-    {
-        get => _isEditBookViewVisible;
-        set => SetProperty(ref _isEditBookViewVisible, value);
-    }
-
-    public bool CanEditBook
-    {
-        get => _canEditBook;
-        set => SetProperty(ref _canEditBook, value);
-    }
-
-    public bool CanOperateWithBooks
-    {
-        get => _canOperateWithBooks;
-        set => SetProperty(ref _canOperateWithBooks, value);
-    }
-
-    public IStatusBar StatusBar
-    {
-        get => _statusBar;
-        set => SetProperty(ref _statusBar, value);
-    }
-
+    
     #region CommandParameters
     // TODO : 
     public string ContentState
@@ -131,7 +103,6 @@ public class FindBooksViewModel : AbstractBookViewModel, IRefreshable
         get => _canClearContent;
         set => SetProperty(ref _canClearContent, value);
     }
-    #endregion
     #endregion
 
 
@@ -248,7 +219,6 @@ public class FindBooksViewModel : AbstractBookViewModel, IRefreshable
 
         await RunInMainThreadAsync(() => RaisePropertyChanged(nameof(Library)));
     }
-
 
     public async Task RefreshControlsOnAppearing()
     {
