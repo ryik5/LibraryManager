@@ -11,7 +11,6 @@ public class BooksViewModel : AbstractBookViewModel, IDisposable, IRefreshable
 {
     public BooksViewModel(ILibrary library, SettingsViewModel settings, StatusBarViewModel statusBar)
     {
-        _settings = settings;
         StatusBar = statusBar;
         Library = library;
 
@@ -20,7 +19,7 @@ public class BooksViewModel : AbstractBookViewModel, IDisposable, IRefreshable
         Library.TotalBooksChanged += Handle_TotalBooksChanged;
         IsBooksCollectionViewVisible = true;
         IsEditBookViewVisible = false;
-        _bookManageable = new BookManagerModel(Library);
+        _bookManageable = new BookManagerModel(Library, settings);
         ContentState = Constants.LOAD_CONTENT;
         ClearingState = Constants.CLEAR_CONTENT;
         CanOperateWithBooks = ValidLibrary();
@@ -135,13 +134,6 @@ public class BooksViewModel : AbstractBookViewModel, IDisposable, IRefreshable
 
                     break;
                 }
-                //TODO : move inside BookManager
-                case Constants.SORT_BOOKS:
-                {
-                    if (await MakeSortingList() is { Count: > 0 } props)
-                        await _bookManageable.SafetySortBooks(props);
-                    break;
-                }
 
                 //TODO : move inside BookManager
                 case Constants.IMPORT_BOOK:
@@ -206,7 +198,6 @@ public class BooksViewModel : AbstractBookViewModel, IDisposable, IRefreshable
     public async Task RefreshControlsOnAppearing()
     {
         await RunInMainThreadAsync(() => SelectedBooks.Clear());
-        Book = null;
         CanOperateWithBooks = ValidLibrary();
         CanEditBook = ValidSelectedBooks();
     }
@@ -214,12 +205,7 @@ public class BooksViewModel : AbstractBookViewModel, IDisposable, IRefreshable
     public async Task RefreshControlsOnDisappearing()
     {
         await RunInMainThreadAsync(() => SelectedBooks.Clear());
-        Book = null;
-        CanEditBook = false;
-        RaisePropertyChanged(nameof(CanOperateWithBooks));
-        RaisePropertyChanged(nameof(CanEditBook));
     }
-
 
     // Dispose method for external calls
     public void Dispose()
@@ -248,33 +234,12 @@ public class BooksViewModel : AbstractBookViewModel, IDisposable, IRefreshable
     #region Private methods
     private void Handle_LibraryIdChanged(object? sender, EventArgs e)
     {
-        SelectedBooks?.Clear();
-        Book = null;
-        RefreshControlsOnAppearing();
         Library.TotalBooks = Library.BookList.Count;
+        SelectedBooks.Clear();
+        CanOperateWithBooks = ValidLibrary();
+        CanEditBook = ValidSelectedBooks();
     }
-    
-    /// <summary>
-    /// Makes sorting property name list.
-    /// </summary>
-    private Task<List<PropertyCustomInfo>> MakeSortingList()
-    {
-        var props = new List<PropertyCustomInfo>();
 
-        MakeBookCutomPropertyList(props, _settings.FirstSortBookProperty, _settings.FirstSortProperty_ByDescend);
-        MakeBookCutomPropertyList(props, _settings.SecondSortBookProperty, _settings.SecondSortProperty_ByDescend);
-        MakeBookCutomPropertyList(props, _settings.ThirdSortBookProperty, _settings.ThirdSortProperty_ByDescend);
-
-        void MakeBookCutomPropertyList(List<PropertyCustomInfo> props, string name, bool byDescend)
-        {
-            var prop = _bookManageable.Library.FindBookPropertyInfo(name);
-            var customProp = new PropertyCustomInfo { PropertyInfo = prop, DescendingOrder = byDescend };
-            if (prop.Name != nameof(Book.None))
-                props.Add(customProp);
-        }
-
-        return Task.FromResult(props);
-    }
 
     private void Handle_BookListCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
@@ -314,7 +279,6 @@ public class BooksViewModel : AbstractBookViewModel, IDisposable, IRefreshable
     #region Private fields
     private readonly IBookManageable _bookManageable;
     private IList<Book> _selectedBooks;
-    private SettingsViewModel _settings;
     private bool _disposed; // Safeguard for multiple calls to Dispose.
     private string _contentState;
     private string _clearingState;

@@ -14,8 +14,10 @@ namespace LibraryManager.Models;
 /// <author>YR 2025-01-09</author>
 public class BookManagerModel : AbstractBindableModel, IBookManageable
 {
-    public BookManagerModel(ILibrary library)
+    public BookManagerModel(ILibrary library, SettingsViewModel settings)
     {
+        _settings = settings;
+
         if (library is null)
             throw new ArgumentNullException(nameof(library));
 
@@ -73,6 +75,12 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
             case Constants.CLEAR_CONTENT:
             {
                 selectedBooks[0].Content = null;
+                break;
+            }
+             case Constants.SORT_BOOKS:
+            {
+                if (await MakeSortingList() is { Count: > 0 } props)
+                    await SafetySortBooks(props);
                 break;
             }
         }
@@ -502,7 +510,32 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
         }
     }
 
+    
+        
+    /// <summary>
+    /// Makes sorting property name list.
+    /// </summary>
+    private Task<List<PropertyCustomInfo>> MakeSortingList()
+    {
+        var props = new List<PropertyCustomInfo>();
+
+        MakeBookCutomPropertyList(props, _settings.FirstSortBookProperty, _settings.FirstSortProperty_ByDescend);
+        MakeBookCutomPropertyList(props, _settings.SecondSortBookProperty, _settings.SecondSortProperty_ByDescend);
+        MakeBookCutomPropertyList(props, _settings.ThirdSortBookProperty, _settings.ThirdSortProperty_ByDescend);
+
+        void MakeBookCutomPropertyList(List<PropertyCustomInfo> props, string name, bool byDescend)
+        {
+            var prop = Library.FindBookPropertyInfo(name);
+            var customProp = new PropertyCustomInfo { PropertyInfo = prop, DescendingOrder = byDescend };
+            if (prop.Name != nameof(Book.None))
+                props.Add(customProp);
+        }
+
+        return Task.FromResult(props);
+    }
+    
     private const StringComparison CURRENT_COMPARISION_RULE = StringComparison.OrdinalIgnoreCase;
     private ILibrary _library;
+    private SettingsViewModel _settings;
     #endregion
 }

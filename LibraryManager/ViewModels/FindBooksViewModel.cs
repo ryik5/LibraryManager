@@ -13,7 +13,6 @@ public class FindBooksViewModel : AbstractBookViewModel, IRefreshable
     {
         SearchFields = Enum.GetValues(typeof(EBibliographicKindInformation)).Cast<EBibliographicKindInformation>()
             .ToList();
-        _settings = settings;
         StatusBar = statusBar;
         Library = library;
 
@@ -23,7 +22,7 @@ public class FindBooksViewModel : AbstractBookViewModel, IRefreshable
         IsEditBookViewVisible = false;
         ContentState = Constants.LOAD_CONTENT;
         ClearingState = Constants.CLEAR_CONTENT;
-        _bookManageable = new BookManagerModel(Library);
+        _bookManageable = new BookManagerModel(Library,settings);
 
         CanOperateWithBooks = ValidLibrary();
         CanEditBook = false;
@@ -308,14 +307,8 @@ public class FindBooksViewModel : AbstractBookViewModel, IRefreshable
     private string _searchText;
     private bool _searchOnFly;
     private EBibliographicKindInformation _searchField;
-    private bool _canEditBook;
-    private bool _isEditBookViewVisible;
-    private bool _isBooksCollectionViewVisible;
-    private bool _canOperateWithBooks;
     private string _contentState;
     private bool _canClearContent;
     private string _clearingState;
-    private readonly SettingsViewModel _settings;
-    private IStatusBar _statusBar;
     #endregion
 }
