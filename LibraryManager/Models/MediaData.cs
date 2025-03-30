@@ -70,37 +70,7 @@ public class MediaData : AbstractBindableModel, IXmlSerializable
     /// Gets or sets the byte array of the file.
     /// </summary>
     public byte[] BookCoverByteArray { get; set; }
-
-    public override string ToString()
-    {
-        return
-            $"{Name},{OriginalPath},{Ext},{IsContentStoredSeparately},{IsLoaded},{(ObjectByteArray is null ? null : string.Join(",", ObjectByteArray))},{(BookCoverByteArray is null ? null : string.Join(",", BookCoverByteArray))}";
-    }
-
-    public override bool Equals(object obj)
-    {
-        if (obj?.GetType() != GetType())
-            return false;
-
-
-        if (obj is MediaData m)
-            return ToString().Equals(m.ToString());
-
-        return false;
-    }
-
-    public override int GetHashCode()
-    {
-        unchecked
-        {
-            int hash = 13;
-
-            hash = (hash * 7) + (!ReferenceEquals(null, ToString()) ? ToString().GetHashCode() : 0);
-
-            return hash;
-        }
-    }
-
+    
 
     public XmlSchema? GetSchema() => throw new NotImplementedException();
 
@@ -221,7 +191,6 @@ public class MediaData : AbstractBindableModel, IXmlSerializable
         if (BookCoverByteArray != null)
             writer.WriteBase64(BookCoverByteArray, 0, BookCoverByteArray.Length);
         writer.WriteEndElement();
-
         writer.WriteEndElement();
     }
 }

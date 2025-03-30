@@ -460,14 +460,14 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
 
     private async Task<bool> TryLoadCoverBookTask(Book book)
     {
-        var settings = new SettingsViewModel();
-
         // TODO : add parameter for a book cover length
-        var length = 10_000_000; // settings.Book_MaxContentLength;
+        var length = 10_000_000; // _settings.Book_MaxContentLength;
         var fileResult =
             await TryPickFileUpTask("Load book cover", new[] { "jpg", "png", "jpeg", "gif", "bmp", "tiff", "" });
         var readContentTask = await LoadDataFromDiskTask(book, fileResult, maxContentLength: length);
-
+        if (readContentTask.IsSuccess)
+            book.Set(readContentTask.Book);
+        
         return readContentTask.IsSuccess;
     }
 
@@ -519,19 +519,19 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
     {
         var props = new List<PropertyCustomInfo>();
 
-        MakeBookCutomPropertyList(props, _settings.FirstSortBookProperty, _settings.FirstSortProperty_ByDescend);
-        MakeBookCutomPropertyList(props, _settings.SecondSortBookProperty, _settings.SecondSortProperty_ByDescend);
-        MakeBookCutomPropertyList(props, _settings.ThirdSortBookProperty, _settings.ThirdSortProperty_ByDescend);
+        MakeBookCustomPropertyList(props, _settings.FirstSortBookProperty, _settings.FirstSortProperty_ByDescend);
+        MakeBookCustomPropertyList(props, _settings.SecondSortBookProperty, _settings.SecondSortProperty_ByDescend);
+        MakeBookCustomPropertyList(props, _settings.ThirdSortBookProperty, _settings.ThirdSortProperty_ByDescend);
 
-        void MakeBookCutomPropertyList(List<PropertyCustomInfo> props, string name, bool byDescend)
+        return Task.FromResult(props);
+
+        void MakeBookCustomPropertyList(List<PropertyCustomInfo> props, string name, bool byDescend)
         {
             var prop = Library.FindBookPropertyInfo(name);
             var customProp = new PropertyCustomInfo { PropertyInfo = prop, DescendingOrder = byDescend };
             if (prop.Name != nameof(Book.None))
                 props.Add(customProp);
         }
-
-        return Task.FromResult(props);
     }
     
     private const StringComparison CURRENT_COMPARISION_RULE = StringComparison.OrdinalIgnoreCase;

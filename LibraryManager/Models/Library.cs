@@ -88,27 +88,6 @@ public class Library : AbstractBindableModel, ILibrary, IXmlSerializable
 
     public event EventHandler<TotalBooksEventArgs>? TotalBooksChanged;
 
-    public override string ToString()
-    {
-        return $"{Id}, {Name},{Description},{string.Join(",", BookList)}";
-    }
-
-    public override int GetHashCode()
-    {
-        unchecked
-        {
-            if (TotalBooks == 0)
-                return 0;
-
-            int hash = 13;
-
-            hash = (hash * 7) + (!ReferenceEquals(null, ToString()) ? ToString().GetHashCode() : 0);
-
-            return hash;
-        }
-    }
-
-
     public XmlSchema? GetSchema() => throw new NotImplementedException();
 
     /// <summary>
@@ -231,7 +210,7 @@ public class Library : AbstractBindableModel, ILibrary, IXmlSerializable
     private int _totalBooks;
     private string _name = string.Empty;
     private string _description = string.Empty;
-    private ObservableCollection<Book> _bookList = new ObservableCollection<Book>();
+    private ObservableCollection<Book> _bookList = new();
     private PropertyInfo[] _bookPropertiesInfo;
     private string[] _bookProperties;
     private readonly object _locker = new();

@@ -168,8 +168,10 @@ public class BooksViewModel : AbstractBookViewModel, IDisposable, IRefreshable
                 case Constants.CLEAR_CONTENT:
                 case Constants.SAVE_CONTENT:
                 case Constants.LOAD_COVER:
-                    await _bookManageable.RunCommand(commandParameter, new List<Book>() { Book });
-                    RaisePropertyChanged(nameof(Book));
+                    var book = Book;
+                    await _bookManageable.RunCommand(commandParameter, new List<Book>() { book });
+                    Book = null;
+                    Book = book;
                     break;
                 default: //jobs perform without creating views
                 {

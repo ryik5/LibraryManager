@@ -28,21 +28,25 @@
                 <Label Text="Author" Grid.Row="0" Grid.Column="0" />
                 <Entry Text="{Binding Source={RelativeSource TemplatedParent}, Path=Book.Author}" 
                        Placeholder="Author"
+                       TextChanged="OnInputTextChanged"
                        Grid.Row="0" Grid.Column="1" />
 
                 <Label Text="Title" Grid.Row="1" Grid.Column="0" />
                 <Entry Text="{Binding Source={RelativeSource TemplatedParent}, Path=Book.Title}" 
                        Placeholder="Title of the Book"
+                       TextChanged="OnInputTextChanged"
                        Grid.Row="1" Grid.Column="1" />
 
                 <Label Text="Pages" Grid.Row="2" Grid.Column="0" />
                 <Entry Text="{Binding Source={RelativeSource TemplatedParent}, Path=Book.TotalPages}" 
                        Placeholder="Total pages in the Book"
+                       TextChanged="OnInputIntChanged"
                        Grid.Row="2" Grid.Column="1" />
 
                 <Label Text="Publish Year" Grid.Row="3" Grid.Column="0" />
                 <Entry Text="{Binding Source={RelativeSource TemplatedParent}, Path=Book.Year}" Grid.Row="3" 
                        Placeholder="Publish Year"
+                       TextChanged="OnInputYearChanged"
                        Grid.Column="1" />
 
                 <Label Text="Description" Grid.Row="4" Grid.Column="0" />

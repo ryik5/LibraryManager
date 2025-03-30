@@ -97,7 +97,9 @@ public class LibraryViewModel : AbstractViewModel, IDisposable, IRefreshable
                 }
                 case Constants.LIBRARY_SAVE:
                 {
-                    if (await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(), GetPathToCurrentLibraryFile()))
+                    var res = await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(),
+                        GetPathToCurrentLibraryFile());
+                    if (res)
                         await UpdateLibraryHashCode();
                     break;
                 }

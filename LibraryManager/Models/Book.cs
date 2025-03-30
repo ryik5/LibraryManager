@@ -169,39 +169,6 @@ public class Book : AbstractBindableModel, IXmlSerializable
     }
 
     /// <summary>
-    /// Returns a string that represents the current <see cref="Book"/>.
-    /// </summary>
-    /// <returns>A string that contains the <see cref="Author"/>, <see cref="Title"/>, <see cref="TotalPages"/> and <see cref="Year"/>
-    /// of the <see cref="Book"/>.</returns>
-    public override string ToString()
-    {
-        return $"{Id},{Author},{Title},{Year},{TotalPages},{Description},{Genre},{ISBN},{Content}";
-    }
-
-    public override bool Equals(object obj)
-    {
-        if (obj?.GetType() != GetType())
-            return false;
-
-        if (obj is Book b)
-            return ToString().Equals(b.ToString());
-
-        return false;
-    }
-
-    public override int GetHashCode()
-    {
-        unchecked
-        {
-            int hash = 13;
-
-            hash = (hash * 7) + (!ReferenceEquals(null, ToString()) ? ToString().GetHashCode() : 0);
-
-            return hash;
-        }
-    }
-
-    /// <summary>
     /// Creates a deep copy of the current <see cref="Book"/> object.
     /// </summary>
     /// <returns>A new <see cref="Book"/> object that is a copy of the current object.</returns>
@@ -281,7 +248,6 @@ public class Book : AbstractBindableModel, IXmlSerializable
                             }
 
                             isRead = false;
-                            //                reader.ReadEndElement(); // Added to ensure proper reading of the 'Source' element
                             break;
                     }
 
