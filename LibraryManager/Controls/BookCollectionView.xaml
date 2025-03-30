@@ -4,7 +4,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="LibraryManager.Controls.BookCollectionView"
              xmlns:model="clr-namespace:LibraryManager.Models"
+             xmlns:convertor="clr-namespace:LibraryManager.Convertors"
              WidthRequest="1920">
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <convertor:ByteArrayToImageSourceConverter x:Key="ByteArrayToImageSourceConverter" />
+        </ResourceDictionary>
+    </ContentView.Resources>
     <ContentView.ControlTemplate>
         <ControlTemplate>
 
@@ -24,7 +30,7 @@
                 <CollectionView.Header>
                     <!-- Doesn't work the proper way  ColumnDefinitions="150,500,70,110,70,150,100,180,*" 
                         ToolTipProperties.Text="{Binding Source={RelativeSource Self}, Path=Width, Mode=OneWay }" -->
-                    <Grid ColumnDefinitions="*,*,*,*,*,*,*,*,*"
+                    <Grid ColumnDefinitions="*,*,*,*,*,*,*,*,*,*"
                           WidthRequest="{Binding Source={RelativeSource TemplatedParent}, Path=Width,Mode=OneWay}"
                           Background="{StaticResource Senary}" Padding="5">
                         <Grid.Resources>
@@ -45,14 +51,15 @@
                         <Label Grid.Column="6" FontSize="18" Text="File Name" HorizontalTextAlignment="Start" />
                         <Label Grid.Column="7" FontSize="18" Text="Out of Library" />
                         <Label Grid.Column="8" FontSize="18" Text="Description" HorizontalTextAlignment="Start" />
+                        <Label Grid.Column="9" FontSize="18" Text="Book's cover" />
                     </Grid>
                 </CollectionView.Header>
-                
+
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="model:Book">
                         <!--ToolTipProperties.Text="{Binding Source={RelativeSource Self}, Path=Width, Mode=OneWay }"-->
-                        
-                        <Grid ColumnDefinitions="*,*,*,*,*,*,*,*,*" Padding="5"
+
+                        <Grid ColumnDefinitions="*,*,*,*,*,*,*,*,*,*" Padding="5"
                               WidthRequest="{Binding Source={RelativeSource TemplatedParent}, Path=Width}">
                             <Grid.Resources>
                                 <Style TargetType="Label">
@@ -87,13 +94,13 @@
                                 </VisualStateGroupList>
                             </VisualStateManager.VisualStateGroups>
                             <Label Grid.Column="0" FontSize="18" Text="{Binding Author}" FontAttributes="Bold" />
-                            <Button Grid.Column="0" 
-                                    Background="{StaticResource Senary}" 
+                            <Button Grid.Column="0"
+                                    Background="{StaticResource Senary}"
                                     Clicked="Button_OnClicked"
                                     ToolTipProperties.Text="Double-click to edit of the selected book"
                                     HorizontalOptions="End"
-                                    WidthRequest="2" 
-                                    Margin="5,0,5,0" 
+                                    WidthRequest="2"
+                                    Margin="5,0,5,0"
                                     Padding="0"
                                     BorderWidth="0">
                             </Button>
@@ -109,6 +116,10 @@
                             <Label Grid.Column="7" FontSize="18" Text="{Binding Content.IsContentStoredSeparately}"
                                    HorizontalTextAlignment="Center" />
                             <Label Grid.Column="8" FontSize="18" Text="{Binding Description}" />
+                            <Image Grid.Column="9" 
+                                   Source="{Binding Content.BookCoverByteArray, Mode=OneWay, Converter={StaticResource ByteArrayToImageSourceConverter}}" 
+                                   WidthRequest="40"
+                                   HeightRequest="40" />
                         </Grid>
 
                     </DataTemplate>
