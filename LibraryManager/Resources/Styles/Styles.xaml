@@ -414,7 +414,7 @@
     <Style TargetType="TabBar">
         <Setter Property="Shell.TabBarBackgroundColor" Value="{StaticResource Primary}" />
         <Setter Property="Shell.TabBarTitleColor" Value="{StaticResource Quinary}" />
-        <Setter Property="Shell.TabBarUnselectedColor" Value="{StaticResource Tertiary}" />
+        <Setter Property="Shell.TabBarUnselectedColor" Value="{StaticResource Secondary}" />
     </Style>
 
     <Style TargetType="Label" x:Key="TabBarLabelStyle">
@@ -430,7 +430,7 @@
 
     <Style TargetType="NavigationPage">
         <Setter Property="BarBackgroundColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Gray950}}" />
-        <Setter Property="BarTextColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource White}}" />
+        <Setter Property="BarTextColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
         <Setter Property="IconColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource White}}" />
     </Style>
 
