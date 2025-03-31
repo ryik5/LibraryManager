@@ -219,6 +219,9 @@ public class LibraryViewModel : AbstractViewModel, IDisposable, IRefreshable
     /// <returns>True if the user confirms saving changes, false otherwise.</returns>
     private async Task<bool> HasLibraryHashCodeChanged()
     {
+        if (Library.TotalBooks == 0 || !ValidLibrary())
+            return false;
+
         var currentHash = Library.GetHashCode();
         var libraryChanged = currentHash != 0 && currentHash != _libraryHashCode;
 
@@ -234,7 +237,7 @@ public class LibraryViewModel : AbstractViewModel, IDisposable, IRefreshable
 
     private string GetPathToCurrentLibraryFile() => GetPathToFile(Library.Id.ToString());
 
-    private bool ValidLibrary() => Library?.Id != 0;
+    private bool ValidLibrary() => Library.Id != 0;
     #endregion
 
 
