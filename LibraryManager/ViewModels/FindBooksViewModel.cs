@@ -16,6 +16,7 @@ public class FindBooksViewModel : AbstractBookViewModel, IRefreshable
         StatusBar = statusBar;
         Library = library;
 
+        Library.LibraryIdChanged += Handle_LibraryIdChanged;
         Library.TotalBooksChanged += Handle_TotalBooksChanged;
         FoundBookList.CollectionChanged += Handle_FoundBookListChanged;
         IsBooksCollectionViewVisible = true;
@@ -28,7 +29,7 @@ public class FindBooksViewModel : AbstractBookViewModel, IRefreshable
         CanEditBook = false;
         OK = Constants.SAVE_CHANGES;
     }
-
+    
 
     #region Public Properties
     public ObservableCollection<Book> FoundBookList
@@ -269,7 +270,6 @@ public class FindBooksViewModel : AbstractBookViewModel, IRefreshable
 
     private void Handle_TotalBooksChanged(object? sender, TotalBooksEventArgs e)
     {
-        // FoundBookList.Clear();
         CanOperateWithBooks = ValidLibrary();
     }
 
@@ -280,11 +280,18 @@ public class FindBooksViewModel : AbstractBookViewModel, IRefreshable
     /// <param name="e">The NotifyCollectionChangedEventArgs instance containing the event data.</param>
     private void Handle_FoundBookListChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        SelectedBooks?.Clear();
-        Book = null;
+        SelectedBooks.Clear();
         CanEditBook = false;
-        ;
     }
+    
+    private void Handle_LibraryIdChanged(object? sender, EventArgs e)
+    {
+        FoundBookList.Clear();
+        SelectedBooks.Clear();
+        CanEditBook = false;
+        CanOperateWithBooks = ValidLibrary();
+    }
+
 
     private Book? SelectFirstFoundBook() => 0 < SelectedBooks.Count ? SelectedBooks[0] as Book : null;
 
