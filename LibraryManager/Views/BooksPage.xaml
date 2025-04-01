@@ -128,7 +128,7 @@
                 <control:EditBookView
                     Grid.Row="1"
                     IsVisible="{Binding IsEditBookViewVisible, Mode=OneWay}"
-                    Book="{Binding Book,Mode=TwoWay}"
+                    Book="{Binding Book, Mode=TwoWay}"
                     NavigateCommand="{Binding NavigateCommand, Mode=OneTime}"
                     BindingContext="{Binding}"
                     Margin="10,20,20,30" />

@@ -23,13 +23,13 @@ public class FindBooksViewModel : AbstractBookViewModel, IRefreshable
         IsEditBookViewVisible = false;
         ContentState = Constants.LOAD_CONTENT;
         ClearingState = Constants.CLEAR_CONTENT;
-        _bookManageable = new BookManagerModel(Library,settings);
+        _bookManageable = new BookManagerModel(Library, settings);
 
         CanOperateWithBooks = ValidLibrary();
         CanEditBook = false;
         OK = Constants.SAVE_CHANGES;
     }
-    
+
 
     #region Public Properties
     public ObservableCollection<Book> FoundBookList
@@ -83,7 +83,7 @@ public class FindBooksViewModel : AbstractBookViewModel, IRefreshable
     }
     #endregion
 
-    
+
     #region CommandParameters
     // TODO : 
     public string ContentState
@@ -174,7 +174,6 @@ public class FindBooksViewModel : AbstractBookViewModel, IRefreshable
                     await UpdateButtonContentState(Book.Content?.IsLoaded ?? false);
                     break;
                 }
-
                 case Constants.DELETE_BOOK:
                 {
                     RunInMainThread(() => _selectedBooks = GetSelectedBooks());
@@ -195,11 +194,12 @@ public class FindBooksViewModel : AbstractBookViewModel, IRefreshable
                 //TODO : move inside BookManager
                 case Constants.LOAD_CONTENT:
                 case Constants.CLEAR_CONTENT:
-                    await _bookManageable.RunCommand(commandParameter, new List<Book>() { Book });
-                    await UpdateButtonContentState(Book.Content?.IsLoaded ?? false);
-                    break;
                 case Constants.SAVE_CONTENT:
-                    await _bookManageable.RunCommand(commandParameter, new List<Book>() { Book });
+                case Constants.LOAD_COVER:
+                    var book = Book;
+                    await _bookManageable.RunCommand(commandParameter, new List<Book>() { book });
+                    Book = null;
+                    Book = book;
                     break;
 
                 default: //jobs perform without creating views
@@ -217,6 +217,7 @@ public class FindBooksViewModel : AbstractBookViewModel, IRefreshable
             await ShowNavigationErrorInDebug(commandParameter, nameof(FindBooksViewModel));
         }
 
+        await UpdateButtonContentState(Book.Content?.IsLoaded ?? false);
         await RunInMainThreadAsync(() => RaisePropertyChanged(nameof(Library)));
     }
 
@@ -283,7 +284,7 @@ public class FindBooksViewModel : AbstractBookViewModel, IRefreshable
         SelectedBooks.Clear();
         CanEditBook = false;
     }
-    
+
     private void Handle_LibraryIdChanged(object? sender, EventArgs e)
     {
         FoundBookList.Clear();
