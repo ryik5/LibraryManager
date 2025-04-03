@@ -10,6 +10,7 @@
             <convertor:ByteArrayToImageSourceConverter x:Key="ByteArrayToImageSourceConverter" />
         </ResourceDictionary>
     </ContentView.Resources>
+    
     <ContentView.ControlTemplate>
         <ControlTemplate>
             <Grid ColumnDefinitions="Auto,*,300" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
@@ -33,6 +34,7 @@
 
                 <Label Text="Title" Grid.Row="1" Grid.Column="0" />
                 <Entry Text="{Binding Source={RelativeSource TemplatedParent}, Path=Book.Title}" 
+                       ToolTipProperties.Text="{Binding Source={RelativeSource TemplatedParent}, Path=Book.Title, Mode=OneWay}"
                        Placeholder="Title of the Book"
                        TextChanged="OnInputTextChanged"
                        Grid.Row="1" Grid.Column="1" />
@@ -84,6 +86,7 @@
                 <Label Text="Original path"
                        Grid.Row="7" Grid.Column="0" />
                 <Entry Text="{Binding Source={RelativeSource TemplatedParent}, Path=Book.Content.OriginalPath}"
+                       ToolTipProperties.Text="{Binding Source={RelativeSource TemplatedParent}, Path=Book.Content.OriginalPath, Mode=OneWay}"
                        Placeholder="Original path where the uploaded content was"
                        Grid.Row="7" Grid.Column="1" IsEnabled="False" />
 
@@ -97,7 +100,10 @@
 
                 <Button Grid.Row="8" Grid.Column="2" Text="Load Cover"
                         Command="{Binding Source={RelativeSource TemplatedParent}, Path=NavigateCommand}"
-                        CommandParameter="Load Cover"/>
+                        CommandParameter="Load Cover"
+                        ToolTipProperties.Text="Load book's cover as picture from the disk to store it with the book" 
+                        />
+                
                 <Image Grid.Row="0" Grid.Column="2" Grid.RowSpan="7"
                        Source="{Binding Source={RelativeSource TemplatedParent}, Path=Book.Content.BookCoverByteArray, Mode=OneWay, Converter={StaticResource ByteArrayToImageSourceConverter}}"
                        Aspect="AspectFill"
