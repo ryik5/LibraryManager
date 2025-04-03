@@ -110,6 +110,7 @@
                     <Button Text="Sort Library"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Sort Books"
+                            ToolTipProperties.Text="Sort the library"
                             IsEnabled="{Binding CanOperateWithBooks, Mode=OneWay}" />
 
                 </StackLayout>
