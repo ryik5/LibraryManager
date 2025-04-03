@@ -67,6 +67,7 @@
                                     <Setter Property="LineBreakMode" Value="MiddleTruncation" />
                                 </Style>
                             </Grid.Resources>
+                            
                             <VisualStateManager.VisualStateGroups>
                                 <VisualStateGroupList>
                                     <VisualStateGroup x:Name="CommonStates">
@@ -93,7 +94,9 @@
                                     </VisualStateGroup>
                                 </VisualStateGroupList>
                             </VisualStateManager.VisualStateGroups>
-                            <Label Grid.Column="0" FontSize="18" Text="{Binding Author}" FontAttributes="Bold" />
+                            
+                            <Label Grid.Column="0" FontSize="18" 
+                                   Text="{Binding Author}" FontAttributes="Bold" />
                             <Button Grid.Column="0"
                                     Background="{StaticResource Senary}"
                                     Clicked="Button_OnClicked"
@@ -104,16 +107,26 @@
                                     Padding="0"
                                     BorderWidth="0">
                             </Button>
-                            <Label Grid.Column="1" FontSize="18" Text="{Binding Title}" />
-                            <Label Grid.Column="2" FontSize="18" Text="{Binding Year}" HorizontalTextAlignment="Center" />
-                            <Label Grid.Column="3" FontSize="18" Text="{Binding Genre}"
+                            <Label Grid.Column="1" FontSize="18" 
+                                   Text="{Binding Title}" 
+                                   ToolTipProperties.Text="{Binding Title, Mode=OneWay}" 
+                                   />
+                            <Label Grid.Column="2" FontSize="18" 
+                                   Text="{Binding Year}" HorizontalTextAlignment="Center" />
+                            <Label Grid.Column="3" FontSize="18" 
+                                   Text="{Binding Genre}"
                                    HorizontalTextAlignment="Center" />
-                            <Label Grid.Column="4" FontSize="18" Text="{Binding TotalPages}"
+                            <Label Grid.Column="4" FontSize="18" 
+                                   Text="{Binding TotalPages}"
                                    HorizontalTextAlignment="Center" />
-                            <Label Grid.Column="5" FontSize="18" Text="{Binding ISBN}" HorizontalTextAlignment="Center" />
-                            <Label Grid.Column="6" FontSize="18" Text="{Binding Content.Name}"
+                            <Label Grid.Column="5" FontSize="18" 
+                                   Text="{Binding ISBN}" HorizontalTextAlignment="Center" />
+                            <Label Grid.Column="6" FontSize="18" 
+                                   Text="{Binding Content.Name}"
                                    ToolTipProperties.Text="{Binding Content.OriginalPath, Mode=OneWay}" />
-                            <Label Grid.Column="7" FontSize="18" Text="{Binding Content.IsContentStoredSeparately}"
+                            <Label Grid.Column="7" FontSize="18" 
+                                   Text="{Binding Content.IsContentStoredSeparately}"
+                                   ToolTipProperties.Text="True if book's content is stored separately" 
                                    HorizontalTextAlignment="Center" />
                             <Label Grid.Column="8" FontSize="18" Text="{Binding Description}" />
                             <Image Grid.Column="9" 
