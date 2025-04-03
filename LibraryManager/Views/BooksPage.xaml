@@ -98,6 +98,7 @@
                     <Button Text="Import Book"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Import a book"
+                            ToolTipProperties.Text="Import a book into the current library"
                             IsEnabled="{Binding CanOperateWithBooks, Mode=OneWay}" />
                     <Button Text="Export Book"
                             Command="{Binding NavigateCommand}"
