@@ -94,6 +94,7 @@
                     <Button Text="Edit Book"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Edit Book"
+                            ToolTipProperties.Text="Edit selected book"
                             MinimumWidthRequest="100"
                             Margin="10,0,20,0"
                             IsEnabled="{Binding CanEditBook, Mode=OneWay}" />
