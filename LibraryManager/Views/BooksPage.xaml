@@ -103,6 +103,7 @@
                     <Button Text="Export Book"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Export the selected book"
+                            ToolTipProperties.Text="Export the selected book on the disk"
                             IsEnabled="{Binding CanEditBook, Mode=OneWay}" />
 
                     <Button Text="Sort Library"
