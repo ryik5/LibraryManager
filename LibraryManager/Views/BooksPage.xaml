@@ -94,6 +94,7 @@
                     <Button Text="Delete Book(s)"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Delete the selected book"
+                            ToolTipProperties.Text="Delete selected books"
                             IsEnabled="{Binding CanEditBook, Mode=OneWay}" />
                     <Button Text="Import Book"
                             Command="{Binding NavigateCommand}"
