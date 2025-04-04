@@ -50,6 +50,7 @@
 
         <Label Text="Total Books" Grid.Row="2" Grid.Column="0" />
         <Entry Text="{Binding Library.TotalBooks, Mode=OneWay}"
+               ToolTipProperties.Text="Total number ob the books in the Library" 
                IsReadOnly="True"
                Grid.Row="2" Grid.Column="1" />
 
@@ -57,6 +58,7 @@
         <Frame Grid.Row="3" Grid.Column="1">
             <Grid> <!-- TODO: Check necessary -->
                 <Editor Text="{Binding Library.Description}"
+                        ToolTipProperties.Text="{Binding Library.Description, Mode=OneWay}"
                         Placeholder="Library's short description"
                         IsEnabled="{Binding CanOperateWithLibrary}"
                         AutoSize="TextChanges"
