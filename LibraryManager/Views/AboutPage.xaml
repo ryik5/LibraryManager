@@ -92,10 +92,11 @@
                     <Label Text="For more information and to access the source code, visit: "
                            FontSize="20" />
                     <Button Text="GitHub"
-                            HorizontalOptions="Center"
-                            FontSize="18"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="https://github.com/ryik5/LibraryManager"
+                            ToolTipProperties.Text="Visit repository on GitHub"
+                            HorizontalOptions="Center"
+                            FontSize="18"
                             Padding="5" BorderWidth="1">
                     </Button>
 
