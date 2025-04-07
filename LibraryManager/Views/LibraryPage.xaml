@@ -55,12 +55,10 @@
     </ContentPage.MenuBarItems>
 
     <ContentPage.Content>
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <Grid Grid.Row="0" BackgroundColor="{StaticResource White}" Padding="10">
+        <Grid RowDefinitions="*, Auto">
+            <Grid Grid.Row="0" 
+                  BackgroundColor="{StaticResource White}" 
+                  Padding="10">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="55" />
                     <RowDefinition />
@@ -72,26 +70,23 @@
                              FlowDirection="MatchParent"
                              HorizontalOptions="Fill"
                              Margin="10">
-                    <StackLayout.Resources>
-                        <Style TargetType="Button">
-                            <Setter Property="FontSize" Value="18" />
-                            <Setter Property="BorderWidth" Value="1" />
-                            <Setter Property="Margin" Value="0,0,10,0" />
-                        </Style>
-                    </StackLayout.Resources>
 
                     <Button Text="Create Library"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Create a new library"
                             ToolTipProperties.Text="Click to Create a new library" />
-                    <Button Text="Load Library"
+                    <Button Text="Load Library" 
+                            Margin="10,0,10,0"
+                            ToolTipProperties.Text="Load a saved library" />
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Load the library" />
                     <Button Text="Save Library"
+                            ToolTipProperties.Text="Click to save the current library" />
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Save Library"
                             IsEnabled="{Binding CanOperateWithLibrary}" />
                     <Button Text="Save As Library"
+                            Margin="10,0,10,0"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Save the library with a new name"
                             IsEnabled="{Binding CanOperateWithLibrary}" />
