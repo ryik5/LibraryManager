@@ -63,9 +63,7 @@
                 </Grid.RowDefinitions>
                 <Grid.Resources>
                     <Style TargetType="Button">
-                        <Setter Property="FontSize" Value="18" />
-                        <Setter Property="BorderWidth" Value="1" />
-                        <Setter Property="Margin" Value="0,0,10,0" />
+                         <Setter Property="Margin" Value="0,0,10,0" />
                     </Style>
                 </Grid.Resources>
 
