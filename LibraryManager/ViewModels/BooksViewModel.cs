@@ -251,7 +251,7 @@ public class BooksViewModel : AbstractBookViewModel, IDisposable, IRefreshable
 
     private async void Handle_TotalBooksChanged(object? sender, TotalBooksEventArgs e)
     {
-        await StatusBar.SetTotalBooks(Library.TotalBooks);
+        await StatusBar.SetStatusMessage(EInfoKind.TotalBooks, Library.TotalBooks);
     }
 
     private Book? SelectFirstFoundBook() => GetSelectedBooks()[0];

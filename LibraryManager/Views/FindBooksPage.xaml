@@ -79,7 +79,7 @@
 
                     <control:TextCheckBox MinimumWidthRequest="100"
                                           IsEnabled="{Binding CanOperateWithBooks, Mode=OneWay}"
-                                          ToolTipProperties.Text="Mark to run the search on fly"
+                                          ToolTipProperties.Text="Mark to run the search-on-fly"
                                           VerticalOptions="Center"
                                           Margin="10,0,10,0"
                                           IsChecked="{Binding SearchOnFly, Mode=TwoWay}"
@@ -88,6 +88,7 @@
                     <Picker ItemsSource="{Binding SearchFields}"
                             SelectedItem="{Binding SelectedSearchField}"
                             IsEnabled="{Binding CanOperateWithBooks, Mode=OneWay}"
+                            ToolTipProperties.Text="Select a field to seek"
                             MinimumWidthRequest="100"
                             FontSize="18"
                             Margin="10,0,10,0" />
@@ -95,7 +96,7 @@
                     <Button Text="Edit Book"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Edit Book"
-                            ToolTipProperties.Text="Edit selected book"
+                            ToolTipProperties.Text="Edit the selected book"
                             MinimumWidthRequest="100"
                             Margin="10,0,20,0"
                             IsEnabled="{Binding CanEditBook, Mode=OneWay}" />
@@ -103,7 +104,7 @@
                     <Button Text="Delete Book(s)"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Delete the selected book"
-                            ToolTipProperties.Text="Delete selected books"
+                            ToolTipProperties.Text="Delete the selected books"
                             MinimumWidthRequest="100"
                             IsEnabled="{Binding CanEditBook, Mode=OneWay}" />
 

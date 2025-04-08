@@ -6,8 +6,6 @@ public class StatusBarViewModel : AbstractBindableModel, IStatusBar
 {
     public StatusBarViewModel()
     {
-        Task.Run(async () => await SetCommonInfo(""));
-        Task.Run(async () => await SetCurrentInfo(""));
         Task.Run(async () => await SetTotalBooks(0));
     }
 
@@ -33,26 +31,52 @@ public class StatusBarViewModel : AbstractBindableModel, IStatusBar
 
 
     #region Public Methods
-    public async Task SetTotalBooks(int totalBooks)
+
+    public async Task SetStatusMessage(EInfoKind infoKind, string message)
+    {
+        switch (infoKind)
+        {
+            case EInfoKind.CommonMessage:
+                await SetCommonInfo(message);
+                break;
+            case EInfoKind.DebugMessage:
+                await SetCurrentInfo(message);
+                break;
+        }
+    }
+    public async Task SetStatusMessage(EInfoKind infoKind, int totalBooks)
+    {
+      switch (infoKind)
+        {
+            case EInfoKind.TotalBooks:
+                await SetTotalBooks(totalBooks);
+                break;
+        }
+    }
+   
+    private Task SetTotalBooks(int totalBooks)
     {
         StatusInfo = $"Total books: {totalBooks}";
+        return Task.CompletedTask;
     }
 
-    public async Task SetCurrentInfo(string message)
+    private Task SetCurrentInfo(string message)
     {
         CurrentInfo = message;
+        return Task.CompletedTask;
     }
 
-    public async Task SetCommonInfo(string message)
+    private Task SetCommonInfo(string message)
     {
         CommonInfo = message;
+        return Task.CompletedTask;
     }
     #endregion
 
 
     #region Private fields
-    private string _statusInfo;
-    private string _commonInfo;
-    private string _currentInfo;
+    private string _statusInfo = String.Empty;
+    private string _commonInfo = String.Empty;
+    private string _currentInfo = String.Empty;
     #endregion
 }

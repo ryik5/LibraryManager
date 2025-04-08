@@ -8,10 +8,8 @@ public interface IStatusBar
 
      string StatusInfo { get; }
      
-    
-    Task SetTotalBooks(int totalBooks);
-    
-    Task SetCurrentInfo(string message);
-    
-    Task SetCommonInfo(string message);
+     Task SetStatusMessage(EInfoKind infoKind, string message);
+
+     Task SetStatusMessage(EInfoKind infoKind, int totalBooks);
+
 }

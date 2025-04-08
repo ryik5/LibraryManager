@@ -199,7 +199,7 @@ public class LibraryViewModel : AbstractViewModel, IDisposable, IRefreshable
     private async void Handle_TotalBooksChanged(object? sender, TotalBooksEventArgs e)
     {
         RefreshControlsOnAppearing();
-        await StatusBar.SetTotalBooks(Library.TotalBooks);
+        await StatusBar.SetStatusMessage(EInfoKind.TotalBooks, Library.TotalBooks);
     }
 
     /// <summary>
