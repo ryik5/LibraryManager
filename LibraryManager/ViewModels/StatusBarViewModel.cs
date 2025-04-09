@@ -7,31 +7,36 @@ public class StatusBarViewModel : AbstractBindableModel, IStatusBar
     public StatusBarViewModel()
     {
         Task.Run(async () => await SetTotalBooks(0));
+
+        /*MessagingCenter.Subscribe<AbstractViewModel, string>(this, "Navigate", async (sender, args) =>
+        {
+            Console.WriteLine($"Received {args} from AbstractViewModel.");
+            // await PerformAction("CreateLibrary").ConfigureAwait(false);
+        });*/
     }
 
     #region Public Properties
     public string CommonInfo
     {
         get => _commonInfo;
-        set => SetProperty(ref _commonInfo, value);
+        private set => SetProperty(ref _commonInfo, value);
     }
 
     public string CurrentInfo
     {
         get => _currentInfo;
-        set => SetProperty(ref _currentInfo, value);
+        private set => SetProperty(ref _currentInfo, value);
     }
 
     public string StatusInfo
     {
         get => _statusInfo;
-        set => SetProperty(ref _statusInfo, value);
+        private set => SetProperty(ref _statusInfo, value);
     }
     #endregion
 
 
     #region Public Methods
-
     public async Task SetStatusMessage(EInfoKind infoKind, string message)
     {
         switch (infoKind)
@@ -44,16 +49,17 @@ public class StatusBarViewModel : AbstractBindableModel, IStatusBar
                 break;
         }
     }
+
     public async Task SetStatusMessage(EInfoKind infoKind, int totalBooks)
     {
-      switch (infoKind)
+        switch (infoKind)
         {
             case EInfoKind.TotalBooks:
                 await SetTotalBooks(totalBooks);
                 break;
         }
     }
-   
+
     private Task SetTotalBooks(int totalBooks)
     {
         StatusInfo = $"Total books: {totalBooks}";
