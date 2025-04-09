@@ -160,11 +160,7 @@ public class LibraryViewModel : AbstractViewModel, IDisposable, IRefreshable
         RaisePropertyChanged(nameof(Library.TotalBooks));
         RaisePropertyChanged(nameof(CanOperateWithLibrary));
     }
-
-    public async Task RefreshControlsOnDisappearing()
-    {
-        RaisePropertyChanged(nameof(CanOperateWithLibrary));
-    }
+    
 
     // Dispose method for external calls
     public void Dispose()

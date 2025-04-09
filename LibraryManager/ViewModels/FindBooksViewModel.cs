@@ -230,13 +230,6 @@ public class FindBooksViewModel : AbstractBookViewModel, IRefreshable
         RaisePropertyChanged(nameof(CanOperateWithBooks));
         RaisePropertyChanged(nameof(CanEditBook));
     }
-
-    public async Task RefreshControlsOnDisappearing()
-    {
-        await RunInMainThreadAsync(() => SelectedBooks.Clear());
-        Book = null;
-        CanEditBook = false;
-    }
     #endregion
 
 

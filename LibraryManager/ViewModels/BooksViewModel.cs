@@ -203,12 +203,7 @@ public class BooksViewModel : AbstractBookViewModel, IDisposable, IRefreshable
         CanOperateWithBooks = ValidLibrary();
         CanEditBook = ValidSelectedBooks();
     }
-
-    public async Task RefreshControlsOnDisappearing()
-    {
-        await RunInMainThreadAsync(() => SelectedBooks.Clear());
-    }
-
+    
     // Dispose method for external calls
     public void Dispose()
     {
