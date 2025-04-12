@@ -21,10 +21,10 @@
         </Grid.ColumnDefinitions>
         <Label Padding="5,0,5,0"
                Text="{Binding  StatusBar.CommonInfo}"
-               ToolTipProperties.Text="Information about the application"
+               ToolTipProperties.Text="{Binding  StatusBar.CommonInfo, Mode=OneWay}"
                Grid.Column="0" />
         <Label Grid.Column="1" Text="I" Padding="1,0,5,0" />
-        <Label Padding="5,0,10,0"
+        <Label Padding="10,0,10,0"
                Text="{Binding StatusBar.CurrentInfo}"
                ToolTipProperties.Text="Information about the current operation"
                Grid.Column="1" />

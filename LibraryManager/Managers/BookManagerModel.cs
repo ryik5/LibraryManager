@@ -35,7 +35,7 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
             case Constants.ADD_BOOK:
             {
                 await AddBookTask(BookModelMaker.GenerateDemoBook());
-               await _statusBar.SetStatusMessage(EInfoKind.CurrentInfo, "Book added.");
+                await _statusBar.SetStatusMessage(EInfoKind.CurrentInfo, "Book added.");
                 break;
             }
             case Constants.DEMO_ADD_BOOKS:
@@ -53,6 +53,7 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
                     {
                         TryRemoveBook(bookToDelete).ConfigureAwait(false);
                     }
+
                     await _statusBar.SetStatusMessage(EInfoKind.CurrentInfo, $"Deleted {selectedBooks.Count} book(s).");
                 }
 
@@ -81,7 +82,7 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
                 selectedBooks[0].Content = null;
                 break;
             }
-             case Constants.SORT_BOOKS:
+            case Constants.SORT_BOOKS:
             {
                 if (await MakeSortingList() is { Count: > 0 } props)
                     await SafetySortBooks(props);
@@ -471,7 +472,7 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
         var readContentTask = await LoadDataFromDiskTask(book, fileResult, maxContentLength: length);
         if (readContentTask.IsSuccess)
             book.Set(readContentTask.Book);
-        
+
         return readContentTask.IsSuccess;
     }
 
@@ -514,8 +515,7 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
         }
     }
 
-    
-        
+
     /// <summary>
     /// Makes sorting property name list.
     /// </summary>
@@ -537,7 +537,7 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
                 props.Add(customProp);
         }
     }
-    
+
     private const StringComparison CURRENT_COMPARISION_RULE = StringComparison.OrdinalIgnoreCase;
     private ILibrary _library;
     private SettingsViewModel _settings;

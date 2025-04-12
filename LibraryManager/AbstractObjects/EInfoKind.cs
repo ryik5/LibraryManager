@@ -12,12 +12,17 @@ public enum EInfoKind
     CommonInfo,
 
     /// <summary>
-    /// Debug message. It shouldn't be shown to the user.
+    /// Result last of action
     /// </summary>
     CurrentInfo,
 
     /// <summary>
-    /// Total number of books in the current librery.
+    /// Total number of books in the current library.
     /// </summary>
-    TotalBooks
+    TotalBooks,
+    
+    /// <summary>
+    /// Debug information.
+    /// </summary>
+    DebugInfo
 }

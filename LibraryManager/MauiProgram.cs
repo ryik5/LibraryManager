@@ -35,6 +35,11 @@ public static class MauiProgram
         };
         var settings = new SettingsViewModel();
         var statusBar = new StatusBarViewModel();
+        var package = AppInfo.Current.PackageName;
+        statusBar.SetStatusMessage(EInfoKind.CommonInfo,
+            $"v.{AppInfo.Current.VersionString}, b.{AppInfo.Current.BuildString}");
+        statusBar.SetStatusMessage(EInfoKind.DebugInfo,
+            $"{AppInfo.Current.Name} is started at {DateTime.Now:hh:mm:ss tt}");
 
         builder.Services.AddTransient<IFolderPicker, Platforms.MacCatalyst.FolderPicker>();
         builder.Services.AddTransient<Book>();

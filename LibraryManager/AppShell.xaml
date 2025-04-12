@@ -32,7 +32,7 @@
             </VisualStateGroup>
         </VisualStateGroupList>
     </VisualStateManager.VisualStateGroups>
-    
+
     <Shell.Resources>
         <Style TargetType="Label" Class="FlyoutItemLabelStyle">
             <Setter Property="TextColor"
@@ -81,24 +81,27 @@
         </Grid>
     </Shell.FlyoutHeader>
 
-    <Shell.FlyoutFooterTemplate>
-        <DataTemplate>
-            <StackLayout>
-                <Label Text="Library Manager"
-                       TextColor="{StaticResource Senary}"
-                       FontAttributes="Bold"
-                       FontSize="14"
-                       HorizontalOptions="Center" />
-                <Label x:DataType="sys:DateTime"
-                       Text="{Binding Source={x:Static sys:DateTime.Now}, StringFormat='{0:MMMM dd, yyyy}'}"
-                       FontSize="14"
-                       Margin="0,0,0,10"
-                       TextColor="{StaticResource Senary}"
-                       HorizontalOptions="Center" />
-            </StackLayout>
-        </DataTemplate>
-    </Shell.FlyoutFooterTemplate>
-    
+    <Shell.FlyoutFooter>
+        <StackLayout>
+            <Label x:Name="AppButton" Text="Library Manager"
+                   TextColor="{StaticResource Senary}"
+                   FontAttributes="Bold"
+                   FontSize="14"
+                   HorizontalOptions="Center" />
+            <Label x:DataType="sys:DateTime"
+                   Text="{Binding Source={x:Static sys:DateTime.Now}, StringFormat='{0:dd MMMM yyyy}'}"
+                   FontSize="14"
+                   TextColor="{StaticResource Senary}"
+                   HorizontalOptions="Center" />
+            <Label x:Name="TimeLabel" x:DataType="sys:DateTime"
+                   Text="{Binding Source={x:Static sys:DateTime.Now}, StringFormat='{0:hh:mm:ss tt}'}"
+                   FontSize="14"
+                   Margin="0,0,0,10"
+                   TextColor="{StaticResource Senary}"
+                   HorizontalOptions="Center" />
+        </StackLayout>
+    </Shell.FlyoutFooter>
+
     <FlyoutItem Title="Library" Shell.TabBarIsVisible="False">
         <ShellContent Route="LibraryPage" ContentTemplate="{DataTemplate view:LibraryPage}" />
     </FlyoutItem>
