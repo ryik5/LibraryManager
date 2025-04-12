@@ -8,7 +8,7 @@ namespace LibraryManager.ViewModels;
 
 public class LibraryViewModel : AbstractViewModel, IDisposable, IRefreshable
 {
-    public LibraryViewModel(ILibrary library, SettingsViewModel settings, StatusBarViewModel statusBar)
+    public LibraryViewModel(ILibrary library, SettingsViewModel settings, IStatusBar statusBar)
     {
         _settings = settings;
         StatusBar = statusBar;
@@ -160,7 +160,7 @@ public class LibraryViewModel : AbstractViewModel, IDisposable, IRefreshable
         RaisePropertyChanged(nameof(Library.TotalBooks));
         RaisePropertyChanged(nameof(CanOperateWithLibrary));
     }
-    
+
 
     // Dispose method for external calls
     public void Dispose()

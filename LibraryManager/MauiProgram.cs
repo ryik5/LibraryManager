@@ -28,7 +28,7 @@ public static class MauiProgram
 
         var library = new Library
         {
-            Id =new Random().Next(),
+            Id = new Random().Next(),
             Name = "Empty Library",
             Description = "",
             BookList = new ObservableCollection<Book>()
@@ -43,7 +43,7 @@ public static class MauiProgram
         // Register all shared ViewModels and objects
         builder.Services.AddSingleton<ILibrary>(library);
 
-        builder.Services.AddSingleton(statusBar);
+        builder.Services.AddSingleton<IStatusBar>(statusBar);
         builder.Services.AddTransient<StatusBarPanel>();
 
         builder.Services.AddSingleton(settings);

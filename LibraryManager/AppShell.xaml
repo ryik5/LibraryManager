@@ -43,46 +43,6 @@
         </Style>
     </Shell.Resources>
 
-    <!--
-    <Shell.FlyoutHeader>
-        <Grid Margin="00,25,00,00" Padding="5" RowDefinitions="30,60,22">
-            ~1~ Menu Item Title @1@
-            <Label Grid.Row="0"
-                   Text="Library Manager"
-                   FontAttributes="Bold"
-                   FontSize="18"
-                   VerticalOptions="Center"
-                   HorizontalOptions="Center" />
-
-            ~1~ Logo/Icon @1@
-            <GraphicsView Grid.Row="1"
-                          x:Name="LogoGraphicsView"
-                          HeightRequest="50"
-                          WidthRequest="50"
-                          VerticalOptions="Center">
-                <GraphicsView.Margin>0,10,0,0</GraphicsView.Margin>
-            </GraphicsView>
-
-            ~1~ Split Line @1@
-            <Line Grid.Row="2"
-                  Margin="30,5,30,0"
-                  VerticalOptions="Start"
-                  HeightRequest="2"
-                  BackgroundColor="{StaticResource Primary}" />
-            <Line Grid.Row="2"
-                  Margin="20,5,20,0"
-                  VerticalOptions="Center"
-                  HeightRequest="2"
-                  BackgroundColor="{StaticResource Primary}" />
-            <Line Grid.Row="2"
-                  Margin="10,5,10,0"
-                  VerticalOptions="End"
-                  HeightRequest="2"
-                  BackgroundColor="{StaticResource Primary}" />
-        </Grid>
-    </Shell.FlyoutHeader>
-    -->
-
     <Shell.FlyoutHeader>
         <Grid Margin="00,25,00,00" Padding="5" RowDefinitions="30,60,22">
             <!-- Menu Item Title -->
@@ -138,79 +98,7 @@
             </StackLayout>
         </DataTemplate>
     </Shell.FlyoutFooterTemplate>
-
     
-    <!-- FlyoutItem Style-->
-    <!--<Shell.ItemTemplate>
-                <DataTemplate>
-                    <Grid x:Name="FlyoutItemLayout"
-                          HeightRequest="{OnPlatform 44, Android=50}"
-                          ColumnSpacing="{OnPlatform WinUI=0}"
-                          RowSpacing="{OnPlatform WinUI=0}">
-                        <VisualStateManager.VisualStateGroups>
-                            <VisualStateGroupList>
-                                <VisualStateGroup x:Name="CommonStates">
-                                    <VisualState x:Name="Normal">
-                                        <VisualState.Setters>
-                                            <Setter Property="BackgroundColor" Value="Transparent" />
-                                        </VisualState.Setters>
-                                    </VisualState>
-                                    <VisualState x:Name="Selected">
-                                        <VisualState.Setters>
-                                            <Setter Property="BackgroundColor"
-                                                    Value="{AppThemeBinding Light={StaticResource Secondary}, Dark={StaticResource Tertiary}}" />
-                                        </VisualState.Setters>
-                                    </VisualState>
-                                </VisualStateGroup>
-                            </VisualStateGroupList>
-                        </VisualStateManager.VisualStateGroups>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="{OnPlatform Android=54, iOS=50, WinUI=Auto, MacCatalyst=30}" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Image x:Name="FlyoutItemImage"
-                               Source="{Binding FlyoutIcon}"
-                               VerticalOptions="Center"
-                               HorizontalOptions="{OnPlatform Default=Center, WinUI=Start}"
-                               HeightRequest="{OnPlatform Android=24, iOS=22, WinUI=16, MacCatalyst=24}"
-                               WidthRequest="{OnPlatform Android=24, iOS=22, WinUI=16, MacCatalyst=24}">
-                            <Image.Margin>
-                                <OnPlatform x:TypeArguments="Thickness">
-                                    <OnPlatform.Platforms>
-                                        <On Platform="MacCatalyst" Value="12,0,12,0" />
-                                    </OnPlatform.Platforms>
-                                </OnPlatform>
-                            </Image.Margin>
-                        </Image>
-                        <Label x:Name="FlyoutItemLabel"
-                               Grid.Column="1"
-                               Text="{Binding Title}"
-                               FontSize="{OnPlatform Android=14, iOS=14, MacCatalyst=20}"
-                               FontAttributes="{OnPlatform MacCatalyst=Bold, iOS=Bold, WinUI=Bold}"
-                               HorizontalOptions="{OnPlatform WinUI=Start}"
-                               HorizontalTextAlignment="{OnPlatform WinUI=Start}"
-                               VerticalTextAlignment="Center"
-                               TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Black}}">
-                            <Label.Margin>
-                                <OnPlatform x:TypeArguments="Thickness">
-                                    <OnPlatform.Platforms>
-                                        <On Platform="Android" Value="20, 0, 0, 0" />
-                                    </OnPlatform.Platforms>
-                                </OnPlatform>
-                            </Label.Margin>
-                            <Label.FontFamily>
-                                <OnPlatform x:TypeArguments="x:String">
-                                    <OnPlatform.Platforms>
-                                        <On Platform="Android" Value="sans-serif-medium" />
-                                    </OnPlatform.Platforms>
-                                </OnPlatform>
-                            </Label.FontFamily>
-                        </Label>
-                    </Grid>
-                </DataTemplate>
-            </Shell.ItemTemplate>-->
-    
-
     <FlyoutItem Title="Library" Shell.TabBarIsVisible="False">
         <ShellContent Route="LibraryPage" ContentTemplate="{DataTemplate view:LibraryPage}" />
     </FlyoutItem>
@@ -227,7 +115,7 @@
         <ShellContent Route="ToolsPage" ContentTemplate="{DataTemplate view:ToolsPage}" />
     </FlyoutItem>
 
-    <FlyoutItem Title="About" FlyoutIcon="nope" Shell.TabBarIsVisible="False">
+    <FlyoutItem Title="About" Shell.TabBarIsVisible="False">
         <ShellContent Route="AboutPage" ContentTemplate="{DataTemplate view:AboutPage}" />
     </FlyoutItem>
 

@@ -48,7 +48,7 @@ public abstract class AbstractBookViewModel : AbstractViewModel
         set => SetProperty(ref _canOperateWithBooks, value);
     }
 
-    public IStatusBar StatusBar
+    protected IStatusBar StatusBar
     {
         get => _statusBar;
         set => SetProperty(ref _statusBar, value);

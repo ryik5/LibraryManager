@@ -9,7 +9,7 @@ namespace LibraryManager.ViewModels;
 
 public class BooksViewModel : AbstractBookViewModel, IDisposable, IRefreshable
 {
-    public BooksViewModel(ILibrary library, SettingsViewModel settings, StatusBarViewModel statusBar)
+    public BooksViewModel(ILibrary library, SettingsViewModel settings, IStatusBar statusBar)
     {
         StatusBar = statusBar;
         Library = library;
@@ -203,7 +203,7 @@ public class BooksViewModel : AbstractBookViewModel, IDisposable, IRefreshable
         CanOperateWithBooks = ValidLibrary();
         CanEditBook = ValidSelectedBooks();
     }
-    
+
     // Dispose method for external calls
     public void Dispose()
     {

@@ -8,39 +8,31 @@
     <ContentPage.MenuBarItems>
         <MenuBarItem Text="Find Books">
             <MenuFlyoutItem Text="Find Books"
-                            IsEnabled="{Binding CanOperateWithBooks, Mode=OneWay}"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Find Books" />
             <MenuFlyoutItem Text="Edit Book"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Edit Book"
-                            ToolTipProperties.Text="Edit the selected book"
-                             IsEnabled="{Binding CanEditBook, Mode=OneWay}" />
+                            ToolTipProperties.Text="Edit the selected book" />
             <MenuFlyoutItem Text="Delete Book(s)"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Delete the selected book"
-                            ToolTipProperties.Text="Delete the selected books"
-                             IsEnabled="{Binding CanEditBook, Mode=OneWay}" />
+                            ToolTipProperties.Text="Delete the selected books" />
         </MenuBarItem>
 
         <MenuBarItem Text="Navigate">
-
             <MenuFlyoutItem Text="Library"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="LibraryPage" />
-
             <MenuFlyoutItem Text="Books"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="BooksPage" />
-
             <MenuFlyoutItem Text="Tools"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="ToolsPage" />
-
             <MenuFlyoutItem Text="About"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="AboutPage" />
-
             <!--</MenuFlyoutSubItem>-->
         </MenuBarItem>
     </ContentPage.MenuBarItems>
