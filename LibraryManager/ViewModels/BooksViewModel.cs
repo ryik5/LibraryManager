@@ -9,17 +9,14 @@ namespace LibraryManager.ViewModels;
 
 public class BooksViewModel : AbstractBookViewModel, IDisposable, IRefreshable
 {
-    public BooksViewModel(ILibrary library, SettingsViewModel settings, IStatusBar statusBar)
+    public BooksViewModel(ILibrary library, SettingsViewModel settings, IStatusBar statusBar) : base(library, statusBar)
     {
-        StatusBar = statusBar;
-        Library = library;
-
         Library.LibraryIdChanged += Handle_LibraryIdChanged;
         Library.BookList.CollectionChanged += Handle_BookListCollectionChanged;
         Library.TotalBooksChanged += Handle_TotalBooksChanged;
         IsBooksCollectionViewVisible = true;
         IsEditBookViewVisible = false;
-        _bookManageable = new BookManagerModel(Library, settings);
+        _bookManageable = new BookManagerModel(Library, settings, statusBar);
         ContentState = Constants.LOAD_CONTENT;
         ClearingState = Constants.CLEAR_CONTENT;
         CanOperateWithBooks = ValidLibrary();

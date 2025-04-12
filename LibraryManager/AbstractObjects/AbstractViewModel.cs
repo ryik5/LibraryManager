@@ -111,8 +111,7 @@ public abstract class AbstractViewModel : AbstractBindableModel
     /// </summary>
     /// <param name="page">The page to compare the current route with.</param>
     /// <returns>true if the current route is equal to the provided page, false otherwise.</returns>
-    protected bool IsCurrentRoute(string page) =>
-        Shell.Current.CurrentState.Location.OriginalString == $"//{page}";
+    protected static bool IsCurrentRoute(string page) => Shell.Current.CurrentState.Location.OriginalString == $"//{page}";
 
     protected Task ShowNavigationErrorInDebug(string commandParameter, string className)
     {
@@ -143,13 +142,5 @@ public abstract class AbstractViewModel : AbstractBindableModel
 
         return Task.CompletedTask;
     }
-    #endregion
-
-
-    #region Public Properties
-    /// <summary>
-    /// Command to perform an action, such as navigate to a different page or view or other actions.
-    /// </summary>
-    public ICommand NavigateCommand { get; set; }
     #endregion
 }

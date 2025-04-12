@@ -41,10 +41,10 @@ public class StatusBarViewModel : AbstractBindableModel, IStatusBar
     {
         switch (infoKind)
         {
-            case EInfoKind.CommonMessage:
+            case EInfoKind.CommonInfo:
                 await SetCommonInfo(message);
                 break;
-            case EInfoKind.DebugMessage:
+            case EInfoKind.CurrentInfo:
                 await SetCurrentInfo(message);
                 break;
         }

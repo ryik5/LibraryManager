@@ -9,7 +9,7 @@ namespace LibraryManager.Models;
 /// <author>YR 2025-01-09</author>
 public class LibraryManagerModel : AbstractBindableModel, ILibraryManageable
 {
-    public LibraryManagerModel(ILibrary? library)
+    public LibraryManagerModel(ILibrary? library, IStatusBar statusBar)
     {
         if (library is null)
             throw new ArgumentNullException(nameof(library));
@@ -22,6 +22,8 @@ public class LibraryManagerModel : AbstractBindableModel, ILibraryManageable
         {
             _library = library;
         }
+        
+        _statusBar = statusBar;
     }
 
 
@@ -182,5 +184,6 @@ public class LibraryManagerModel : AbstractBindableModel, ILibraryManageable
 
     #region Private fields
     private ILibrary? _library;
+    private readonly IStatusBar _statusBar;
     #endregion
 }

@@ -7,15 +7,17 @@
 public enum EInfoKind
 {
     /// <summary>
-    /// Total number of books in the current librery.
-    /// </summary>
-    TotalBooks,
-    /// <summary>
     /// Common message.
     /// </summary>
-    CommonMessage,
+    CommonInfo,
+
     /// <summary>
     /// Debug message. It shouldn't be shown to the user.
     /// </summary>
-    DebugMessage
+    CurrentInfo,
+
+    /// <summary>
+    /// Total number of books in the current librery.
+    /// </summary>
+    TotalBooks
 }

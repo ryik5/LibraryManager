@@ -14,9 +14,10 @@ namespace LibraryManager.Models;
 /// <author>YR 2025-01-09</author>
 public class BookManagerModel : AbstractBindableModel, IBookManageable
 {
-    public BookManagerModel(ILibrary library, SettingsViewModel settings)
+    public BookManagerModel(ILibrary library, SettingsViewModel settings, IStatusBar statusBar)
     {
         _settings = settings;
+        _statusBar = statusBar;
 
         if (library is null)
             throw new ArgumentNullException(nameof(library));
@@ -34,12 +35,14 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
             case Constants.ADD_BOOK:
             {
                 await AddBookTask(BookModelMaker.GenerateDemoBook());
+               await _statusBar.SetStatusMessage(EInfoKind.CurrentInfo, "Book added.");
                 break;
             }
             case Constants.DEMO_ADD_BOOKS:
             {
                 for (var b = 0; b < 10; b++)
                     await AddBookTask(BookModelMaker.GenerateDemoBook());
+                await _statusBar.SetStatusMessage(EInfoKind.CurrentInfo, "10 Books added.");
                 break;
             }
             case Constants.DELETE_BOOK:
@@ -50,6 +53,7 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
                     {
                         TryRemoveBook(bookToDelete).ConfigureAwait(false);
                     }
+                    await _statusBar.SetStatusMessage(EInfoKind.CurrentInfo, $"Deleted {selectedBooks.Count} book(s).");
                 }
 
                 break;
@@ -537,5 +541,6 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
     private const StringComparison CURRENT_COMPARISION_RULE = StringComparison.OrdinalIgnoreCase;
     private ILibrary _library;
     private SettingsViewModel _settings;
+    private readonly IStatusBar _statusBar;
     #endregion
 }

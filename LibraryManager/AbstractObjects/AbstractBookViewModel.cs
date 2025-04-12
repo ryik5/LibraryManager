@@ -5,7 +5,19 @@ namespace LibraryManager.AbstractObjects;
 
 public abstract class AbstractBookViewModel : AbstractViewModel
 {
+    public AbstractBookViewModel(ILibrary library, IStatusBar statusBar)
+    {
+        StatusBar = statusBar;
+        Library = library;
+    }
+
     #region Public properties
+    public IStatusBar StatusBar
+    {
+        get => _statusBar;
+        set => SetProperty(ref _statusBar, value);
+    }
+
     public ILibrary Library
     {
         get => _library;
@@ -47,12 +59,6 @@ public abstract class AbstractBookViewModel : AbstractViewModel
         get => _canOperateWithBooks;
         set => SetProperty(ref _canOperateWithBooks, value);
     }
-
-    protected IStatusBar StatusBar
-    {
-        get => _statusBar;
-        set => SetProperty(ref _statusBar, value);
-    }
     #endregion
 
     #region CommandParameters
@@ -70,10 +76,10 @@ public abstract class AbstractBookViewModel : AbstractViewModel
     private ObservableCollection<object> _selectedObjects = new();
     private Book _book;
     private string _ok = Constants.OK;
-    private IStatusBar _statusBar;
     private bool _canOperateWithBooks;
     private bool _canEditBook;
     private bool _isEditBookViewVisible;
     private bool _isBooksCollectionViewVisible;
+    private IStatusBar _statusBar;
     #endregion
 }

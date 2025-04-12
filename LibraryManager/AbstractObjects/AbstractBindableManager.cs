@@ -17,6 +17,19 @@ public abstract class AbstractBindableModel : INotifyPropertyChanged
         // Initialize the generic navigation command
         NavigateExtendedCommand = new AsyncRelayCommand<string>(PerformExtendedAction);
     }
+
+
+    #region Public Properties
+    /// <summary>
+    /// Command to perform an action, such as navigate to a different page or view or other actions.
+    /// </summary>
+    public ICommand NavigateCommand { get; set; }
+
+    public ICommand NavigateExtendedCommand { get; }
+    #endregion
+
+    
+    #region Public Methods
     // <summary>
     /// Displays a custom dialog page with a title and message, and returns a boolean indicating whether the user pressed OK or Cancel.
     /// </summary>
@@ -37,8 +50,6 @@ public abstract class AbstractBindableModel : INotifyPropertyChanged
 
         return new ResultInput(result, inputText);
     }
-    
-    public ICommand NavigateExtendedCommand { get; }
 
     protected virtual async Task PerformExtendedAction(string? arg1, CancellationToken arg2)
     {
@@ -51,11 +62,12 @@ public abstract class AbstractBindableModel : INotifyPropertyChanged
     /// </summary>
     /// <param name="action">The action to invoke.</param>
     protected void RunInMainThread(Action action) => MainThread.BeginInvokeOnMainThread(action);
+
     /// <summary>
     /// Invokes the specified action on the UI thread.
     /// </summary>
     /// <param name="action">The action to invoke.</param>
-    protected async Task RunInMainThreadAsync(Action action) => await Task.Run(()=>RunInMainThread(action));
+    protected async Task RunInMainThreadAsync(Action action) => await Task.Run(() => RunInMainThread(action));
 
     // Run code in the UI thread
     // Platform-agnostic, works anywhere in MAUI
@@ -82,13 +94,13 @@ public abstract class AbstractBindableModel : INotifyPropertyChanged
             {
                 /*{ DevicePlatform.iOS, new[] { "public.archive" } },
                 { DevicePlatform.Android, new[] { "application/xml" } },*/
-                { DevicePlatform.WinUI,  fileExtension  },
-                { DevicePlatform.MacCatalyst,  fileExtension  } //".xml", "xml"
+                { DevicePlatform.WinUI, fileExtension },
+                { DevicePlatform.MacCatalyst, fileExtension } //".xml", "xml"
             });
         var options = new PickOptions()
         {
             PickerTitle = windowTitle,
-            FileTypes = fileExtension?.Length<1 ? null : fileTypes,
+            FileTypes = fileExtension?.Length < 1 ? null : fileTypes,
         };
         try
         {
@@ -131,6 +143,7 @@ public abstract class AbstractBindableModel : INotifyPropertyChanged
     {
         return Path.Combine(GetPathToDocumentDirectory(), StringsHandler.CreateXmlFileName(pointedName));
     }
+
     /// <summary>
     /// Gets the path to an XML file in the document directory.
     /// </summary>
@@ -138,16 +151,18 @@ public abstract class AbstractBindableModel : INotifyPropertyChanged
     /// <returns>The path to the XML file in the document directory.</returns>
     protected string GetPathToFile(string pointedName, string fileExtenstion)
     {
-        return Path.Combine(GetPathToDocumentDirectory(), StringsHandler.CreateXmlFileName(pointedName, fileExtenstion));
+        return Path.Combine(GetPathToDocumentDirectory(),
+            StringsHandler.CreateXmlFileName(pointedName, fileExtenstion));
     }
 
     protected async Task<string> PickFolderUpTask()
     {
         return await _folderPicker.PickFolder();
     }
+    #endregion
 
     
-    #region implementation INotifyPropertyChanged
+    #region Implementation INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
 
     protected void RaisePropertyChanged([CallerMemberName] string? propertyName = null)
@@ -163,8 +178,11 @@ public abstract class AbstractBindableModel : INotifyPropertyChanged
         return true;
     }
     #endregion
+
     
+    #region Private Fields
     private readonly IFolderPicker _folderPicker;
+    #endregion
 }
 
 public class ResultInput
@@ -179,14 +197,8 @@ public class ResultInput
     public string? InputString { get; private set; }
 }
 
-public class ResultMediaData
-{
-    public MediaData? MediaData { get; set; }
-    public bool IsSuccess { get; set; }
-}
-
 public class ResultBook
 {
-    public Book? Book { get;  set; }
+    public Book? Book { get; set; }
     public bool IsSuccess { get; set; }
 }

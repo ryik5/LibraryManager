@@ -16,7 +16,7 @@ public class LibraryViewModel : AbstractViewModel, IDisposable, IRefreshable
 
         Library.TotalBooksChanged += Handle_TotalBooksChanged;
         Library.LibraryIdChanged += Handle_LibraryIdChanged;
-        _libraryManager = new LibraryManagerModel(Library);
+        _libraryManager = new LibraryManagerModel(Library,statusBar);
         CanOperateWithLibrary = ValidLibrary();
         /*MessagingCenter.Subscribe<BooksViewModel>(this, "Navigate", async (sender) =>
         {

@@ -9,12 +9,11 @@ namespace LibraryManager.ViewModels;
 
 public class FindBooksViewModel : AbstractBookViewModel, IRefreshable
 {
-    public FindBooksViewModel(ILibrary library, SettingsViewModel settings, IStatusBar statusBar)
+    public FindBooksViewModel(ILibrary library, SettingsViewModel settings, IStatusBar statusBar) : base(library,
+        statusBar)
     {
         SearchFields = Enum.GetValues(typeof(EBibliographicKindInformation)).Cast<EBibliographicKindInformation>()
             .ToList();
-        StatusBar = statusBar;
-        Library = library;
 
         Library.LibraryIdChanged += Handle_LibraryIdChanged;
         Library.TotalBooksChanged += Handle_TotalBooksChanged;
@@ -23,12 +22,12 @@ public class FindBooksViewModel : AbstractBookViewModel, IRefreshable
         IsEditBookViewVisible = false;
         ContentState = Constants.LOAD_CONTENT;
         ClearingState = Constants.CLEAR_CONTENT;
-        _bookManageable = new BookManagerModel(Library, settings);
+        _bookManageable = new BookManagerModel(Library, settings, statusBar);
 
         CanOperateWithBooks = ValidLibrary();
         CanEditBook = false;
         OK = Constants.SAVE_CHANGES;
-     }
+    }
 
 
     #region Public Properties

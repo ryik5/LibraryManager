@@ -3,7 +3,9 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:control="clr-namespace:LibraryManager.Controls"
-             x:Class="LibraryManager.Views.BooksPage">
+             xmlns:vm="clr-namespace:LibraryManager.ViewModels"
+             x:Class="LibraryManager.Views.BooksPage"
+             x:DataType="vm:BooksViewModel">
 
     <ContentPage.MenuBarItems>
         <MenuBarItem Text="Books">
@@ -174,7 +176,7 @@
             </Grid>
 
             <!-- StatusBar -->
-            <control:StatusBarPanel Grid.Row="1" BindingContext="{Binding}"
+            <control:StatusBarPanel Grid.Row="1" BindingContext="{Binding }"
                                     StatusBar="{Binding StatusBar, Mode=OneWay}"
                                     BackgroundColor="{StaticResource Quaternary}"
                                     Margin="0" />
