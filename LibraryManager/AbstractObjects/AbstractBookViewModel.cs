@@ -11,6 +11,7 @@ public abstract class AbstractBookViewModel : AbstractViewModel
         Library = library;
     }
 
+
     #region Public properties
     public IStatusBar StatusBar
     {
@@ -61,6 +62,7 @@ public abstract class AbstractBookViewModel : AbstractViewModel
     }
     #endregion
 
+
     #region CommandParameters
     public string OK
     {
@@ -71,7 +73,8 @@ public abstract class AbstractBookViewModel : AbstractViewModel
     public string Cancel => Constants.CANCEL;
     #endregion
 
-    #region MyRegion
+
+    #region Private fields
     private ILibrary _library;
     private ObservableCollection<object> _selectedObjects = new();
     private Book _book;

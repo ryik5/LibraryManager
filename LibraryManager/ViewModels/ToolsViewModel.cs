@@ -5,8 +5,9 @@ namespace LibraryManager.ViewModels;
 
 public class ToolsViewModel : AbstractViewModel
 {
-    public ToolsViewModel(SettingsViewModel settings)
+    public ToolsViewModel(SettingsViewModel settings, IStatusBar statusBar)
     {
+        StatusBar = statusBar;
         Settings = settings;
         Settings.LoadAllSettings().ConfigureAwait(false);
         IsSettingsViewVisible = true;
@@ -30,6 +31,12 @@ public class ToolsViewModel : AbstractViewModel
     {
         get => _settings;
         set => SetProperty(ref _settings, value);
+    }
+
+    public IStatusBar StatusBar
+    {
+        get => _statusBar;
+        set => SetProperty(ref _statusBar, value);
     }
 
     #region CommandParameters
@@ -108,5 +115,6 @@ public class ToolsViewModel : AbstractViewModel
     private SettingsViewModel _settings;
     private bool _isSettingsVisible;
     private bool _isDebugViewVisible;
+    private IStatusBar _statusBar;
     #endregion
 }

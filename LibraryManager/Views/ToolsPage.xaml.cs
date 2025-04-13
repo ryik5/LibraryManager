@@ -18,6 +18,7 @@ public partial class ToolsPage : ContentPage
         
         // Ensure BindingContext is assigned only if not already set
         BindingContext ??= App.Services.GetService<ToolsViewModel>();
+        DebugView.DebugTextView = ((ToolsViewModel)BindingContext)?.StatusBar.DebugInfo;
     }
     
     /// <summary>
@@ -27,5 +28,6 @@ public partial class ToolsPage : ContentPage
     {
         base.OnDisappearing();
         BindingContext = null;
+        DebugView.DebugTextView = null;
     }
 }

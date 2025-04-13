@@ -39,11 +39,7 @@
     </ContentPage.MenuBarItems>
 
     <ContentPage.Content>
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
+        <Grid RowDefinitions="Auto, *">
 
             <!-- Menu -->
             <control:ThreeButtonsPanel Grid.Row="0" HeightRequest="35"
@@ -60,38 +56,31 @@
                                        CancelText="{Binding ToolsView, Mode=OneTime}" />
 
             <!--Settings View-->
-            <Grid Grid.Row="1" IsVisible="{Binding IsSettingsViewVisible}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
+            <Grid Grid.Row="1" IsVisible="{Binding IsSettingsViewVisible}" RowDefinitions="*, Auto">
+                <control:SettingsView Grid.Row="0"
+                                      BindingContext="{Binding Settings}" />
 
-                <control:SettingsView
-                    BindingContext="{Binding Settings}"
-                    Grid.Row="0" />
+                <control:ThreeButtonsPanel Grid.Row="1"
+                                           HeightRequest="35"
+                                           Margin="0,50,0,40"
+                                           BindingContext="{Binding}"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="End"
 
-                <control:ThreeButtonsPanel
-                    Grid.Row="1"
-                    HeightRequest="35"
-                    Margin="0,50,0,40"
-                    BindingContext="{Binding}"
-                    HorizontalOptions="Center"
-                    VerticalOptions="End"
-
-                    NavigateCommand="{Binding NavigateCommand, Mode=OneTime}"
-                    IsOkVisibile="True"
-                    OkText="{Binding Save, Mode=OneTime}"
-                    IsNoVisibile="True"
-                    NoText="{Binding Cancel, Mode=OneTime}"
-                    IsCancelVisibile="True"
-                    CancelText="{Binding Reset, Mode=OneTime}" />
-
+                                           NavigateCommand="{Binding NavigateCommand, Mode=OneTime}"
+                                           IsOkVisibile="True"
+                                           OkText="{Binding Save, Mode=OneTime}"
+                                           IsNoVisibile="True"
+                                           NoText="{Binding Cancel, Mode=OneTime}"
+                                           IsCancelVisibile="True"
+                                           CancelText="{Binding Reset, Mode=OneTime}" />
             </Grid>
 
             <!--Debug View-->
-            <VerticalStackLayout Grid.Row="1" IsVisible="{Binding IsDebugViewVisible}">
-                <!--TODO : -->
-            </VerticalStackLayout>
+            <control:DebugView x:Name="DebugView" 
+                               Grid.Row="1" Margin="20"
+                               IsVisible="{Binding IsDebugViewVisible}"
+                               DebugTextView="{Binding  StatusBar.DebugInfo}" />
 
             <!--Tools View-->
             <!--TODO : -->

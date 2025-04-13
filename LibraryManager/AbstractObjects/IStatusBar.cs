@@ -22,6 +22,11 @@ public interface IStatusBar
     string StatusInfo { get; }
 
     /// <summary>
+    /// Gets a list of debug information strings.
+    /// </summary>
+    List<string> DebugInfo { get; }
+
+    /// <summary>
     /// Sets the status message based on the provided information kind and message.
     /// </summary>
     /// <param name="infoKind">The type of information to be displayed.</param>

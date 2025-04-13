@@ -1,5 +1,4 @@
 using LibraryManager.AbstractObjects;
-using System.Text;
 
 namespace LibraryManager.ViewModels;
 
@@ -35,7 +34,7 @@ public class StatusBarViewModel : AbstractBindableModel, IStatusBar
         private set => SetProperty(ref _statusInfo, value);
     }
 
-    public StringBuilder DebugInfo
+    public List<string> DebugInfo
     {
         get => _debugInfo;
         private set => SetProperty(ref _debugInfo, value);
@@ -90,7 +89,7 @@ public class StatusBarViewModel : AbstractBindableModel, IStatusBar
 
     private Task SetDebugInfo(string message)
     {
-        DebugInfo.Insert(0, message);
+        DebugInfo.Add(message);
         return Task.CompletedTask;
     }
     #endregion
@@ -100,6 +99,6 @@ public class StatusBarViewModel : AbstractBindableModel, IStatusBar
     private string _statusInfo = String.Empty;
     private string _commonInfo = String.Empty;
     private string _currentInfo = String.Empty;
-    private StringBuilder _debugInfo = new ();
+    private List<string> _debugInfo = new();
     #endregion
 }

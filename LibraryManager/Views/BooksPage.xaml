@@ -51,21 +51,12 @@
     </ContentPage.MenuBarItems>
 
     <ContentPage.Content>
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <Grid Grid.Row="0" BackgroundColor="{StaticResource White}" Margin="10,10,10,0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
+        <Grid RowDefinitions="*, Auto">
+            <Grid Grid.Row="0" BackgroundColor="{StaticResource White}" Margin="10,10,10,0"
+                  RowDefinitions="Auto, *, Auto, Auto">
                 <Grid.Resources>
                     <Style TargetType="Button">
-                         <Setter Property="Margin" Value="0,0,10,0" />
+                        <Setter Property="Margin" Value="0,0,10,0" />
                     </Style>
                 </Grid.Resources>
 
