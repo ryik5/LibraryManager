@@ -15,32 +15,6 @@ public class StatusBarViewModel : AbstractBindableModel, IStatusBar
         });*/
     }
 
-    #region Public Properties
-    public string CommonInfo
-    {
-        get => _commonInfo;
-        private set => SetProperty(ref _commonInfo, value);
-    }
-
-    public string CurrentInfo
-    {
-        get => _currentInfo;
-        private set => SetProperty(ref _currentInfo, value);
-    }
-
-    public string StatusInfo
-    {
-        get => _statusInfo;
-        private set => SetProperty(ref _statusInfo, value);
-    }
-
-    public List<string> DebugInfo
-    {
-        get => _debugInfo;
-        private set => SetProperty(ref _debugInfo, value);
-    }
-    #endregion
-
 
     #region Public Methods
     public async Task SetStatusMessage(EInfoKind infoKind, string message)
@@ -89,8 +63,35 @@ public class StatusBarViewModel : AbstractBindableModel, IStatusBar
 
     private Task SetDebugInfo(string message)
     {
-        DebugInfo.Add(message);
+        DebugInfo.Add(new IndexedString { TimeStamp = $"{DateTime.Now:HH:mm:ss:fff}", Message = message });
         return Task.CompletedTask;
+    }
+    #endregion
+
+
+    #region Public Properties
+    public string CommonInfo
+    {
+        get => _commonInfo;
+        private set => SetProperty(ref _commonInfo, value);
+    }
+
+    public string CurrentInfo
+    {
+        get => _currentInfo;
+        private set => SetProperty(ref _currentInfo, value);
+    }
+
+    public string StatusInfo
+    {
+        get => _statusInfo;
+        private set => SetProperty(ref _statusInfo, value);
+    }
+
+    public List<IndexedString> DebugInfo
+    {
+        get => _debugInfo;
+        private set => SetProperty(ref _debugInfo, value);
     }
     #endregion
 
@@ -99,6 +100,12 @@ public class StatusBarViewModel : AbstractBindableModel, IStatusBar
     private string _statusInfo = String.Empty;
     private string _commonInfo = String.Empty;
     private string _currentInfo = String.Empty;
-    private List<string> _debugInfo = new();
+    private List<IndexedString> _debugInfo = new();
     #endregion
+}
+
+public class IndexedString
+{
+    public string TimeStamp { get; set; }
+    public string Message { get; set; }
 }

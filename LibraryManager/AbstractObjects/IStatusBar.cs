@@ -1,3 +1,5 @@
+using LibraryManager.ViewModels;
+
 namespace LibraryManager.AbstractObjects;
 
 /// <summary>
@@ -24,7 +26,7 @@ public interface IStatusBar
     /// <summary>
     /// Gets a list of debug information strings.
     /// </summary>
-    List<string> DebugInfo { get; }
+    List<IndexedString> DebugInfo { get; }
 
     /// <summary>
     /// Sets the status message based on the provided information kind and message.

@@ -1,3 +1,5 @@
+using LibraryManager.ViewModels;
+
 namespace LibraryManager.Controls;
 
 public partial class DebugView : ContentView
@@ -8,13 +10,13 @@ public partial class DebugView : ContentView
     }
 
     public static readonly BindableProperty DebugTextViewProperty =
-        BindableProperty.Create(nameof(DebugTextView), typeof(List<string>), typeof(DebugView), default,
+        BindableProperty.Create(nameof(DebugTextView), typeof(List<IndexedString>), typeof(DebugView), default,
             propertyChanged: OnDebugTextViewChanged);
 
 
-    public List<string> DebugTextView
+    public List<IndexedString> DebugTextView
     {
-        get => (List<string>)GetValue(DebugTextViewProperty);
+        get => (List<IndexedString>)GetValue(DebugTextViewProperty);
         set => SetValue(DebugTextViewProperty, value);
     }
 
@@ -23,7 +25,7 @@ public partial class DebugView : ContentView
     {
         if (!(bindable is DebugView debugView))
             return;
-        if (!(newValue is List<string> value))
+        if (!(newValue is List<IndexedString> value))
             return;
         debugView.DebugTextView = value;
     }

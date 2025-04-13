@@ -8,8 +8,7 @@
         <ControlTemplate>
             <ScrollView HorizontalScrollBarVisibility="Always"
                         VerticalScrollBarVisibility="Always">
-                <CollectionView
-                    ItemsSource="{Binding Source={RelativeSource TemplatedParent}, Path=DebugTextView}">
+                <CollectionView ItemsSource="{Binding Source={RelativeSource TemplatedParent}, Path=DebugTextView}">
                     <CollectionView.ItemsLayout>
                         <GridItemsLayout Orientation="Vertical" />
                     </CollectionView.ItemsLayout>
@@ -17,7 +16,14 @@
                         <DataTemplate>
                             <ContentView Padding="0,2,0,2">
                                 <Grid ColumnDefinitions="*,3*" HorizontalOptions="Start">
-                                    <Label Text="{Binding .}"
+                                    <Label Grid.Column="0" HorizontalTextAlignment="End">
+                                        <Label.Text>
+                                            <MultiBinding StringFormat="{}{0} | ">
+                                                <Binding Path="TimeStamp" Mode="OneWay"/>
+                                            </MultiBinding>
+                                        </Label.Text>
+                                    </Label>
+                                    <Label Text="{Binding Message, Mode=OneWay}"
                                            TextColor="{StaticResource Primary}"
                                            Grid.Column="1"
                                            HorizontalOptions="Start"
