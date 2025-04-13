@@ -13,11 +13,7 @@
                 Margin="10">
             <Label Text="Settings" FontSize="32" />
         </Border>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="0.4*" />
-                <ColumnDefinition Width="0.6*" />
-            </Grid.ColumnDefinitions>
+        <Grid ColumnDefinitions="0.4*,0.6*">
             <Grid.Resources>
                 <Style TargetType="Label">
                     <Setter Property="VerticalTextAlignment" Value="Center" />
@@ -111,14 +107,7 @@
                 <StackLayout Margin="10">
                     <Label Text="'Create and Edit Book' Pages" FontSize="18" Margin="0,0,0,10" />
                     <Frame CornerRadius="10" BorderColor="{StaticResource Primary}" Padding="10">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
+                        <Grid ColumnDefinitions="*,*" RowDefinitions="Auto">
 
                             <Label Grid.Row="0" Grid.Column="0"
                                    Text="Max content length, byte" />

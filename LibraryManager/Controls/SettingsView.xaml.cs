@@ -8,11 +8,13 @@ public partial class SettingsView : ContentView
     }
 
     // to indicate invalid FontSize
+    // TODO: from settings(add attached properties)
     private void OnTextFontSizeChanged(object? sender, TextChangedEventArgs args)
     {
-        bool isValid = int.TryParse(args.NewTextValue, out int value) && value is >= 6 and <= 40;
-
         if (sender is Entry entry)
+        {
+            var isValid = int.TryParse(args.NewTextValue, out int value) && value is >= 6 and <= 40;
             entry.Background = isValid ? Brush.Transparent : Brush.Pink;
+        }
     }
 }
