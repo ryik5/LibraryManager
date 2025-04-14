@@ -16,14 +16,14 @@
                         <DataTemplate>
                             <ContentView Padding="0,2,0,2">
                                 <Grid ColumnDefinitions="*,3*" HorizontalOptions="Start">
-                                    <Label Grid.Column="0" HorizontalTextAlignment="End">
+                                    <Label Grid.Column="0" HorizontalTextAlignment="End" TextColor="{StaticResource Primary}">
                                         <Label.FormattedText>
                                             <FormattedString>
                                                 <Span FontAttributes="Bold">
                                                     <Binding Path="TimeStamp" Mode="OneWay" />
-                                                    <Span.GestureRecognizers>
+                                                    <!--<Span.GestureRecognizers> TODO : Add command to Bold string
                                                         <TapGestureRecognizer Command="{Binding Source={RelativeSource TemplatedParent}, Path=TapCommand}" />
-                                                    </Span.GestureRecognizers>
+                                                    </Span.GestureRecognizers>-->
                                                 </Span>
                                                 <Span Text=" |" />
                                             </FormattedString>
