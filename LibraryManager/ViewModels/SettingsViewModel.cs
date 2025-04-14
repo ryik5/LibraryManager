@@ -39,6 +39,9 @@ public class SettingsViewModel : AbstractBindableModel
     /// </summary>
     public bool[] Booleans { get; }
 
+    /// <summary>
+    /// Sort directions - ASCENDING, DESCENDING
+    /// </summary>
     public string[] SortingDirections { get; }
 
     /// <summary>
@@ -48,31 +51,50 @@ public class SettingsViewModel : AbstractBindableModel
     #endregion
 
 
-    #region Properties for Binding
+    #region Public Properties
+    /// <summary>
+    /// Gets or sets the font size of the message box.
+    /// </summary>
     public double MessageBox_FontSize
     {
         get => _messageBoxFontSize;
         set => SetProperty(ref _messageBoxFontSize, value);
     }
 
+    /// <summary>
+    /// Gets or sets the search field type.
+    /// </summary>
     public EBibliographicKindInformation SearchField
     {
         get => _searchField;
         set => SetProperty(ref _searchField, value);
     }
 
+    /// <summary>
+    /// Gets or sets a value indicating whether to search on the fly.
+    /// </summary>
     public bool SearchOnFly
     {
         get => _searchOnFly;
         set => SetProperty(ref _searchOnFly, value);
     }
 
+    /// <summary>
+    /// Gets or sets the font size of the debug text.
+    /// </summary>
     public double Debug_TextFontSize
     {
         get => _debugTextFontSize;
         set => SetProperty(ref _debugTextFontSize, value);
     }
 
+    /// <summary>
+    /// Gets or sets the first sort book property.
+    /// </summary>
+    /// <remarks>
+    /// If set to the same value as SecondSortBookProperty or ThirdSortBookProperty, 
+    /// the other property will be reset to Book.None.
+    /// </remarks>
     public string FirstSortBookProperty
     {
         get => _firstSortBookProperty;
@@ -92,6 +114,9 @@ public class SettingsViewModel : AbstractBindableModel
         }
     }
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the first sort property is sorted in descending order.
+    /// </summary>
     public bool FirstSortProperty_ByDescend
     {
         get => _firstSortPropertyByDescend;
@@ -102,6 +127,9 @@ public class SettingsViewModel : AbstractBindableModel
         }
     }
 
+    /// <summary>
+    /// Gets or sets the sorting direction of the first sort property.
+    /// </summary>
     public string FirstSortProperty_SortingDirection
     {
         get => _firstSortProperty_SortingDirection;
@@ -112,6 +140,13 @@ public class SettingsViewModel : AbstractBindableModel
         }
     }
 
+    /// <summary>
+    /// Gets or sets the second sort book property.
+    /// </summary>
+    /// <remarks>
+    /// If set to the same value as FirstSortBookProperty or ThirdSortBookProperty, 
+    /// the other property will be reset to Book.None.
+    /// </remarks>
     public string SecondSortBookProperty
     {
         get => _secondSortBookProperty;
@@ -127,6 +162,9 @@ public class SettingsViewModel : AbstractBindableModel
         }
     }
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the second sort property is sorted in descending order.
+    /// </summary>
     public bool SecondSortProperty_ByDescend
     {
         get => _secondSortPropertyByDescend;
@@ -137,6 +175,9 @@ public class SettingsViewModel : AbstractBindableModel
         }
     }
 
+    /// <summary>
+    /// Gets or sets the sorting direction of the second sort property.
+    /// </summary>
     public string SecondSortProperty_SortingDirection
     {
         get => _secondSortProperty_SortingDirection;
@@ -147,6 +188,13 @@ public class SettingsViewModel : AbstractBindableModel
         }
     }
 
+    /// <summary>
+    /// Gets or sets the third sort book property.
+    /// </summary>
+    /// <remarks>
+    /// If set to the same value as FirstSortBookProperty or SecondSortBookProperty, 
+    /// the other property will be reset to Book.None.
+    /// </remarks>
     public string ThirdSortBookProperty
     {
         get => _thirdSortBookProperty;
@@ -162,6 +210,9 @@ public class SettingsViewModel : AbstractBindableModel
         }
     }
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the third sort property is sorted in descending order.
+    /// </summary>
     public bool ThirdSortProperty_ByDescend
     {
         get => _thirdSortPropertyByDescend;
@@ -172,6 +223,9 @@ public class SettingsViewModel : AbstractBindableModel
         }
     }
 
+    /// <summary>
+    /// Gets or sets the sorting direction of the third sort property.
+    /// </summary>
     public string ThirdSortProperty_SortingDirection
     {
         get => _thirdSortProperty_SortingDirection;
@@ -212,17 +266,23 @@ public class SettingsViewModel : AbstractBindableModel
         set => SetProperty(ref _book_MaxContentLength_ToolTip, value);
     }
 
+    /// <summary>
+    /// Property to get/set the library home folder path
+    /// </summary>
     public string LibraryHomeFolder
     {
         get => _libraryHomeFolder;
         set => SetProperty(ref _libraryHomeFolder, value);
     }
 
+    /// <summary>
+    /// Read-only property to get the label for the library home folder
+    /// </summary>
     public string LabelLibraryHomeFolder => Constants.LIBRARY_HOME_FOLDER;
     #endregion
 
 
-    #region Reset, Load, and Save Settings
+    #region Public methods: Reset, Load, and Save Settings
     /// <summary>
     /// Resets all application settings to their default values.
     /// </summary>
