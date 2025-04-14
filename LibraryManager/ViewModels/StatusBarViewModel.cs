@@ -6,8 +6,6 @@ public class StatusBarViewModel : AbstractBindableModel, IStatusBar
 {
     public StatusBarViewModel()
     {
-        Task.Run(async () => await SetTotalBooks(0));
-
         /*MessagingCenter.Subscribe<AbstractViewModel, string>(this, "Navigate", async (sender, args) =>
         {
             Console.WriteLine($"Received {args} from AbstractViewModel.");
@@ -37,15 +35,16 @@ public class StatusBarViewModel : AbstractBindableModel, IStatusBar
         switch (infoKind)
         {
             case EInfoKind.TotalBooks:
-                await SetTotalBooks(totalBooks);
+                var message = $"Total book(s): {totalBooks}";
+                await SetTotalBooks(message);
+                await SetDebugInfo(message);
                 break;
         }
     }
 
-    private Task SetTotalBooks(int totalBooks)
+    private Task SetTotalBooks(string message)
     {
-        StatusInfo = $"Total books: {totalBooks}";
-        SetDebugInfo(StatusInfo);
+        StatusInfo = message;
         return Task.CompletedTask;
     }
 
