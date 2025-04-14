@@ -23,7 +23,6 @@ public class SettingsViewModel : AbstractBindableModel
         Booleans = new[] { true, false };
         SortingDirections = new[] { Constants.SORTING_ASCENDING, Constants.SORTING_DESCENDING };
         BookProperties = new Library().GetBookProperties();
-        _folderPicker = new FolderPicker();
         LoadAllSettings().ConfigureAwait(false);
     }
     
@@ -470,7 +469,6 @@ public class SettingsViewModel : AbstractBindableModel
     private string _thirdSortProperty_SortingDirection;
     private string _book_MaxContentLength_ToolTip;
     private string _libraryHomeFolder;
-    private readonly IFolderPicker _folderPicker;
 
     private readonly Dictionary<string, object> DefaultSettings = new() // Default values for preferences
     {
