@@ -26,17 +26,7 @@ public class SettingsViewModel : AbstractBindableModel
         _folderPicker = new FolderPicker();
         LoadAllSettings().ConfigureAwait(false);
     }
-
-    protected override async Task PerformExtendedAction(string? arg1, CancellationToken arg2)
-    {
-        switch (arg1)
-        {
-            case Constants.LIBRARY_HOME_FOLDER:
-                LibraryHomeFolder = await _folderPicker.PickFolder();
-                break;
-        }
-    }
-
+    
 
     #region Dictionaries
     /// <summary>

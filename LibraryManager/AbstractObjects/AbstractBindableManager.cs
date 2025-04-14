@@ -14,8 +14,6 @@ public abstract class AbstractBindableModel : INotifyPropertyChanged
 {
     protected AbstractBindableModel()
     {
-        // Initialize the generic navigation command
-        NavigateExtendedCommand = new AsyncRelayCommand<string>(PerformExtendedAction);
     }
 
 
@@ -51,10 +49,7 @@ public abstract class AbstractBindableModel : INotifyPropertyChanged
         return new ResultInput(result, inputText);
     }
 
-    protected virtual async Task PerformExtendedAction(string? arg1, CancellationToken arg2)
-    {
-        throw new NotImplementedException();
-    }
+
 
 
     /// <summary>
