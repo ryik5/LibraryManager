@@ -17,17 +17,24 @@
                             <ContentView Padding="0,2,0,2">
                                 <Grid ColumnDefinitions="*,3*" HorizontalOptions="Start">
                                     <Label Grid.Column="0" HorizontalTextAlignment="End">
-                                        <Label.Text>
-                                            <MultiBinding StringFormat="{}{0} | ">
-                                                <Binding Path="TimeStamp" Mode="OneWay"/>
-                                            </MultiBinding>
-                                        </Label.Text>
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span FontAttributes="Bold">
+                                                    <Binding Path="TimeStamp" Mode="OneWay" />
+                                                    <Span.GestureRecognizers>
+                                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource TemplatedParent}, Path=TapCommand}" />
+                                                    </Span.GestureRecognizers>
+                                                </Span>
+                                                <Span Text=" |" />
+                                            </FormattedString>
+                                        </Label.FormattedText>
                                     </Label>
                                     <Label Text="{Binding Message, Mode=OneWay}"
                                            TextColor="{StaticResource Primary}"
                                            Grid.Column="1"
                                            HorizontalOptions="Start"
-                                           VerticalOptions="Center" />
+                                           VerticalOptions="Center" 
+                                           Padding="5,0,0,0"/>
                                 </Grid>
                             </ContentView>
                         </DataTemplate>

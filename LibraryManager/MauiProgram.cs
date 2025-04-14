@@ -37,7 +37,7 @@ public static class MauiProgram
         var statusBar = new StatusBarViewModel();
         var package = AppInfo.Current.PackageName;
         statusBar.SetStatusMessage(EInfoKind.DebugInfo,
-            $"{AppInfo.Current.Name} is started with package '{package}'.");
+            $"{AppInfo.Current.Name} started with package '{package}'.");
         statusBar.SetStatusMessage(EInfoKind.CommonInfo,
             $"v.{AppInfo.Current.VersionString}, b.{AppInfo.Current.BuildString}");
         statusBar.SetStatusMessage(EInfoKind.CurrentInfo,$"Current Library ID: '{library.Id}'");
