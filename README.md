@@ -70,7 +70,22 @@ dotnet build -t:Run -f net8.0-ios
 
 ## Screenshots
 
-(Include screenshots of the UI here)
+![Library](/docs/Library.png)
+
+*The main dashboard displaying an overview of your collection.*
+
+![Books View](/docs/Books.png)
+
+*The 'Books view' interface.*
+
+![Edit Book](/docs/EditBook.png)
+
+*The 'Edit Book' interface with ISBN scanning feature.*
+
+![Search Management](/docs/FindBooks.png)
+
+*Find books in your library and check them.*
+
 
 ## Roadmap
 
