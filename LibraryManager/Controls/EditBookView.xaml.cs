@@ -45,10 +45,14 @@ public partial class EditBookView : ContentView
     // to indicate invalid Input
     private void OnInputIntChanged(object? sender, TextChangedEventArgs args)
     {
-        bool isValid = int.TryParse(args.NewTextValue, out int value) && value is > 0 and <= 1000000000;
+        bool isValid = int.TryParse(args.NewTextValue, out int value) && value is > 0 and <= 1_000_000_000;
 
         if (sender is Entry entry)
+        {
             entry.Background = isValid ? Brush.Transparent : Brush.Pink;
+            // TODO: do it as async
+            // entry.Text = Math.Clamp(value, 0, 1_000_000_000).ToString();
+        }
     }
 
     private void OnInputYearChanged(object? sender, TextChangedEventArgs args)
@@ -56,7 +60,11 @@ public partial class EditBookView : ContentView
         bool isValid = int.TryParse(args.NewTextValue, out int value) && 600 < value && value <= DateTime.Now.Year;
 
         if (sender is Entry entry)
+        {
             entry.Background = isValid ? Brush.Transparent : Brush.Pink;
+            // TODO: do it as async
+            // entry.Text = Math.Clamp(value, 600, DateTime.Now.Year).ToString();
+        }
     }
 
     // to indicate invalid Input
