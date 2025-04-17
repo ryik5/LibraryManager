@@ -34,7 +34,7 @@ internal static class BookModelMaker
     /// Generates a book with empty generated properties.
     /// </summary>
     /// <returns>A new instance of Book.</returns>
-    public static Book GenerateBook()
+    public static Book BuildEmptyBook()
     {
         var id = Random.Shared.Next();
         var title = String.Empty;

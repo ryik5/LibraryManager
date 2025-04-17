@@ -94,7 +94,7 @@ public class BooksViewModel : AbstractBookViewModel, IDisposable, IRefreshable
                     IsEditBookViewVisible = true;
                     OK = Constants.SAVE;
                     ContentState = Constants.LOAD_CONTENT;
-                    Book = BookModelMaker.GenerateBook();
+                    Book = BookModelMaker.BuildEmptyBook();
                     break;
                 }
                 case Constants.SAVE_CHANGES:
