@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Library Manager (MAUI)</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      margin: 0;
+      padding: 2rem;
+      background: #f9f9f9;
+      color: #333;
+      line-height: 1.6;
+    }
+    h1, h2, h3 {
+      color: #2c3e50;
+    }
+    code, pre {
+      background: #eee;
+      padding: 0.2em 0.4em;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+    pre {
+      padding: 1em;
+      overflow-x: auto;
+    }
+    a {
+      color: #007acc;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    ul {
+      margin-left: 1.5em;
+    }
+    .screenshot {
+      margin: 2rem 0;
+    }
+    .screenshot img {
+      max-width: 100%;
+      height: auto;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    footer {
+      margin-top: 3rem;
+      font-size: 0.9em;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <h1>Library Manager (MAUI)</h1>
+  <p>
+    Library Manager is a cross-platform application developed in <strong>C#</strong> using the <strong>.NET MAUI</strong> framework.
+    This project is a migration of the original <strong>WPF-based Library Manager</strong>
+    (<a href="https://github.com/ryik5/BookLibraryManager" target="_blank">BookLibraryManager</a>) to MAUI,
+    allowing it to run on multiple platforms, including <strong>Windows, MacOS, Android, and iOS</strong>.
+  </p>
+
+  <h2>Features</h2>
+  <ul>
+    <li><strong>Book Management</strong>: Add, edit, and remove books from the library.</li>
+    <li><strong>Categories & Authors</strong>: Organize books by categories and authors (Planned).</li>
+    <li><strong>Search & Filter</strong>: Easily find books using various search and filter options.</li>
+    <li><strong>Multi-Platform Support</strong>: Runs on Windows(WPF), MacOSX, Android (Planned), and iOS (Planned).</li>
+    <li><strong>Modern UI</strong>: Built using <strong>.NET MAUI</strong> for a responsive and adaptive UI.</li>
+    <li><strong>Local Storage</strong>: Saves book data locally using SQLite (Planned). Now uses XML.</li>
+    <li><strong>Cross-Platform Synchronization</strong> (Planned): Future versions may include cloud sync support.</li>
+  </ul>
+
+  <h2>Installation</h2>
+
+  <h3>Prerequisites</h3>
+  <ul>
+    <li>Install <a href="https://dotnet.microsoft.com/download/dotnet/8.0" target="_blank">.NET SDK 8.0 or later</a></li>
+    <li>Install <strong>Visual Studio 2022</strong> with <strong>.NET MAUI workload</strong></li>
+    <li>Ensure platform SDKs and dependencies are installed (Xcode, .NET CLI, etc.)</li>
+  </ul>
+
+  <h3>Clone the Repository</h3>
+  <pre><code>git clone https://github.com/ryik5/LibraryManager.git
+cd LibraryManager</code></pre>
+
+  <h3>Build and Run</h3>
+  <h4>Windows</h4>
+  <pre><code>dotnet build</code></pre>
+
+  <h4>MacOSX</h4>
+  <pre><code>dotnet restore
+dotnet build</code></pre>
+  <p>Run the project in Visual Studio by selecting the target platform.</p>
+
+  <h4>Android</h4>
+  <pre><code>dotnet build -t:Run -f net8.0-android</code></pre>
+
+  <h4>iOS</h4>
+  <pre><code>dotnet build -t:Run -f net8.0-ios</code></pre>
+
+  <h2>Usage</h2>
+  <ol>
+    <li>Launch the Application</li>
+    <li>Create/Load a Library: Click "Create Library" or "Load Library" and choose a file</li>
+    <li>Add a New Book: Use the "Add Book" button, fill in the details, and save</li>
+    <li>Edit/Delete Books: Select a book to modify or remove it</li>
+    <li>Filter/Search: Use the search bar or category filters</li>
+    <li>Manage Authors & Categories (Planned)</li>
+  </ol>
+
+  <h2>Screenshots</h2>
+  <div class="screenshot">
+
+
+<h2>Screenshots</h2>
+        <img src="Library.png" alt="Library Dashboard">
+        <p><em>The main dashboard displaying an overview of your collection.</em></p>
+
+        <img src="Books.png" alt="Books View">
+        <p><em>The 'Books view' interface.</em></p>
+
+        <img src="EditBook.png" alt="Edit Book">
+        <p><em>The 'Edit Book' interface with ISBN scanning feature.</em></p>
+
+        <img src="FindBooks.png" alt="Search Management">
+        <p><em>Find books in your library and edit or delete them.</em></p>
+    
+  </div>
+
+  <h2>Roadmap</h2>
+  <ul>
+    <li>[ ] Implement cloud sync</li>
+    <li>[ ] Improve cross-platform UI</li>
+    <li>[ ] Add export/import functionality</li>
+    <li>[ ] User authentication and multi-user support</li>
+  </ul>
+
+  <h2>Contribution</h2>
+  <p>Contributions are welcome! Feel free to submit issues or pull requests.</p>
+
+  <h2>Contact</h2>
+  <p>For questions or support, contact <strong><a href="https://github.com/ryik5" target="_blank">me on GitHub</a></strong>.</p>
+
+  <footer>
+    <p>© 2025 Library Manager</p>
+  </footer>
+</body>
+</html>
