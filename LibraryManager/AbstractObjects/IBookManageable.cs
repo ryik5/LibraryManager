@@ -43,8 +43,6 @@ public interface IBookManageable
     /// <returns>True if the book was successfully loaded; otherwise, false.</returns>
     bool TryLoadBook(IBookLoader bookLoader, string pathToFile);
 
-    Task<bool> TryLoadBook();
-
     /// <summary>
     /// Saves the selected book to the specified folder.
     /// </summary>

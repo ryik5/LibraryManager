@@ -32,6 +32,11 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
         Book book;
         switch (commandParameter)
         {
+            case Constants.IMPORT_BOOK:
+            {
+                await TryLoadBook();
+                break;
+            }
             case Constants.ADD_BOOK:
             {
                 await AddBookTask(BookModelMaker.GenerateDemoBook());
@@ -99,22 +104,21 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
     /// <returns>True if the book was successfully loaded; otherwise, false.</returns>
     public bool TryLoadBook(IBookLoader bookLoader, string pathToFile)
     {
-        bookLoader.LoadingFinished += BookLoader_LoadingBookFinished;
-
-
         var result = bookLoader.TryLoadBook(pathToFile, out var book);
         if (result)
             Task.Run(async () => await AddBookTask(book));
-
-        bookLoader.LoadingFinished -= BookLoader_LoadingBookFinished;
 
         return result;
     }
 
 
-    public async Task<bool> TryLoadBook()
+    private async Task<bool> TryLoadBook()
     {
-        return await DeserializeBookTask(await TryPickFileUpTask("Please select a book file", new string[] { "xml" }));
+        var result =
+            await DeserializeBookTask(await TryPickFileUpTask("Please select a book file", new string[] { "xml" }));
+        await _statusBar.SetStatusMessage(EInfoKind.CurrentInfo, result ? $"Book loaded." : "Book not loaded.");
+
+        return result;
     }
 
     private async Task<bool> DeserializeBookTask(FileResult fileResult)

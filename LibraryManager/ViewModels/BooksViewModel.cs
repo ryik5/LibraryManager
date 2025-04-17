@@ -131,13 +131,7 @@ public class BooksViewModel : AbstractBookViewModel, IDisposable, IRefreshable
 
                     break;
                 }
-
-                //TODO : move inside BookManager
-                case Constants.IMPORT_BOOK:
-                {
-                    await _bookManageable.TryLoadBook();
-                    break;
-                }
+                
                 case Constants.EXPORT_BOOK:
                 {
                     if (!ValidSelectedBooks())
