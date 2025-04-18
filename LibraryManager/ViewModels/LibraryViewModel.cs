@@ -6,6 +6,7 @@ using LibraryManager.Views;
 
 namespace LibraryManager.ViewModels;
 
+/// <author>YR 2025-01-09</author>
 public class LibraryViewModel : AbstractViewModel, IDisposable, IRefreshable
 {
     public LibraryViewModel(ILibrary library, SettingsViewModel settings, IStatusBar statusBar)

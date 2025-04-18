@@ -7,6 +7,7 @@ using System.Collections.Specialized;
 
 namespace LibraryManager.ViewModels;
 
+/// <author>YR 2025-01-09</author>
 public class BooksViewModel : AbstractBookViewModel, IDisposable, IRefreshable
 {
     public BooksViewModel(ILibrary library, SettingsViewModel settings, IStatusBar statusBar) : base(library, statusBar)

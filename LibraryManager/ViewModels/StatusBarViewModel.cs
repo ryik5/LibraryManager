@@ -2,6 +2,7 @@ using LibraryManager.AbstractObjects;
 
 namespace LibraryManager.ViewModels;
 
+/// <author>YR 2025-03-09</author>
 public class StatusBarViewModel : AbstractBindableModel, IStatusBar
 {
     public StatusBarViewModel()

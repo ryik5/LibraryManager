@@ -3,6 +3,7 @@ using LibraryManager.Views;
 
 namespace LibraryManager.ViewModels;
 
+/// <author>YR 2025-03-09</author>
 public class ToolsViewModel : AbstractViewModel
 {
     public ToolsViewModel(SettingsViewModel settings, IStatusBar statusBar)

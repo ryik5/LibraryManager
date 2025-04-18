@@ -5,6 +5,7 @@ using LibraryManager.Views;
 
 namespace LibraryManager.ViewModels;
 
+/// <author>YR 2025-02-09</author>
 public class AboutViewModel : AbstractViewModel
 {
     public AboutViewModel()
