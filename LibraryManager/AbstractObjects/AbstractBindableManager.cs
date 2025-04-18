@@ -208,29 +208,3 @@ public abstract class AbstractBindableModel : INotifyPropertyChanged
     private readonly IFolderPicker _folderPicker;
     #endregion
 }
-
-/// <summary>
-/// Represents the result of an input operation.
-/// </summary>
-/// <author>YR 2025-03-09</author>
-public class ResultInput
-{
-    public ResultInput(bool isOk, string? inputString = null)
-    {
-        IsOk = isOk;
-        InputString = inputString;
-    }
-
-    public bool IsOk { get; private set; }
-    public string? InputString { get; private set; }
-}
-
-/// <summary>
-/// Represents the result of a book-related operation.
-/// </summary>
-/// <author>YR 2025-03-09</author>
-public class ResultBook
-{
-    public Book? Book { get; set; }
-    public bool IsSuccess { get; set; }
-}
