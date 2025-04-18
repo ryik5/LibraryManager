@@ -1,4 +1,3 @@
-using CommunityToolkit.Mvvm.Input;
 using Foundation;
 using LibraryManager.Models;
 using LibraryManager.Utils;
@@ -10,6 +9,10 @@ using System.Windows.Input;
 
 namespace LibraryManager.AbstractObjects;
 
+/// <summary>
+/// Abstract base class for bindable models, providing common functionality for data binding and UI interactions.
+/// </summary>
+/// <author>YR 2025-03-09</author>
 public abstract class AbstractBindableModel : INotifyPropertyChanged
 {
     protected AbstractBindableModel()
@@ -23,16 +26,20 @@ public abstract class AbstractBindableModel : INotifyPropertyChanged
     /// </summary>
     public ICommand NavigateCommand { get; set; }
 
+    /// <summary>
+    /// Abstract base class for bindable models, providing common functionality for data binding and UI interactions.
+    /// </summary>
     public ICommand NavigateExtendedCommand { get; }
     #endregion
 
-    
+
     #region Public Methods
-    // <summary>
+    /// <summary>
     /// Displays a custom dialog page with a title and message, and returns a boolean indicating whether the user pressed OK or Cancel.
     /// </summary>
     /// <param name="title">The title of the dialog page.</param>
     /// <param name="message">The message to display on the dialog page.</param>
+    /// <param name="isInputVisible">Whether the input field is visible.</param>
     /// <returns>A boolean indicating whether the user pressed OK or Cancel.</returns>
     protected async Task<ResultInput> ShowCustomDialogPage(string title, string message, bool isInputVisible = false)
     {
@@ -50,8 +57,6 @@ public abstract class AbstractBindableModel : INotifyPropertyChanged
     }
 
 
-
-
     /// <summary>
     /// Invokes the specified action on the UI thread.
     /// </summary>
@@ -64,9 +69,18 @@ public abstract class AbstractBindableModel : INotifyPropertyChanged
     /// <param name="action">The action to invoke.</param>
     protected async Task RunInMainThreadAsync(Action action) => await Task.Run(() => RunInMainThread(action));
 
-    // Run code in the UI thread
-    // Platform-agnostic, works anywhere in MAUI
-    // Slightly slower due to abstraction (but negligible)
+
+    /// <summary>
+    /// Runs code in the UI thread and returns the result.
+    /// </summary>
+    /// <typeparam name="T">The type of the result.</typeparam>
+    /// <param name="func">The function to invoke.</param>
+    /// <returns>The result of the function.</returns>
+    ///<remarks>
+    /// Run code in the UI thread
+    /// Platform-agnostic, works anywhere in MAUI
+    /// Slightly slower due to abstraction (but negligible)
+    /// </remarks>
     protected T RunInMainThread<T>(Func<T> func)
     {
         T result = default!;
@@ -74,14 +88,26 @@ public abstract class AbstractBindableModel : INotifyPropertyChanged
         return result;
     }
 
-    // Run code in the UI thread
-    // Best For -  Page- or Application-scoped logic 
-    // Slightly faster in direct access situations 
+    /// <summary>
+    /// Runs code in the UI thread, best for page- or application-scoped logic.
+    /// </summary>
+    /// <param name="a">The action to invoke.</param>
+    /// <remarks>
+    /// Run code in the UI thread
+    /// Best For -  Page- or Application-scoped logic
+    ///  Slightly faster in direct access situations 
+    /// </remarks>
     protected void RunInPageThread(Action a)
     {
         Application.Current?.Dispatcher.Dispatch(a.Invoke);
     }
 
+    /// <summary>
+    /// Attempts to pick a file up from the file system.
+    /// </summary>
+    /// <param name="windowTitle">The title of the file picker window.</param>
+    /// <param name="fileExtension">The file extension to filter by.</param>
+    /// <returns>The picked file result.</returns>
     protected async Task<FileResult> TryPickFileUpTask(string windowTitle, string[]? fileExtension)
     {
         var fileTypes = new FilePickerFileType(
@@ -150,13 +176,16 @@ public abstract class AbstractBindableModel : INotifyPropertyChanged
             StringsHandler.CreateXmlFileName(pointedName, fileExtenstion));
     }
 
+    /// <summary>
+    /// Gets the path to the current user Document Directory on the device.
+    /// </summary
     protected async Task<string> PickFolderUpTask()
     {
         return await _folderPicker.PickFolder();
     }
     #endregion
 
-    
+
     #region Implementation INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -174,12 +203,16 @@ public abstract class AbstractBindableModel : INotifyPropertyChanged
     }
     #endregion
 
-    
+
     #region Private Fields
     private readonly IFolderPicker _folderPicker;
     #endregion
 }
 
+/// <summary>
+/// Represents the result of an input operation.
+/// </summary>
+/// <author>YR 2025-03-09</author>
 public class ResultInput
 {
     public ResultInput(bool isOk, string? inputString = null)
@@ -192,6 +225,10 @@ public class ResultInput
     public string? InputString { get; private set; }
 }
 
+/// <summary>
+/// Represents the result of a book-related operation.
+/// </summary>
+/// <author>YR 2025-03-09</author>
 public class ResultBook
 {
     public Book? Book { get; set; }
