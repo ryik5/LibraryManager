@@ -25,15 +25,7 @@
                 <StackLayout Margin="10">
                     <Label Text="MessageBox" FontSize="18" Margin="0,0,0,10" />
                     <Frame CornerRadius="10" BorderColor="{StaticResource Primary}" Padding="10">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
+                        <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,*">
 
                             <Label Text="Text's font size" Grid.Row="0" Grid.Column="0" />
                             <Entry Text="{Binding MessageBox_FontSize}"
