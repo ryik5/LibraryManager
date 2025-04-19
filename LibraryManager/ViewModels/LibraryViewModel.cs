@@ -7,46 +7,23 @@ using LibraryManager.Views;
 namespace LibraryManager.ViewModels;
 
 /// <author>YR 2025-01-09</author>
-public class LibraryViewModel : AbstractViewModel, IDisposable, IRefreshable
+public class LibraryViewModel : AbstractBookViewModel, IDisposable, IRefreshable
 {
-    public LibraryViewModel(ILibrary library, SettingsViewModel settings, IStatusBar statusBar)
+    public LibraryViewModel(ILibrary library, SettingsViewModel settings, IStatusBar statusBar) : base(library,
+        statusBar)
     {
         _settings = settings;
-        StatusBar = statusBar;
-        Library = library; // Constructor injection ensures proper dependency handling
-
         Library.TotalBooksChanged += Handle_TotalBooksChanged;
         Library.LibraryIdChanged += Handle_LibraryIdChanged;
         _libraryManager = new LibraryManagerModel(Library,statusBar);
-        CanOperateWithLibrary = ValidLibrary();
+        CanOperateWithBooks = ValidLibrary();
         /*MessagingCenter.Subscribe<BooksViewModel>(this, "Navigate", async (sender) =>
         {
             Console.WriteLine("Received navigation request from BooksViewModel.");
            // await PerformAction("CreateLibrary").ConfigureAwait(false);
         });*/
     }
-
-
-    #region Public properties
-    public ILibrary Library
-    {
-        get => _library;
-        set => SetProperty(ref _library, value);
-    }
-
-    public bool CanOperateWithLibrary
-    {
-        get => _canOperateWithLibrary;
-        set => SetProperty(ref _canOperateWithLibrary, value);
-    }
-
-    public IStatusBar StatusBar
-    {
-        get => _statusBar;
-        set => SetProperty(ref _statusBar, value);
-    }
-    #endregion
-
+    
 
     #region Public Methods
     protected override async Task PerformAction(string? commandParameter)
@@ -142,7 +119,7 @@ public class LibraryViewModel : AbstractViewModel, IDisposable, IRefreshable
 
             await Task.Run(() => RunInMainThread(() =>
             {
-                CanOperateWithLibrary = ValidLibrary();
+                CanOperateWithBooks = ValidLibrary();
                 Library.TotalBooks = Library.BookList.Count;
                 RaisePropertyChanged(nameof(Library));
                 RaisePropertyChanged(nameof(Library.BookList));
@@ -156,10 +133,10 @@ public class LibraryViewModel : AbstractViewModel, IDisposable, IRefreshable
 
     public async Task RefreshControlsOnAppearing()
     {
-        CanOperateWithLibrary = ValidLibrary();
+        CanOperateWithBooks = ValidLibrary();
         RaisePropertyChanged(nameof(Library));
         RaisePropertyChanged(nameof(Library.TotalBooks));
-        RaisePropertyChanged(nameof(CanOperateWithLibrary));
+        RaisePropertyChanged(nameof(CanOperateWithBooks));
     }
 
 
@@ -190,7 +167,7 @@ public class LibraryViewModel : AbstractViewModel, IDisposable, IRefreshable
     /// </summary>
     private void Handle_LibraryIdChanged(object? sender, EventArgs e)
     {
-        CanOperateWithLibrary = ValidLibrary();
+        CanOperateWithBooks = ValidLibrary();
     }
 
     private async void Handle_TotalBooksChanged(object? sender, TotalBooksEventArgs e)
@@ -239,12 +216,9 @@ public class LibraryViewModel : AbstractViewModel, IDisposable, IRefreshable
 
 
     #region Private Members
-    private ILibrary _library;
     private readonly SettingsViewModel _settings;
-    private bool _canOperateWithLibrary = true;
     private readonly ILibraryManageable _libraryManager;
     private bool _disposed; // Safeguard for multiple calls to Dispose.
     private int _libraryHashCode;
-    private IStatusBar _statusBar;
     #endregion
 }

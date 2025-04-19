@@ -26,18 +26,27 @@ public class BooksViewModel : AbstractBookViewModel, IDisposable, IRefreshable
 
 
     #region Public properties
+    /// <summary>
+    /// Gets or sets the content state.
+    /// </summary>
     public string ContentState
     {
         get => _contentState;
         set => SetProperty(ref _contentState, value);
     }
 
+    /// <summary>
+    /// Gets or sets the clearing state.
+    /// </summary>
     public string ClearingState
     {
         get => _clearingState;
         set => SetProperty(ref _clearingState, value);
     }
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the content can be cleared.
+    /// </summary>
     public bool CanClearContent
     {
         get => _canClearContent;

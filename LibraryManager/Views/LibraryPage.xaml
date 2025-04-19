@@ -33,7 +33,6 @@
         </MenuBarItem>
 
         <MenuBarItem Text="Navigate">
-
             <MenuFlyoutItem Text="Books"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="BooksPage" />
@@ -49,9 +48,7 @@
             <MenuFlyoutItem Text="About"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="AboutPage" />
-
         </MenuBarItem>
-
     </ContentPage.MenuBarItems>
 
     <ContentPage.Content>
@@ -84,18 +81,18 @@
                             ToolTipProperties.Text="Click to save the current library" 
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Save Library"
-                            IsEnabled="{Binding CanOperateWithLibrary}" />
+                            IsEnabled="{Binding CanOperateWithBooks}" />
                     <Button Text="Save As Library"
                             Margin="10,0,10,0"
                             ToolTipProperties.Text="Click to save the current library with a new name" 
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Save the library with a new name"
-                            IsEnabled="{Binding CanOperateWithLibrary}" />
+                            IsEnabled="{Binding CanOperateWithBooks}" />
                     <Button Text="Close Library"
                             ToolTipProperties.Text="Click to close current library" 
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Close the current library"
-                            IsEnabled="{Binding CanOperateWithLibrary}" />
+                            IsEnabled="{Binding CanOperateWithBooks}" />
                 </StackLayout>
 
                 <!-- View -->
