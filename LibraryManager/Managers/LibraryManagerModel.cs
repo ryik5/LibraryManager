@@ -39,18 +39,18 @@ public class LibraryManagerModel : AbstractBindableModel, ILibraryManageable
                 break;
 
             case Constants.LIBRARY_LOAD:
+                if (await TryLoadLibrary())
+                    await _statusBar.SetStatusMessage(EInfoKind.CurrentInfo, $"Library with ID:{Library.Id} is loaded.");
                 break;
 
             case Constants.LIBRARY_SAVE:
                 break;
 
             case Constants.LIBRARY_CLOSE:
+                TryCloseLibrary();
                 break;
 
             case Constants.LIBRARY_SAVE_WITH_NEW_NAME:
-                break;
-
-            default:
                 break;
         }
     }

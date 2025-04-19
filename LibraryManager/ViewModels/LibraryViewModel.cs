@@ -68,8 +68,7 @@ public class LibraryViewModel : AbstractBookViewModel, IDisposable, IRefreshable
                         if (!success)
                             return;
                     }
-
-                    await _libraryManager.TryLoadLibrary();
+                    await _libraryManager.RunCommand(commandParameter);
                     await UpdateLibraryHashCode();
                     break;
                 }
@@ -105,7 +104,7 @@ public class LibraryViewModel : AbstractBookViewModel, IDisposable, IRefreshable
                             return;
                     }
 
-                    _libraryManager.TryCloseLibrary();
+                    await _libraryManager.RunCommand(commandParameter);
                     await UpdateLibraryHashCode();
                     break;
                 }
