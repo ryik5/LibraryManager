@@ -3,9 +3,17 @@ using LibraryManager.Views;
 
 namespace LibraryManager.ViewModels;
 
+/// <summary>
+/// View model for the tools page.
+/// </summary>
 /// <author>YR 2025-03-09</author>
 public class ToolsViewModel : AbstractViewModel
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ToolsViewModel"/> class.
+    /// </summary>
+    /// <param name="settings">The settings view model.</param>
+    /// <param name="statusBar">The status bar.</param>
     public ToolsViewModel(SettingsViewModel settings, IStatusBar statusBar)
     {
         StatusBar = statusBar;
@@ -16,24 +24,36 @@ public class ToolsViewModel : AbstractViewModel
 
 
     #region Public properties
+    /// <summary>
+    /// Gets or sets a value indicating whether the settings view is visible.
+    /// </summary>
     public bool IsSettingsViewVisible
     {
         get => _isSettingsVisible;
         set => SetProperty(ref _isSettingsVisible, value);
     }
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the debug view is visible.
+    /// </summary>
     public bool IsDebugViewVisible
     {
         get => _isDebugViewVisible;
         set => SetProperty(ref _isDebugViewVisible, value);
     }
 
+    /// <summary>
+    /// Gets or sets the settings view model.
+    /// </summary>
     public SettingsViewModel Settings
     {
         get => _settings;
         set => SetProperty(ref _settings, value);
     }
 
+    /// <summary>
+    /// Gets or sets the status bar.
+    /// </summary>
     public IStatusBar StatusBar
     {
         get => _statusBar;
