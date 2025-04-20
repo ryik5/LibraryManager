@@ -18,13 +18,12 @@ public partial class AppShell : Shell
 
         // App Logo. Assign the custom drawable to the GraphicsView
         LogoGraphicsView.Drawable = new CustomDrawable();
-        
+
         // App Time
         _cancellationTokenSource = new CancellationTokenSource();
         UpdateTimeOnUI(_cancellationTokenSource);
-        
-      //  AppButton.Command=new Command(async () =>AppInfo.Current.ShowSettingsUI());
 
+        //  AppButton.Command=new Command(async () =>AppInfo.Current.ShowSettingsUI());
     }
 
     protected override void OnDisappearing()
@@ -36,13 +35,13 @@ public partial class AppShell : Shell
     /// <summary>
     /// Invokes the specified action on the UI thread.
     /// </summary>
-     /// <remarks>
+    /// <remarks>
     /// This method is used to update the time on the UI thread.
     /// </remarks>
     private Task UpdateTimeOnUI(CancellationTokenSource cts)
     {
         // Run the task on a separate thread.
-        return Task.Run(() =>
+        return Task.Run(async () =>
         {
             // Loop until the cancellation token is cancelled.
             while (!cts.IsCancellationRequested)
@@ -51,7 +50,7 @@ public partial class AppShell : Shell
                 MainThread.BeginInvokeOnMainThread(() => TimeLabel.Text = DateTime.Now.ToString("hh:mm:ss tt"));
 
                 // Sleep for 1 second.
-                Thread.Sleep(1000);
+                await Task.Delay(1000);
             }
         }, cts.Token);
     }

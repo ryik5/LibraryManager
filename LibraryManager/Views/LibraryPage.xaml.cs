@@ -22,7 +22,7 @@ public partial class LibraryPage : ContentPage
         BindingContext ??= App.Services.GetService<LibraryViewModel>();
         if (BindingContext is IRefreshable refresher)
         {
-            await refresher.RefreshControlsOnAppearing();
+            await refresher.RefreshControlsOnAppearingTask();
         }
     }
 

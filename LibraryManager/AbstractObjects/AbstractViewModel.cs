@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 
 namespace LibraryManager.AbstractObjects;
@@ -62,6 +61,29 @@ public abstract class AbstractViewModel : AbstractBindableModel
     /// <param name="commandParameter">The command parameter specifying the page to navigate to.</param>
     protected async Task TryGoToPage(string commandParameter)
     {
+        var gotoPageTask = GoToPage(commandParameter);
+        await Task.Delay(20);
+        await gotoPageTask;
+    }
+
+    public async Task RefreshControlsOnAppearingTask()
+    {
+        var refreshTask = RefreshControlsOnAppearing();
+        await Task.Delay(20);
+        await refreshTask;
+    }
+
+
+    protected async virtual Task RefreshControlsOnAppearing()
+    {
+    }
+
+    /// <summary>
+    /// Attempts to navigate to an application's page specified by a command parameter, handling any navigation errors that may occur.
+    /// </summary>
+    /// <param name="commandParameter">The command parameter specifying the page to navigate to.</param>
+    private async Task GoToPage(string commandParameter)
+    {
         try
         {
             // Dynamically navigate using the provided commandParameter
@@ -111,7 +133,8 @@ public abstract class AbstractViewModel : AbstractBindableModel
     /// </summary>
     /// <param name="page">The page to compare the current route with.</param>
     /// <returns>true if the current route is equal to the provided page, false otherwise.</returns>
-    protected static bool IsCurrentRoute(string page) => Shell.Current.CurrentState.Location.OriginalString == $"//{page}";
+    protected static bool IsCurrentRoute(string page) =>
+        Shell.Current.CurrentState.Location.OriginalString == $"//{page}";
 
     protected Task ShowNavigationErrorInDebug(string commandParameter, string className)
     {

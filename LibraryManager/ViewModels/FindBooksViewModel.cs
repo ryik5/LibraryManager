@@ -7,7 +7,7 @@ using System.Collections.Specialized;
 
 namespace LibraryManager.ViewModels;
 
-/// <author>YR 2025-01-09</author>
+/// <author>YR 2025-02-09</author>
 public class FindBooksViewModel : AbstractBookViewModel, IRefreshable
 {
     public FindBooksViewModel(ILibrary library, SettingsViewModel settings, IStatusBar statusBar) : base(library,
@@ -25,9 +25,8 @@ public class FindBooksViewModel : AbstractBookViewModel, IRefreshable
         ClearingState = Constants.CLEAR_CONTENT;
         _bookManageable = new BookManagerModel(Library, settings, statusBar);
 
-        CanOperateWithBooks = ValidLibrary();
-        CanEditBook = false;
         OK = Constants.SAVE_CHANGES;
+        HandleOperateWithBooks().GetAwaiter();
     }
 
 
@@ -128,9 +127,9 @@ public class FindBooksViewModel : AbstractBookViewModel, IRefreshable
 
                 case Constants.FIND_BOOKS:
                 {
-                    if (!ValidLibrary())
+                    if (!CanSearchBooks())
                     {
-                        await RefreshControlsOnAppearing();
+                        await RefreshControlsOnAppearingTask();
                         return;
                     }
 
@@ -163,7 +162,7 @@ public class FindBooksViewModel : AbstractBookViewModel, IRefreshable
                 {
                     if (!ValidSelectedBooks())
                     {
-                        await RefreshControlsOnAppearing();
+                        await RefreshControlsOnAppearingTask();
                         return;
                     }
 
@@ -221,14 +220,18 @@ public class FindBooksViewModel : AbstractBookViewModel, IRefreshable
         await RunInMainThreadAsync(() => RaisePropertyChanged(nameof(Library)));
     }
 
-    public async Task RefreshControlsOnAppearing()
+    protected override async Task RefreshControlsOnAppearing()
     {
-        CanOperateWithBooks = ValidLibrary();
         await RunInMainThreadAsync(() => SelectedBooks.Clear());
-        CanEditBook = false;
-        RaisePropertyChanged(nameof(Library));
-        RaisePropertyChanged(nameof(CanOperateWithBooks));
-        RaisePropertyChanged(nameof(CanEditBook));
+        IsBooksCollectionViewVisible = true;
+        IsEditBookViewVisible = false;
+        await HandleOperateWithBooks();
+    }
+
+    private async Task HandleOperateWithBooks()
+    {
+        CanOperateWithBooks = CanSearchBooks();
+        CanEditBook = NotZero(SelectedBooks?.Count);
     }
     #endregion
 
@@ -236,7 +239,7 @@ public class FindBooksViewModel : AbstractBookViewModel, IRefreshable
     #region Private methods
     private bool ValidSelectedBooks() => NotZero(SelectedBooks?.Count);
 
-    private bool ValidLibrary() => NotZero(Library?.Id);
+    private bool CanSearchBooks() => NotZero(Library?.Id) && NotZero(Library?.TotalBooks);
 
     private bool NotZero(int? number)
     {
@@ -264,7 +267,7 @@ public class FindBooksViewModel : AbstractBookViewModel, IRefreshable
 
     private void Handle_TotalBooksChanged(object? sender, TotalBooksEventArgs e)
     {
-        CanOperateWithBooks = ValidLibrary();
+        CanOperateWithBooks = CanSearchBooks();
     }
 
     /// <summary>
@@ -282,8 +285,7 @@ public class FindBooksViewModel : AbstractBookViewModel, IRefreshable
     {
         FoundBookList.Clear();
         SelectedBooks.Clear();
-        CanEditBook = false;
-        CanOperateWithBooks = ValidLibrary();
+        HandleOperateWithBooks().GetAwaiter();
     }
 
 

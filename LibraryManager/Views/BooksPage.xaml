@@ -62,7 +62,7 @@
 
                 <!-- General Controls -->
                 <StackLayout Grid.Row="0"
-                             IsVisible="{Binding IsBooksCollectionViewVisible, Mode=OneWay}"
+                             IsVisible="{Binding IsBooksCollectionViewVisible}"
                              Orientation="Horizontal"
                              HorizontalOptions="Fill"
                              Margin="10,10,10,0"
@@ -70,28 +70,28 @@
                     <Button Text="Add Book"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Add Book"
-                            IsEnabled="{Binding CanOperateWithBooks, Mode=OneWay}"
+                            IsEnabled="{Binding CanOperateWithBooks}"
                             ToolTipProperties.Text="Add a book to the library" />
                     <Button Text="Demo 'Add Books'"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Demo add books"
-                            IsEnabled="{Binding CanOperateWithBooks, Mode=OneWay}"
+                            IsEnabled="{Binding CanOperateWithBooks}"
                             ToolTipProperties.Text="Add 10 books with randomly filled fields to the library" />
                     <Button Text="Edit Book"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Edit Book"
                             ToolTipProperties.Text="Edit selected book"
-                            IsEnabled="{Binding CanEditBook, Mode=OneWay}" />
+                            IsEnabled="{Binding CanEditBook}" />
                     <Button Text="Delete Book(s)"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Delete the selected book"
                             ToolTipProperties.Text="Delete selected books"
-                            IsEnabled="{Binding CanEditBook, Mode=OneWay}" />
+                            IsEnabled="{Binding CanEditBook}" />
                     <Button Text="Import Book"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Import a book"
                             ToolTipProperties.Text="Import a book into the current library"
-                            IsEnabled="{Binding CanOperateWithBooks, Mode=OneWay}" />
+                            IsEnabled="{Binding CanOperateWithBooks}" />
                     <Button Text="Export Book"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Export the selected book"

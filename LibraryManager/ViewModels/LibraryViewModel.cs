@@ -6,7 +6,7 @@ using LibraryManager.Views;
 
 namespace LibraryManager.ViewModels;
 
-/// <author>YR 2025-01-09</author>
+/// <author>YR 2025-02-09</author>
 public class LibraryViewModel : AbstractBookViewModel, IDisposable, IRefreshable
 {
     public LibraryViewModel(ILibrary library, SettingsViewModel settings, IStatusBar statusBar) : base(library,
@@ -16,7 +16,7 @@ public class LibraryViewModel : AbstractBookViewModel, IDisposable, IRefreshable
         Library.TotalBooksChanged += Handle_TotalBooksChanged;
         Library.LibraryIdChanged += Handle_LibraryIdChanged;
         _libraryManager = new LibraryManagerModel(Library,statusBar);
-        CanOperateWithBooks = ValidLibrary();
+        Task.Run(() => CanOperateWithBooks = ValidLibrary());
         /*MessagingCenter.Subscribe<BooksViewModel>(this, "Navigate", async (sender) =>
         {
             Console.WriteLine("Received navigation request from BooksViewModel.");
@@ -42,8 +42,8 @@ public class LibraryViewModel : AbstractBookViewModel, IDisposable, IRefreshable
                 case nameof(FindBooksPage):
                 case nameof(ToolsPage):
                 {
-                    await TryGoToPage(commandParameter);
-                    break;
+                    await  TryGoToPage(commandParameter);
+                     break;
                 }
                 case Constants.LIBRARY_NEW:
                 {
@@ -130,12 +130,11 @@ public class LibraryViewModel : AbstractBookViewModel, IDisposable, IRefreshable
         }
     }
 
-    public async Task RefreshControlsOnAppearing()
+    protected override async Task RefreshControlsOnAppearing()
     {
         CanOperateWithBooks = ValidLibrary();
         RaisePropertyChanged(nameof(Library));
         RaisePropertyChanged(nameof(Library.TotalBooks));
-        RaisePropertyChanged(nameof(CanOperateWithBooks));
     }
 
 
@@ -157,6 +156,7 @@ public class LibraryViewModel : AbstractBookViewModel, IDisposable, IRefreshable
     {
         Dispose(); // Safeguard cleanup in destructor (if proper disposal is skipped)
     }
+    
     #endregion
 
 
@@ -166,12 +166,12 @@ public class LibraryViewModel : AbstractBookViewModel, IDisposable, IRefreshable
     /// </summary>
     private void Handle_LibraryIdChanged(object? sender, EventArgs e)
     {
-        CanOperateWithBooks = ValidLibrary();
+        Task.Run(() => CanOperateWithBooks = ValidLibrary());
     }
 
     private async void Handle_TotalBooksChanged(object? sender, TotalBooksEventArgs e)
     {
-        RefreshControlsOnAppearing();
+        RefreshControlsOnAppearingTask();
         await StatusBar.SetStatusMessage(EInfoKind.TotalBooks, Library.TotalBooks);
     }
 

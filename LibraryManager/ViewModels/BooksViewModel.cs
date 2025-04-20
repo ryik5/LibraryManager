@@ -7,7 +7,7 @@ using System.Collections.Specialized;
 
 namespace LibraryManager.ViewModels;
 
-/// <author>YR 2025-01-09</author>
+/// <author>YR 2025-02-09</author>
 public class BooksViewModel : AbstractBookViewModel, IDisposable, IRefreshable
 {
     public BooksViewModel(ILibrary library, SettingsViewModel settings, IStatusBar statusBar) : base(library, statusBar)
@@ -20,8 +20,7 @@ public class BooksViewModel : AbstractBookViewModel, IDisposable, IRefreshable
         _bookManageable = new BookManagerModel(Library, settings, statusBar);
         ContentState = Constants.LOAD_CONTENT;
         ClearingState = Constants.CLEAR_CONTENT;
-        CanOperateWithBooks = ValidLibrary();
-        CanEditBook = ValidSelectedBooks();
+        ValidateOperations().GetAwaiter();
     }
 
 
@@ -128,7 +127,7 @@ public class BooksViewModel : AbstractBookViewModel, IDisposable, IRefreshable
                 {
                     if (!ValidSelectedBooks())
                     {
-                        await RefreshControlsOnAppearing();
+                        await RefreshControlsOnAppearingTask();
                         return;
                     }
 
@@ -141,12 +140,12 @@ public class BooksViewModel : AbstractBookViewModel, IDisposable, IRefreshable
 
                     break;
                 }
-                
+
                 case Constants.EXPORT_BOOK:
                 {
                     if (!ValidSelectedBooks())
                     {
-                        await RefreshControlsOnAppearing();
+                        await RefreshControlsOnAppearingTask();
                         return;
                     }
 
@@ -198,11 +197,17 @@ public class BooksViewModel : AbstractBookViewModel, IDisposable, IRefreshable
         );
     }
 
-    public async Task RefreshControlsOnAppearing()
+    protected override async Task RefreshControlsOnAppearing()
     {
-        await RunInMainThreadAsync(() => SelectedBooks.Clear());
-        CanOperateWithBooks = ValidLibrary();
-        CanEditBook = ValidSelectedBooks();
+        await RunInMainThreadAsync(() =>
+        {
+            if (0 < SelectedBooks.Count)
+                SelectedBooks.Clear();
+        });
+        await ValidateOperations();
+        
+        IsBooksCollectionViewVisible = true;
+        IsEditBookViewVisible = false;
     }
 
     // Dispose method for external calls
@@ -234,10 +239,17 @@ public class BooksViewModel : AbstractBookViewModel, IDisposable, IRefreshable
     {
         Library.TotalBooks = Library.BookList.Count;
         SelectedBooks.Clear();
-        CanOperateWithBooks = ValidLibrary();
-        CanEditBook = ValidSelectedBooks();
-    }
+        ValidateOperations().GetAwaiter();
+     }
 
+    private async Task ValidateOperations()
+    {
+        await Task.Run(() =>
+        {
+        CanEditBook = ValidSelectedBooks();
+        CanOperateWithBooks = ValidLibrary();
+         });
+     }
 
     private void Handle_BookListCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {

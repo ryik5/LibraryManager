@@ -61,6 +61,7 @@
                 <!-- General Controls -->
                 <StackLayout Grid.Row="0"
                              IsVisible="{Binding IsBooksCollectionViewVisible, Mode=OneWay}"
+                             IsEnabled="{Binding CanOperateWithBooks}"
                              Orientation="Horizontal"
                              HorizontalOptions="Fill"
                              Margin="10,10,10,0" HeightRequest="35">
@@ -74,9 +75,9 @@
                            MinimumWidthRequest="150" />
 
                     <Button Text="Find"
+                            IsEnabled="{Binding CanOperateWithBooks, Mode=OneWay}"
                             ToolTipProperties.Text="Click to find books"
                             Command="{Binding NavigateCommand}"
-                            IsEnabled="{Binding CanOperateWithBooks, Mode=OneWay}"
                             CommandParameter="Find Books"
                             MinimumWidthRequest="85"
                             Margin="10,0,0,0" />
@@ -98,19 +99,19 @@
                             Margin="10,0,10,0" />
 
                     <Button Text="Edit Book"
+                            IsEnabled="{Binding CanEditBook}" 
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Edit Book"
                             ToolTipProperties.Text="Edit the selected book"
                             MinimumWidthRequest="100"
-                            Margin="10,0,20,0"
-                            IsEnabled="{Binding CanEditBook, Mode=OneWay}" />
+                            Margin="10,0,20,0"/>
 
                     <Button Text="Delete Book(s)"
+                            IsEnabled="{Binding CanEditBook}" 
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Delete the selected book"
                             ToolTipProperties.Text="Delete the selected books"
-                            MinimumWidthRequest="100"
-                            IsEnabled="{Binding CanEditBook, Mode=OneWay}" />
+                            MinimumWidthRequest="100"/>
 
                 </StackLayout>
 

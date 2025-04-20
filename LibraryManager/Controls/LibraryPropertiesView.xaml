@@ -2,7 +2,6 @@
 
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:viewmodel="clr-namespace:LibraryManager.ViewModels"
              x:Class="LibraryManager.Controls.LibraryPropertiesView">
 
     <Grid>
@@ -45,7 +44,7 @@
         <Label Text="Name" Grid.Row="1" Grid.Column="0" />
         <Entry Text="{Binding Library.Name}"
                Placeholder="Library's Name"
-               IsEnabled="{Binding CanOperateWithLibrary}"
+               IsEnabled="{Binding CanOperateWithBooks}"
                Grid.Row="1" Grid.Column="1" />
 
         <Label Text="Total Books" Grid.Row="2" Grid.Column="0" />
@@ -60,7 +59,7 @@
                 <Editor Text="{Binding Library.Description}"
                         ToolTipProperties.Text="{Binding Library.Description, Mode=OneWay}"
                         Placeholder="Library's short description"
-                        IsEnabled="{Binding CanOperateWithLibrary}"
+                        IsEnabled="{Binding CanOperateWithBooks}"
                         AutoSize="TextChanges"
                         VerticalOptions="Start"
                         FontSize="18"

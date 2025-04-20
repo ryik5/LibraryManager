@@ -22,7 +22,7 @@ public partial class BooksPage : ContentPage
         BooksCollectionView.BindingContext ??= App.Services.GetService<BooksViewModel>();
         if (BindingContext is IRefreshable refresher)
         {
-            await refresher.RefreshControlsOnAppearing();
+            await  refresher.RefreshControlsOnAppearingTask(); 
         }
     }
 

@@ -20,7 +20,6 @@ public abstract class AbstractBookViewModel : AbstractViewModel
         Library = library;
     }
 
-
     #region Public properties
     /// <summary>
     /// Gets or sets the status bar instance.
@@ -91,7 +90,14 @@ public abstract class AbstractBookViewModel : AbstractViewModel
     public bool CanOperateWithBooks
     {
         get => _canOperateWithBooks;
-        set => SetProperty(ref _canOperateWithBooks, value);
+        set
+        {
+            if (SetProperty(ref _canOperateWithBooks, value))
+            {
+                if (!value)
+                    CanEditBook = false;
+            }
+        }
     }
     #endregion
 
