@@ -1,4 +1,6 @@
+using CommunityToolkit.Mvvm.Messaging;
 using LibraryManager.AbstractObjects;
+using System.Collections.Concurrent;
 
 namespace LibraryManager.ViewModels;
 
@@ -7,66 +9,12 @@ public class StatusBarViewModel : AbstractBindableModel, IStatusBar
 {
     public StatusBarViewModel()
     {
-        /*MessagingCenter.Subscribe<AbstractViewModel, string>(this, "Navigate", async (sender, args) =>
-        {
-            Console.WriteLine($"Received {args} from AbstractViewModel.");
-            // await PerformAction("CreateLibrary").ConfigureAwait(false);
-        });*/
+        _cancellationTokenSource = new CancellationTokenSource();
+        WeakReferenceMessenger.Default.Register<StatusMessage>(this,
+            (r, m) => { Task.Run(() => _messages.Enqueue(m), _cancellationTokenSource.Token); });
+        ReadStatusMessageFromQueueTask(_cancellationTokenSource).GetAwaiter();
     }
 
-
-    #region Public Methods
-    public async Task SetStatusMessage(EInfoKind infoKind, string message)
-    {
-        switch (infoKind)
-        {
-            case EInfoKind.CommonInfo:
-                await SetCommonInfo(message);
-                break;
-            case EInfoKind.CurrentInfo:
-                await SetCurrentInfo(message);
-                break;
-        }
-
-        await SetDebugInfo(message);
-    }
-
-    public async Task SetStatusMessage(EInfoKind infoKind, int totalBooks)
-    {
-        switch (infoKind)
-        {
-            case EInfoKind.TotalBooks:
-                var message = $"Total book(s): {totalBooks}";
-                await SetTotalBooks(message);
-                await SetDebugInfo(message);
-                break;
-        }
-    }
-
-    private Task SetTotalBooks(string message)
-    {
-        StatusInfo = message;
-        return Task.CompletedTask;
-    }
-
-    private Task SetCurrentInfo(string message)
-    {
-        CurrentInfo = message;
-        return Task.CompletedTask;
-    }
-
-    private Task SetCommonInfo(string message)
-    {
-        CommonInfo = message;
-        return Task.CompletedTask;
-    }
-
-    private Task SetDebugInfo(string message)
-    {
-        DebugInfo.Add(new IndexedString { TimeStamp = $"{DateTime.Now:HH:mm:ss:fff}", Message = message });
-        return Task.CompletedTask;
-    }
-    #endregion
 
 
     #region Public Properties
@@ -95,13 +43,88 @@ public class StatusBarViewModel : AbstractBindableModel, IStatusBar
     }
     #endregion
 
+    #region Private Methods
+    private async Task SetStatusMessageTask(EInfoKind infoKind, string message)
+    {
+        switch (infoKind)
+        {
+            case EInfoKind.CommonInfo:
+                await SetCommonInfo(message);
+                await SetDebugInfo(message);
+                break;
+            case EInfoKind.CurrentInfo:
+                await SetCurrentInfo(message);
+                await SetDebugInfo(message);
+                break;
+            case EInfoKind.TotalBooks:
+                var msg = $"Total book(s): {message}";
+                await SetTotalBooks(msg);
+                await SetDebugInfo(msg);
+                break;
+        }
+    }
+ 
+    private Task ReadStatusMessageFromQueueTask(CancellationTokenSource cts)
+    {
+        // Run the task on a separate thread.
+        return Task.Run(async () =>
+        {
+            // Loop until the cancellation token is cancelled.
+            while (!cts.IsCancellationRequested)
+            {
+                if (_messages.TryDequeue(out var msg))
+                {
+                    await SetStatusMessageTask(msg.InfoKind, msg.Message);
+                }
+
+                // Sleep for 200 milliseconds.
+                await Task.Delay(200);
+            }
+        }, cts.Token);
+    }
+
+    private Task SetTotalBooks(string message)
+    {
+        StatusInfo = message;
+        return Task.CompletedTask;
+    }
+
+    private Task SetCurrentInfo(string message)
+    {
+        CurrentInfo = message;
+        return Task.CompletedTask;
+    }
+
+    private Task SetCommonInfo(string message)
+    {
+        CommonInfo = message;
+        return Task.CompletedTask;
+    }
+
+    private Task SetDebugInfo(string message)
+    {
+        DebugInfo.Add(new IndexedString { TimeStamp = $"{DateTime.Now:HH:mm:ss:fff}", Message = message });
+        return Task.CompletedTask;
+    }
+    #endregion
+
+
+    private readonly CancellationTokenSource _cancellationTokenSource;
+    private static readonly ConcurrentQueue<StatusMessage> _messages = new();
 
     #region Private fields
     private string _statusInfo = String.Empty;
     private string _commonInfo = String.Empty;
     private string _currentInfo = String.Empty;
     private List<IndexedString> _debugInfo = new();
+    private bool _isExisted;
     #endregion
+}
+
+public class StatusMessage
+{
+    public EInfoKind InfoKind { get; set; }
+    public string Message { get; set; }
 }
 
 public class IndexedString

@@ -1,4 +1,5 @@
-﻿using System.Collections.Immutable;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using System.Collections.Immutable;
 using LibraryManager.AbstractObjects;
 using LibraryManager.Extensions;
 using LibraryManager.Utils;
@@ -40,14 +41,16 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
             case Constants.ADD_BOOK:
             {
                 await AddBookTask(BookModelMaker.GenerateDemoBook());
-                await _statusBar.SetStatusMessage(EInfoKind.CurrentInfo, "Book added.");
+                WeakReferenceMessenger.Default.Send(
+                    new StatusMessage() { InfoKind = EInfoKind.CurrentInfo, Message = "Book added." });
                 break;
             }
             case Constants.DEMO_ADD_BOOKS:
             {
                 for (var b = 0; b < 10; b++)
                     await AddBookTask(BookModelMaker.GenerateDemoBook());
-                await _statusBar.SetStatusMessage(EInfoKind.CurrentInfo, "10 Books added.");
+                WeakReferenceMessenger.Default.Send(
+                    new StatusMessage() { InfoKind = EInfoKind.CurrentInfo, Message = "10 Books added." });
                 break;
             }
             case Constants.DELETE_BOOK:
@@ -59,7 +62,9 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
                         TryRemoveBook(bookToDelete).ConfigureAwait(false);
                     }
 
-                    await _statusBar.SetStatusMessage(EInfoKind.CurrentInfo, $"Deleted {selectedBooks.Count} book(s).");
+                    WeakReferenceMessenger.Default.Send(
+                        new StatusMessage()
+                            { InfoKind = EInfoKind.CurrentInfo, Message = $"Deleted {selectedBooks.Count} book(s)." });
                 }
 
                 break;
@@ -116,7 +121,9 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
     {
         var result =
             await DeserializeBookTask(await TryPickFileUpTask("Please select a book file", new string[] { "xml" }));
-        await _statusBar.SetStatusMessage(EInfoKind.CurrentInfo, result ? $"Book loaded." : "Book not loaded.");
+        WeakReferenceMessenger.Default.Send(
+            new StatusMessage()
+                { InfoKind = EInfoKind.CurrentInfo, Message = result ? $"Book loaded." : "Book not loaded." });
 
         return result;
     }
@@ -150,7 +157,16 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
     /// <returns>True if the book was successfully saved; otherwise, false.</returns>
     public Task<bool> TrySaveBook(IBookKeeper keeper, Book book, string pathToFile)
     {
-        return Task.FromResult(keeper.TrySaveBook(book, pathToFile));
+        var result = keeper.TrySaveBook(book, pathToFile);
+        WeakReferenceMessenger.Default.Send(
+            new StatusMessage()
+            {
+                InfoKind = EInfoKind.CurrentInfo,
+                Message =
+                    $"Export a book named '{book.Title}' by '{book.Author}' in '{pathToFile}' was {(result ? "Successful" : "Failed")}"
+            });
+
+        return Task.FromResult(result);
     }
 
     /// <summary>
@@ -206,6 +222,13 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
         var strElement = partElement?.ToString();
 
         RunInMainThread(() => tmpResult = FindBooks(bookElement, strElement));
+
+        WeakReferenceMessenger.Default.Send(
+            new StatusMessage()
+            {
+                InfoKind = EInfoKind.CurrentInfo,
+                Message = $"Find books by '{bookElement}'where part of the element is {partElement}."
+            });
 
         return tmpResult?.ToList() ?? new List<Book>(0);
     }

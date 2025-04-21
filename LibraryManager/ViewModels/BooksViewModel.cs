@@ -1,5 +1,5 @@
+using CommunityToolkit.Mvvm.Messaging;
 using LibraryManager.AbstractObjects;
-using System.Diagnostics;
 using LibraryManager.Models;
 using LibraryManager.Utils;
 using LibraryManager.Views;
@@ -8,7 +8,7 @@ using System.Collections.Specialized;
 namespace LibraryManager.ViewModels;
 
 /// <author>YR 2025-02-09</author>
-public class BooksViewModel : AbstractBookViewModel, IDisposable, IRefreshable
+public class BooksViewModel : AbstractBookViewModel, IRefreshable
 {
     public BooksViewModel(ILibrary library, SettingsViewModel settings, IStatusBar statusBar) : base(library, statusBar)
     {
@@ -205,31 +205,9 @@ public class BooksViewModel : AbstractBookViewModel, IDisposable, IRefreshable
                 SelectedBooks.Clear();
         });
         await ValidateOperations();
-        
+
         IsBooksCollectionViewVisible = true;
         IsEditBookViewVisible = false;
-    }
-
-    // Dispose method for external calls
-    public void Dispose()
-    {
-        if (_disposed)
-            return; // Safeguard against multiple Dispose calls.
-
-        _disposed = true;
-
-        // Perform cleanup: Unsubscribe from any events
-        Library.LibraryIdChanged -= Handle_LibraryIdChanged;
-        SelectedBooks?.Clear();
-
-        #if DEBUG
-        Debug.WriteLine($"{nameof(BooksViewModel)} disposed successfully.");
-        #endif
-    }
-
-    ~BooksViewModel()
-    {
-        Dispose(); // Safeguard cleanup in destructor (if proper disposal is skipped)
     }
     #endregion
 
@@ -240,16 +218,16 @@ public class BooksViewModel : AbstractBookViewModel, IDisposable, IRefreshable
         Library.TotalBooks = Library.BookList.Count;
         SelectedBooks.Clear();
         ValidateOperations().GetAwaiter();
-     }
+    }
 
     private async Task ValidateOperations()
     {
         await Task.Run(() =>
         {
-        CanEditBook = ValidSelectedBooks();
-        CanOperateWithBooks = ValidLibrary();
-         });
-     }
+            CanEditBook = ValidSelectedBooks();
+            CanOperateWithBooks = ValidLibrary();
+        });
+    }
 
     private void Handle_BookListCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
@@ -257,9 +235,10 @@ public class BooksViewModel : AbstractBookViewModel, IDisposable, IRefreshable
         SelectedBooks.Clear();
     }
 
-    private async void Handle_TotalBooksChanged(object? sender, TotalBooksEventArgs e)
+    private void Handle_TotalBooksChanged(object? sender, TotalBooksEventArgs e)
     {
-        await StatusBar.SetStatusMessage(EInfoKind.TotalBooks, Library.TotalBooks);
+        WeakReferenceMessenger.Default.Send(new StatusMessage()
+            { InfoKind = EInfoKind.TotalBooks, Message = Library.TotalBooks.ToString() });
     }
 
     private Book? SelectFirstFoundBook() => GetSelectedBooks()[0];
@@ -289,7 +268,6 @@ public class BooksViewModel : AbstractBookViewModel, IDisposable, IRefreshable
     #region Private fields
     private readonly IBookManageable _bookManageable;
     private IList<Book> _selectedBooks;
-    private bool _disposed; // Safeguard for multiple calls to Dispose.
     private string _contentState;
     private string _clearingState;
     private bool _canClearContent;

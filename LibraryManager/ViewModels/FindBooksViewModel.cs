@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.Messaging;
 using LibraryManager.AbstractObjects;
 using LibraryManager.Extensions;
 using LibraryManager.Models;
@@ -166,7 +167,7 @@ public class FindBooksViewModel : AbstractBookViewModel, IRefreshable
                         return;
                     }
 
-                    await RunInMainThreadAsync(() => Book = (Book)SelectFirstFoundBook().Clone());
+                    await RunInMainThreadAsync(() => Book = SelectFirstFoundBook().Clone());
 
                     IsBooksCollectionViewVisible = false;
                     IsEditBookViewVisible = true;
@@ -177,7 +178,7 @@ public class FindBooksViewModel : AbstractBookViewModel, IRefreshable
                 {
                     RunInMainThread(() => _selectedBooks = GetSelectedBooks());
                     // Performing actions by the BooksManager
-                    _bookManageable.RunCommand(commandParameter, _selectedBooks).ConfigureAwait(false);
+                   await _bookManageable.RunCommand(commandParameter, _selectedBooks);
 
                     RunInMainThread(() =>
                         {
@@ -227,12 +228,6 @@ public class FindBooksViewModel : AbstractBookViewModel, IRefreshable
         IsEditBookViewVisible = false;
         await HandleOperateWithBooks();
     }
-
-    private async Task HandleOperateWithBooks()
-    {
-        CanOperateWithBooks = CanSearchBooks();
-        CanEditBook = NotZero(SelectedBooks?.Count);
-    }
     #endregion
 
 
@@ -256,6 +251,9 @@ public class FindBooksViewModel : AbstractBookViewModel, IRefreshable
     {
         RunInMainThread(FindBooks);
 
+        WeakReferenceMessenger.Default.Send(
+            new StatusMessage() { InfoKind = EInfoKind.CurrentInfo, Message =  $"Attempt to find books by '{SelectedSearchField}' where part element is '{SearchText}'." });
+
         return Task.CompletedTask;
     }
 
@@ -264,10 +262,17 @@ public class FindBooksViewModel : AbstractBookViewModel, IRefreshable
         var foundBooks = _bookManageable.FindBooksByKind(SelectedSearchField, SearchText);
         FoundBookList.ResetAndAddRange(foundBooks);
     }
+    
+    private async Task HandleOperateWithBooks()
+    {
+        CanOperateWithBooks = CanSearchBooks();
+        CanEditBook = NotZero(SelectedBooks?.Count);
+    }
+
 
     private void Handle_TotalBooksChanged(object? sender, TotalBooksEventArgs e)
     {
-        CanOperateWithBooks = CanSearchBooks();
+        HandleOperateWithBooks().GetAwaiter();
     }
 
     /// <summary>

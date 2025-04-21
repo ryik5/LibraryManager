@@ -27,20 +27,4 @@ public interface IStatusBar
     /// Gets a list of debug information strings.
     /// </summary>
     List<IndexedString> DebugInfo { get; }
-
-    /// <summary>
-    /// Sets the status message based on the provided information kind and message.
-    /// </summary>
-    /// <param name="infoKind">The type of information to be displayed.</param>
-    /// <param name="message">The message to be displayed.</param>
-    /// <returns>A task representing the asynchronous operation.</returns>
-    Task SetStatusMessage(EInfoKind infoKind, string message);
-
-    /// <summary>
-    /// Sets the status message based on the provided information kind and total books.
-    /// </summary>
-    /// <param name="infoKind">The type of information to be displayed.</param>
-    /// <param name="totalBooks">The total number of books.</param>
-    /// <returns>A task representing the asynchronous operation.</returns>
-    Task SetStatusMessage(EInfoKind infoKind, int totalBooks);
 }

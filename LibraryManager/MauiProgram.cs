@@ -1,4 +1,5 @@
-﻿using LibraryManager.AbstractObjects;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using LibraryManager.AbstractObjects;
 using LibraryManager.Controls;
 using System.Collections.ObjectModel;
 using LibraryManager.Models;
@@ -37,12 +38,15 @@ public static class MauiProgram
         var settings = new SettingsViewModel();
         var statusBar = new StatusBarViewModel();
         var package = AppInfo.Current.PackageName;
-        statusBar.SetStatusMessage(EInfoKind.DebugInfo,
-            $"{AppInfo.Current.Name} started with package '{package}'.");
-        statusBar.SetStatusMessage(EInfoKind.CommonInfo,
-            $"v.{AppInfo.Current.VersionString}, b.{AppInfo.Current.BuildString}");
-        statusBar.SetStatusMessage(EInfoKind.CurrentInfo,$"Current Library ID: '{library.Id}'");
-        statusBar.SetStatusMessage(EInfoKind.TotalBooks,0);
+        WeakReferenceMessenger.Default.Send(new StatusMessage(){ InfoKind = EInfoKind.DebugInfo, Message = $"{AppInfo.Current.Name} started with package '{package}'."});
+        
+       // statusBar.SetStatusMessage(EInfoKind.DebugInfo, $"{AppInfo.Current.Name} started with package '{package}'.");
+       WeakReferenceMessenger.Default.Send(new StatusMessage(){ InfoKind = EInfoKind.CommonInfo, Message = $"v.{AppInfo.Current.VersionString}, b.{AppInfo.Current.BuildString}"});
+        //statusBar.SetStatusMessage(EInfoKind.CommonInfo,  $"v.{AppInfo.Current.VersionString}, b.{AppInfo.Current.BuildString}");
+       // statusBar.SetStatusMessage(EInfoKind.CurrentInfo,$"Current Library ID: '{library.Id}'");
+       WeakReferenceMessenger.Default.Send(new StatusMessage(){ InfoKind = EInfoKind.CurrentInfo, Message = $"Current Library ID: '{library.Id}'"});
+       // statusBar.SetStatusMessage(EInfoKind.TotalBooks,0);
+       WeakReferenceMessenger.Default.Send(new StatusMessage(){ InfoKind = EInfoKind.TotalBooks, Message = "0"});
 
         builder.Services.AddTransient<IFolderPicker, Platforms.MacCatalyst.FolderPicker>();
         builder.Services.AddTransient<Book>();

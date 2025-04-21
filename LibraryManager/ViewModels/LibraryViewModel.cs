@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.Messaging;
 using System.Diagnostics;
 using LibraryManager.AbstractObjects;
 using LibraryManager.Models;
@@ -7,7 +8,7 @@ using LibraryManager.Views;
 namespace LibraryManager.ViewModels;
 
 /// <author>YR 2025-02-09</author>
-public class LibraryViewModel : AbstractBookViewModel, IDisposable, IRefreshable
+public class LibraryViewModel : AbstractBookViewModel, IRefreshable
 {
     public LibraryViewModel(ILibrary library, SettingsViewModel settings, IStatusBar statusBar) : base(library,
         statusBar)
@@ -16,12 +17,6 @@ public class LibraryViewModel : AbstractBookViewModel, IDisposable, IRefreshable
         Library.TotalBooksChanged += Handle_TotalBooksChanged;
         Library.LibraryIdChanged += Handle_LibraryIdChanged;
         _libraryManager = new LibraryManagerModel(Library,statusBar);
-        Task.Run(() => CanOperateWithBooks = ValidLibrary());
-        /*MessagingCenter.Subscribe<BooksViewModel>(this, "Navigate", async (sender) =>
-        {
-            Console.WriteLine("Received navigation request from BooksViewModel.");
-           // await PerformAction("CreateLibrary").ConfigureAwait(false);
-        });*/
     }
     
 
@@ -132,31 +127,10 @@ public class LibraryViewModel : AbstractBookViewModel, IDisposable, IRefreshable
 
     protected override async Task RefreshControlsOnAppearing()
     {
-        CanOperateWithBooks = ValidLibrary();
         RaisePropertyChanged(nameof(Library));
         RaisePropertyChanged(nameof(Library.TotalBooks));
+       await HandleOperationsWithBooks();
     }
-
-
-    // Dispose method for external calls
-    public void Dispose()
-    {
-        if (_disposed) return; // Safeguard against multiple Dispose calls.
-        _disposed = true;
-
-        // MessagingCenter cleanup
-        #if DEBUG
-        Debug.WriteLine("Cleaning up MessagingCenter resources in LibraryViewModel.");
-        #endif
-
-        MessagingCenter.Unsubscribe<BooksViewModel>(this, "Navigate");
-    }
-
-    ~LibraryViewModel()
-    {
-        Dispose(); // Safeguard cleanup in destructor (if proper disposal is skipped)
-    }
-    
     #endregion
 
 
@@ -164,15 +138,17 @@ public class LibraryViewModel : AbstractBookViewModel, IDisposable, IRefreshable
     /// <summary>
     /// Handles the LibraryIdChanged event by updating the CanOperateWithLibrary property.
     /// </summary>
-    private void Handle_LibraryIdChanged(object? sender, EventArgs e)
+    private async void Handle_LibraryIdChanged(object? sender, EventArgs e)
     {
-        Task.Run(() => CanOperateWithBooks = ValidLibrary());
+        await HandleOperationsWithBooks();
     }
-
+    private async Task HandleOperationsWithBooks()
+    {
+       await Task.Run(() => CanOperateWithBooks = ValidLibrary());
+    }
     private async void Handle_TotalBooksChanged(object? sender, TotalBooksEventArgs e)
     {
-        RefreshControlsOnAppearingTask();
-        await StatusBar.SetStatusMessage(EInfoKind.TotalBooks, Library.TotalBooks);
+      await  RefreshControlsOnAppearingTask();
     }
 
     /// <summary>
@@ -217,7 +193,6 @@ public class LibraryViewModel : AbstractBookViewModel, IDisposable, IRefreshable
     #region Private Members
     private readonly SettingsViewModel _settings;
     private readonly ILibraryManageable _libraryManager;
-    private bool _disposed; // Safeguard for multiple calls to Dispose.
-    private int _libraryHashCode;
+     private int _libraryHashCode;
     #endregion
 }

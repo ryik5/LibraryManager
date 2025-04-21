@@ -1,5 +1,7 @@
-﻿using System.Xml;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using System.Xml;
 using LibraryManager.AbstractObjects;
+using LibraryManager.ViewModels;
 
 namespace LibraryManager.Models;
 
@@ -39,8 +41,8 @@ public class LibraryManagerModel : AbstractBindableModel, ILibraryManageable
                 break;
 
             case Constants.LIBRARY_LOAD:
-                if (await TryLoadLibrary())
-                    await _statusBar.SetStatusMessage(EInfoKind.CurrentInfo, $"Library with ID:{Library.Id} is loaded.");
+                var msg = await TryLoadLibrary() ? $"Loaded the Library with ID:{Library.Id}" :$"Error loading the Library";
+                WeakReferenceMessenger.Default.Send(new StatusMessage(){ InfoKind = EInfoKind.CurrentInfo, Message = msg});
                 break;
 
             case Constants.LIBRARY_SAVE:
@@ -101,6 +103,7 @@ public class LibraryManagerModel : AbstractBindableModel, ILibraryManageable
 
         Library.Id = new Random().Next();
 
+        WeakReferenceMessenger.Default.Send(new StatusMessage(){ InfoKind = EInfoKind.CurrentInfo, Message = $"Created new library with ID:{Library.Id}."});
         return Task.CompletedTask;
     }
 
@@ -112,8 +115,6 @@ public class LibraryManagerModel : AbstractBindableModel, ILibraryManageable
     /// <returns>True if the library was successfully loaded; otherwise, false.</returns>
     public bool TryLoadLibrary(ILibraryLoader libraryLoader, string pathToLibrary)
     {
-        libraryLoader.LoadingFinished += LibraryLoader_LoadingLibraryFinished;
-
         TryCloseLibrary();
 
         var result = false;
@@ -125,8 +126,6 @@ public class LibraryManagerModel : AbstractBindableModel, ILibraryManageable
                 Library.Set(library);
             }*/
         });
-
-        libraryLoader.LoadingFinished -= LibraryLoader_LoadingLibraryFinished;
 
         return result;
     }
@@ -151,6 +150,7 @@ public class LibraryManagerModel : AbstractBindableModel, ILibraryManageable
         Library.Name = string.Empty;
         Library.Description = string.Empty;
         Library.Id = 0;
+        WeakReferenceMessenger.Default.Send(new StatusMessage(){ InfoKind = EInfoKind.CurrentInfo, Message = "Library closed."});
     }
     #endregion
 
