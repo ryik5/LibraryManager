@@ -1,5 +1,3 @@
-using CommunityToolkit.Mvvm.Messaging;
-using System.Diagnostics;
 using LibraryManager.AbstractObjects;
 using LibraryManager.Models;
 using LibraryManager.Utils;
@@ -8,17 +6,15 @@ using LibraryManager.Views;
 namespace LibraryManager.ViewModels;
 
 /// <author>YR 2025-02-09</author>
-public class LibraryViewModel : AbstractBookViewModel, IRefreshable
+public sealed class LibraryViewModel : AbstractBookViewModel, IRefreshable
 {
     public LibraryViewModel(ILibrary library, SettingsViewModel settings, IStatusBar statusBar) : base(library,
         statusBar)
     {
         _settings = settings;
-        Library.TotalBooksChanged += Handle_TotalBooksChanged;
-        Library.LibraryIdChanged += Handle_LibraryIdChanged;
-        _libraryManager = new LibraryManagerModel(Library,statusBar);
+        _libraryManager = new LibraryManagerModel(Library, statusBar);
     }
-    
+
 
     #region Public Methods
     protected override async Task PerformAction(string? commandParameter)
@@ -37,8 +33,8 @@ public class LibraryViewModel : AbstractBookViewModel, IRefreshable
                 case nameof(FindBooksPage):
                 case nameof(ToolsPage):
                 {
-                    await  TryGoToPage(commandParameter);
-                     break;
+                    await TryGoToPage(commandParameter);
+                    break;
                 }
                 case Constants.LIBRARY_NEW:
                 {
@@ -63,8 +59,10 @@ public class LibraryViewModel : AbstractBookViewModel, IRefreshable
                         if (!success)
                             return;
                     }
+
                     await _libraryManager.RunCommand(commandParameter);
                     await UpdateLibraryHashCode();
+                    await UpdateControlsOnChangeID();
                     break;
                 }
                 case Constants.LIBRARY_SAVE:
@@ -101,6 +99,8 @@ public class LibraryViewModel : AbstractBookViewModel, IRefreshable
 
                     await _libraryManager.RunCommand(commandParameter);
                     await UpdateLibraryHashCode();
+
+                    HandleCloseLibrary();
                     break;
                 }
                 default:
@@ -110,14 +110,6 @@ public class LibraryViewModel : AbstractBookViewModel, IRefreshable
                     break;
                 }
             }
-
-            await Task.Run(() => RunInMainThread(() =>
-            {
-                CanOperateWithBooks = ValidLibrary();
-                Library.TotalBooks = Library.BookList.Count;
-                RaisePropertyChanged(nameof(Library));
-                RaisePropertyChanged(nameof(Library.BookList));
-            }));
         }
         else
         {
@@ -125,30 +117,44 @@ public class LibraryViewModel : AbstractBookViewModel, IRefreshable
         }
     }
 
+    private async Task HandleCloseLibrary()
+    {
+        await Task.Delay(200);
+        CanOperateWithBooks = false;
+        CanCloseLibrary = false;
+    }
+
     protected override async Task RefreshControlsOnAppearing()
     {
+        await UpdateControlsOnChangeID();
         RaisePropertyChanged(nameof(Library));
         RaisePropertyChanged(nameof(Library.TotalBooks));
-       await HandleOperationsWithBooks();
+    }
+    #endregion
+
+
+    #region Public Properties
+    /// <summary>
+    /// Gets or sets a value indicating whether the book can be edited.
+    /// </summary>
+    public bool CanCloseLibrary
+    {
+        get => _canCloseLibrary;
+        set => SetProperty(ref _canCloseLibrary, value);
     }
     #endregion
 
 
     #region Private methods
-    /// <summary>
-    /// Handles the LibraryIdChanged event by updating the CanOperateWithLibrary property.
-    /// </summary>
-    private async void Handle_LibraryIdChanged(object? sender, EventArgs e)
+    private async Task UpdateControlsOnChangeID()
     {
-        await HandleOperationsWithBooks();
-    }
-    private async Task HandleOperationsWithBooks()
-    {
-       await Task.Run(() => CanOperateWithBooks = ValidLibrary());
-    }
-    private async void Handle_TotalBooksChanged(object? sender, TotalBooksEventArgs e)
-    {
-      await  RefreshControlsOnAppearingTask();
+        await Task.Delay(20);
+        await RunInMainThreadAsync(() =>
+        {
+            // Library.TotalBooks = Library.BookList.Count;
+            CanOperateWithBooks = IsValidLibrary && IsNotEmptyLibrary;
+            CanCloseLibrary = IsValidLibrary;
+        });
     }
 
     /// <summary>
@@ -168,7 +174,7 @@ public class LibraryViewModel : AbstractBookViewModel, IRefreshable
     /// <returns>True if the user confirms saving changes, false otherwise.</returns>
     private async Task<bool> HasLibraryHashCodeChanged()
     {
-        if (Library.TotalBooks == 0 || !ValidLibrary())
+        if (!IsValidLibrary || !IsNotEmptyLibrary)
             return false;
 
         var currentHash = Library.GetHashCode();
@@ -185,14 +191,13 @@ public class LibraryViewModel : AbstractBookViewModel, IRefreshable
 
 
     private string GetPathToCurrentLibraryFile() => GetPathToFile(Library.Id.ToString());
-
-    private bool ValidLibrary() => Library.Id != 0;
     #endregion
 
 
     #region Private Members
     private readonly SettingsViewModel _settings;
     private readonly ILibraryManageable _libraryManager;
-     private int _libraryHashCode;
+    private int _libraryHashCode;
+    private bool _canCloseLibrary;
     #endregion
 }

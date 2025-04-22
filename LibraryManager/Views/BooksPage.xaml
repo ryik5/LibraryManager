@@ -70,33 +70,33 @@
                     <Button Text="Add Book"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Add Book"
-                            IsEnabled="{Binding CanOperateWithBooks}"
+                            IsEnabled="{Binding CanOperateWithBooks, Mode=TwoWay}"
                             ToolTipProperties.Text="Add a book to the library" />
                     <Button Text="Demo 'Add Books'"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Demo add books"
-                            IsEnabled="{Binding CanOperateWithBooks}"
+                            IsEnabled="{Binding CanOperateWithBooks, Mode=TwoWay}"
                             ToolTipProperties.Text="Add 10 books with randomly filled fields to the library" />
                     <Button Text="Edit Book"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Edit Book"
                             ToolTipProperties.Text="Edit selected book"
-                            IsEnabled="{Binding CanEditBook}" />
+                            IsEnabled="{Binding CanEditBook, Mode=TwoWay}" />
                     <Button Text="Delete Book(s)"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Delete the selected book"
                             ToolTipProperties.Text="Delete selected books"
-                            IsEnabled="{Binding CanEditBook}" />
+                            IsEnabled="{Binding CanEditBook, Mode=TwoWay}" />
                     <Button Text="Import Book"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Import a book"
                             ToolTipProperties.Text="Import a book into the current library"
-                            IsEnabled="{Binding CanOperateWithBooks}" />
+                            IsEnabled="{Binding CanOperateWithBooks, Mode=TwoWay}" />
                     <Button Text="Export Book"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Export the selected book"
                             ToolTipProperties.Text="Export the selected book on the disk"
-                            IsEnabled="{Binding CanEditBook, Mode=OneWay}" />
+                            IsEnabled="{Binding CanEditBook, Mode=TwoWay}" />
 
                     <Button Text="Sort Library"
                             Command="{Binding NavigateCommand}"

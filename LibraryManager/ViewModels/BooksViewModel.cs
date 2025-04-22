@@ -8,7 +8,7 @@ using System.Collections.Specialized;
 namespace LibraryManager.ViewModels;
 
 /// <author>YR 2025-02-09</author>
-public class BooksViewModel : AbstractBookViewModel, IRefreshable
+public sealed class BooksViewModel : AbstractBookViewModel, IRefreshable
 {
     public BooksViewModel(ILibrary library, SettingsViewModel settings, IStatusBar statusBar) : base(library, statusBar)
     {
@@ -76,14 +76,14 @@ public class BooksViewModel : AbstractBookViewModel, IRefreshable
                     break;
                 }
                 case Constants.SELECTION_CHANGED:
-                    CanOperateWithBooks = ValidLibrary();
-                    CanEditBook = ValidSelectedBooks();
+                    CanOperateWithBooks = IsValidLibrary;
+                    CanEditBook = IsBookSelected;
                     break;
                 case Constants.CANCEL:
                 {
                     IsBooksCollectionViewVisible = true;
                     IsEditBookViewVisible = false;
-                    CanEditBook = ValidSelectedBooks();
+                    CanEditBook = IsBookSelected;
                     break;
                 }
                 case Constants.SAVE:
@@ -125,13 +125,13 @@ public class BooksViewModel : AbstractBookViewModel, IRefreshable
                 case Constants.DOUBLECLICK:
                 case Constants.EDIT_BOOK:
                 {
-                    if (!ValidSelectedBooks())
+                    if (!IsBookSelected)
                     {
                         await RefreshControlsOnAppearingTask();
                         return;
                     }
 
-                    await RunInMainThreadAsync(() => Book = SelectFirstFoundBook().Clone());
+                    await RunInMainThreadAsync(() => Book = FirstSelectedBook.Clone());
 
                     OK = Constants.SAVE_CHANGES;
 
@@ -143,7 +143,7 @@ public class BooksViewModel : AbstractBookViewModel, IRefreshable
 
                 case Constants.EXPORT_BOOK:
                 {
-                    if (!ValidSelectedBooks())
+                    if (!IsBookSelected)
                     {
                         await RefreshControlsOnAppearingTask();
                         return;
@@ -153,7 +153,7 @@ public class BooksViewModel : AbstractBookViewModel, IRefreshable
                     var customDialog = await ShowCustomDialogPage(Constants.EXPORT_BOOK,
                         Constants.INPUT_NAME, true);
 
-                    await RunInMainThreadAsync(() => Book = SelectFirstFoundBook());
+                    await RunInMainThreadAsync(() => Book = FirstSelectedBook);
 
                     var bookName = customDialog.IsOk && !string.IsNullOrEmpty(customDialog.InputString)
                         ? customDialog.InputString
@@ -215,7 +215,6 @@ public class BooksViewModel : AbstractBookViewModel, IRefreshable
     #region Private methods
     private void Handle_LibraryIdChanged(object? sender, EventArgs e)
     {
-        Library.TotalBooks = Library.BookList.Count;
         SelectedBooks.Clear();
         ValidateOperations().GetAwaiter();
     }
@@ -224,8 +223,8 @@ public class BooksViewModel : AbstractBookViewModel, IRefreshable
     {
         await Task.Run(() =>
         {
-            CanEditBook = ValidSelectedBooks();
-            CanOperateWithBooks = ValidLibrary();
+            CanOperateWithBooks = IsValidLibrary;
+            CanEditBook = IsBookSelected;
         });
     }
 
@@ -241,18 +240,9 @@ public class BooksViewModel : AbstractBookViewModel, IRefreshable
             { InfoKind = EInfoKind.TotalBooks, Message = Library.TotalBooks.ToString() });
     }
 
-    private Book? SelectFirstFoundBook() => GetSelectedBooks()[0];
-    private bool ValidSelectedBooks() => MoreZero(SelectedBooks?.Count ?? 0);
+    private Book? FirstSelectedBook => GetSelectedBooks()[0];
+    private bool IsBookSelected => NotZero(SelectedBooks?.Count);
 
-    private bool ValidLibrary() => MoreZero(Library?.Id ?? 0);
-
-    private bool MoreZero(int number)
-    {
-        if (number == 0)
-            return false;
-
-        return true;
-    }
 
     private Task UpdateButtonContentState(bool isContentLoaded)
     {

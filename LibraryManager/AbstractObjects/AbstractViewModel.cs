@@ -165,5 +165,13 @@ public abstract class AbstractViewModel : AbstractBindableModel
 
         return Task.CompletedTask;
     }
+
+    protected static bool NotZero(int? number)
+    {
+        if (number is int && number == 0)
+            return false;
+
+        return true;
+    }
     #endregion
 }

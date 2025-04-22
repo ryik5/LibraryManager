@@ -81,18 +81,18 @@
                             ToolTipProperties.Text="Click to save the current library" 
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Save Library"
-                            IsEnabled="{Binding CanOperateWithBooks}" />
+                            IsEnabled="{Binding CanOperateWithBooks, Mode=TwoWay}" />
                     <Button Text="Save As Library"
                             Margin="10,0,10,0"
                             ToolTipProperties.Text="Click to save the current library with a new name" 
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Save the library with a new name"
-                            IsEnabled="{Binding CanOperateWithBooks}" />
+                            IsEnabled="{Binding CanOperateWithBooks, Mode=TwoWay}" />
                     <Button Text="Close Library"
                             ToolTipProperties.Text="Click to close current library" 
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Close the current library"
-                            IsEnabled="{Binding CanOperateWithBooks}" />
+                            IsEnabled="{Binding CanCloseLibrary}" />
                 </StackLayout>
 
                 <!-- View -->

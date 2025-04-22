@@ -118,6 +118,24 @@ public abstract class AbstractBookViewModel : AbstractViewModel
     public string Cancel => Constants.CANCEL;
     #endregion
 
+    #region Public Methods
+    /// <summary>
+    /// Checks if the library is valid based on its ID.
+    /// </summary>
+    /// <remarks>
+    /// A library is considered valid if its ID is not zero.
+    /// </remarks>
+    protected bool IsValidLibrary => NotZero(Library?.Id);
+
+    /// <summary>
+    /// Checks if the library is not empty based on its total books count.
+    /// </summary>
+    /// <remarks>
+    /// A library is considered not empty if its total books count is not zero.
+    /// </remarks>
+    protected bool IsNotEmptyLibrary => NotZero(Library?.TotalBooks);
+    #endregion
+
 
     #region Private fields
     private ILibrary _library;

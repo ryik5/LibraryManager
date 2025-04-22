@@ -9,7 +9,7 @@ using System.Collections.Specialized;
 namespace LibraryManager.ViewModels;
 
 /// <author>YR 2025-02-09</author>
-public class FindBooksViewModel : AbstractBookViewModel, IRefreshable
+public sealed class FindBooksViewModel : AbstractBookViewModel, IRefreshable
 {
     public FindBooksViewModel(ILibrary library, SettingsViewModel settings, IStatusBar statusBar) : base(library,
         statusBar)
@@ -128,7 +128,7 @@ public class FindBooksViewModel : AbstractBookViewModel, IRefreshable
 
                 case Constants.FIND_BOOKS:
                 {
-                    if (!CanSearchBooks())
+                    if (!CanSearchBooks)
                     {
                         await RefreshControlsOnAppearingTask();
                         return;
@@ -149,7 +149,7 @@ public class FindBooksViewModel : AbstractBookViewModel, IRefreshable
                 {
                     if (Book.IsValid())
                     {
-                        await RunInMainThreadAsync(() => { SelectFirstFoundBook()?.Set(Book); });
+                        await RunInMainThreadAsync(() => { FirstSelectedBook?.Set(Book); });
                     }
 
                     IsBooksCollectionViewVisible = true;
@@ -161,13 +161,13 @@ public class FindBooksViewModel : AbstractBookViewModel, IRefreshable
                 case Constants.DOUBLECLICK:
                 case Constants.EDIT_BOOK:
                 {
-                    if (!ValidSelectedBooks())
+                    if (!IsBookSelected)
                     {
                         await RefreshControlsOnAppearingTask();
                         return;
                     }
 
-                    await RunInMainThreadAsync(() => Book = SelectFirstFoundBook().Clone());
+                    await RunInMainThreadAsync(() => Book = FirstSelectedBook.Clone());
 
                     IsBooksCollectionViewVisible = false;
                     IsEditBookViewVisible = true;
@@ -178,7 +178,7 @@ public class FindBooksViewModel : AbstractBookViewModel, IRefreshable
                 {
                     RunInMainThread(() => _selectedBooks = GetSelectedBooks());
                     // Performing actions by the BooksManager
-                   await _bookManageable.RunCommand(commandParameter, _selectedBooks);
+                    await _bookManageable.RunCommand(commandParameter, _selectedBooks);
 
                     RunInMainThread(() =>
                         {
@@ -218,7 +218,6 @@ public class FindBooksViewModel : AbstractBookViewModel, IRefreshable
         }
 
         await UpdateButtonContentState(Book.Content?.IsLoaded ?? false);
-        await RunInMainThreadAsync(() => RaisePropertyChanged(nameof(Library)));
     }
 
     protected override async Task RefreshControlsOnAppearing()
@@ -232,18 +231,6 @@ public class FindBooksViewModel : AbstractBookViewModel, IRefreshable
 
 
     #region Private methods
-    private bool ValidSelectedBooks() => NotZero(SelectedBooks?.Count);
-
-    private bool CanSearchBooks() => NotZero(Library?.Id) && NotZero(Library?.TotalBooks);
-
-    private bool NotZero(int? number)
-    {
-        if (number == 0)
-            return false;
-
-        return true;
-    }
-
     /// <summary>
     /// Finds books based on the search text. Updates <see cref="FoundBookList"/>.
     /// </summary>
@@ -252,7 +239,11 @@ public class FindBooksViewModel : AbstractBookViewModel, IRefreshable
         RunInMainThread(FindBooks);
 
         WeakReferenceMessenger.Default.Send(
-            new StatusMessage() { InfoKind = EInfoKind.CurrentInfo, Message =  $"Attempt to find books by '{SelectedSearchField}' where part element is '{SearchText}'." });
+            new StatusMessage()
+            {
+                InfoKind = EInfoKind.CurrentInfo,
+                Message = $"Attempt to find books by '{SelectedSearchField}' where part element is '{SearchText}'."
+            });
 
         return Task.CompletedTask;
     }
@@ -262,12 +253,16 @@ public class FindBooksViewModel : AbstractBookViewModel, IRefreshable
         var foundBooks = _bookManageable.FindBooksByKind(SelectedSearchField, SearchText);
         FoundBookList.ResetAndAddRange(foundBooks);
     }
-    
+
     private async Task HandleOperateWithBooks()
     {
-        CanOperateWithBooks = CanSearchBooks();
-        CanEditBook = NotZero(SelectedBooks?.Count);
+        CanOperateWithBooks = CanSearchBooks;
+        CanEditBook = IsBookSelected;
     }
+
+    private bool CanSearchBooks => IsValidLibrary && IsNotEmptyLibrary;
+
+    private bool IsBookSelected => NotZero(SelectedBooks?.Count);
 
 
     private void Handle_TotalBooksChanged(object? sender, TotalBooksEventArgs e)
@@ -294,14 +289,13 @@ public class FindBooksViewModel : AbstractBookViewModel, IRefreshable
     }
 
 
-    private Book? SelectFirstFoundBook() => 0 < SelectedBooks.Count ? SelectedBooks[0] as Book : null;
+    private Book? FirstSelectedBook => 0 < SelectedBooks.Count ? SelectedBooks[0] as Book : null;
 
 
-    private Task UpdateButtonContentState(bool isContentLoaded)
+    private async Task UpdateButtonContentState(bool isContentLoaded)
     {
         ContentState = isContentLoaded ? Constants.SAVE_CONTENT : Constants.LOAD_CONTENT;
         CanClearContent = isContentLoaded;
-        return Task.CompletedTask;
     }
 
     private IList<Book> GetSelectedBooks() => SelectedBooks.Select(b => b as Book)?.ToList();
