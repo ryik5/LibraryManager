@@ -27,7 +27,7 @@ public sealed class FindBooksViewModel : AbstractBookViewModel, IRefreshable
         _bookManageable = new BookManagerModel(Library, settings, statusBar);
 
         OK = Constants.SAVE_CHANGES;
-        HandleOperateWithBooks().GetAwaiter();
+        HandleOperateWithBooks();
     }
 
 
@@ -256,6 +256,7 @@ public sealed class FindBooksViewModel : AbstractBookViewModel, IRefreshable
 
     private async Task HandleOperateWithBooks()
     {
+        await Task.Delay(20);
         CanOperateWithBooks = CanSearchBooks;
         CanEditBook = IsBookSelected;
     }
@@ -275,17 +276,24 @@ public sealed class FindBooksViewModel : AbstractBookViewModel, IRefreshable
     /// </summary>
     /// <param name="sender">The source of the event.</param>
     /// <param name="e">The NotifyCollectionChangedEventArgs instance containing the event data.</param>
-    private void Handle_FoundBookListChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    private async void Handle_FoundBookListChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         SelectedBooks.Clear();
+        await Task.Delay(40);
         CanEditBook = false;
     }
 
-    private void Handle_LibraryIdChanged(object? sender, EventArgs e)
+    private async void Handle_LibraryIdChanged(object? sender, EventArgs e)
     {
         FoundBookList.Clear();
         SelectedBooks.Clear();
-        HandleOperateWithBooks().GetAwaiter();
+        await HandleLibraryIdChangedTask();
+    }
+
+    private async Task HandleLibraryIdChangedTask()
+    {
+        await Task.Delay(10);
+        await HandleOperateWithBooks();
     }
 
 

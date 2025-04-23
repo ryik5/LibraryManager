@@ -61,13 +61,13 @@
                 <!-- General Controls -->
                 <StackLayout Grid.Row="0"
                              IsVisible="{Binding IsBooksCollectionViewVisible, Mode=OneWay}"
-                             IsEnabled="{Binding CanOperateWithBooks}"
+                             IsEnabled="{Binding CanOperateWithBooks, Mode=TwoWay}"
                              Orientation="Horizontal"
                              HorizontalOptions="Fill"
                              Margin="10,10,10,0" HeightRequest="35">
 
                     <Entry Text="{Binding SearchText}"
-                           IsEnabled="{Binding CanOperateWithBooks, Mode=OneWay}"
+                           IsEnabled="{Binding CanOperateWithBooks, Mode=TwoWay}"
                            Placeholder="Input word to seek"
                            ToolTipProperties.Text="Input a part of the word to seek"
                            Margin="10,0,10,0"
@@ -75,7 +75,7 @@
                            MinimumWidthRequest="150" />
 
                     <Button Text="Find"
-                            IsEnabled="{Binding CanOperateWithBooks, Mode=OneWay}"
+                            IsEnabled="{Binding CanOperateWithBooks, Mode=TwoWay}"
                             ToolTipProperties.Text="Click to find books"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Find Books"
@@ -83,7 +83,7 @@
                             Margin="10,0,0,0" />
 
                     <control:TextCheckBox MinimumWidthRequest="100"
-                                          IsEnabled="{Binding CanOperateWithBooks, Mode=OneWay}"
+                                          IsEnabled="{Binding CanOperateWithBooks, Mode=TwoWay}"
                                           ToolTipProperties.Text="Mark to run the search-on-fly"
                                           VerticalOptions="Center"
                                           Margin="10,0,10,0"
@@ -92,14 +92,14 @@
 
                     <Picker ItemsSource="{Binding SearchFields}"
                             SelectedItem="{Binding SelectedSearchField}"
-                            IsEnabled="{Binding CanOperateWithBooks, Mode=OneWay}"
+                            IsEnabled="{Binding CanOperateWithBooks, Mode=TwoWay}"
                             ToolTipProperties.Text="Select a field to seek"
                             MinimumWidthRequest="100"
                             FontSize="18"
                             Margin="10,0,10,0" />
 
                     <Button Text="Edit Book"
-                            IsEnabled="{Binding CanEditBook}" 
+                            IsEnabled="{Binding CanEditBook, Mode=TwoWay}" 
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Edit Book"
                             ToolTipProperties.Text="Edit the selected book"
@@ -107,7 +107,7 @@
                             Margin="10,0,20,0"/>
 
                     <Button Text="Delete Book(s)"
-                            IsEnabled="{Binding CanEditBook}" 
+                            IsEnabled="{Binding CanEditBook, Mode=TwoWay}" 
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Delete the selected book"
                             ToolTipProperties.Text="Delete the selected books"
