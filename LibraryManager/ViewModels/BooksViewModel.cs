@@ -228,10 +228,12 @@ public sealed class BooksViewModel : AbstractBookViewModel, IRefreshable
         });
     }
 
-    private void Handle_BookListCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    private async void Handle_BookListCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         Library.TotalBooks = Library.BookList.Count;
         SelectedBooks.Clear();
+        await Task.Delay(50);
+        await ValidateOperations();
     }
 
     private void Handle_TotalBooksChanged(object? sender, TotalBooksEventArgs e)
