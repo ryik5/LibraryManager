@@ -106,8 +106,7 @@ public class ToolsViewModel : AbstractViewModel
                     break;
 
                 case Constants.SAVE:
-                    await
-                        Settings.SaveSettings();
+                    await Settings.SaveSettings();
                     break;
 
                 case Constants.CANCEL:
@@ -123,6 +122,8 @@ public class ToolsViewModel : AbstractViewModel
                         $"Unknown command '{commandParameter}'on {nameof(ToolsViewModel)}");
                     break;
             }
+
+            RaisePropertyChanged(nameof(Settings));
         }
         else
         {

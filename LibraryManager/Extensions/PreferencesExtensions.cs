@@ -1,5 +1,9 @@
 namespace LibraryManager.Extensions;
 
+/// <summary>
+/// Provides extension methods for working with preferences.
+/// </summary>
+/// <author>YR 2025-04-14</author>
 public static class PreferencesExtensions
 {
     /// <summary>
@@ -27,7 +31,8 @@ public static class PreferencesExtensions
                 Preferences.Set(key, longValue);
                 break;
             default:
-                throw new InvalidOperationException($"Unsupported preference type for key '{key}'. Value must be a primitive type.");
+                Preferences.Set(key, value?.ToString());
+                break;
         }
     }
 }
