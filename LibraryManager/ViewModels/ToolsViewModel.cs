@@ -59,6 +59,7 @@ public class ToolsViewModel : AbstractViewModel
         get => _statusBar;
         set => SetProperty(ref _statusBar, value);
     }
+    #endregion
 
     #region CommandParameters
     public string SettingsView => Constants.SETTINGS;
@@ -67,7 +68,6 @@ public class ToolsViewModel : AbstractViewModel
     public string Save => Constants.SAVE;
     public string Cancel => Constants.CANCEL;
     public string Reset => Constants.RESET;
-    #endregion
     #endregion
 
 

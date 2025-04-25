@@ -66,7 +66,6 @@
                                            BindingContext="{Binding}"
                                            HorizontalOptions="Center"
                                            VerticalOptions="End"
-
                                            NavigateCommand="{Binding NavigateCommand, Mode=OneTime}"
                                            IsOkVisibile="True"
                                            OkText="{Binding Save, Mode=OneTime}"

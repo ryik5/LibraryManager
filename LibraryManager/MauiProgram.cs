@@ -35,6 +35,7 @@ public static class MauiProgram
             Description = "",
             BookList = new ObservableCollection<Book>()
         };
+        builder.Services.AddTransient<IFolderPicker, Platforms.MacCatalyst.FolderPicker>();
         var settings = new SettingsViewModel();
         var statusBar = new StatusBarViewModel();
         var package = AppInfo.Current.PackageName;
@@ -48,7 +49,6 @@ public static class MauiProgram
        // statusBar.SetStatusMessage(EInfoKind.TotalBooks,0);
        WeakReferenceMessenger.Default.Send(new StatusMessage(){ InfoKind = EInfoKind.TotalBooks, Message = "0"});
 
-        builder.Services.AddTransient<IFolderPicker, Platforms.MacCatalyst.FolderPicker>();
         builder.Services.AddTransient<Book>();
         builder.Services.AddTransient<App>();
 

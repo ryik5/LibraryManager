@@ -15,21 +15,11 @@ namespace LibraryManager.AbstractObjects;
 /// <author>YR 2025-03-09</author>
 public abstract class AbstractBindableModel : INotifyPropertyChanged
 {
-    protected AbstractBindableModel()
-    {
-    }
-
-
     #region Public Properties
     /// <summary>
     /// Command to perform an action, such as navigate to a different page or view or other actions.
     /// </summary>
     public ICommand NavigateCommand { get; set; }
-
-    /// <summary>
-    /// Abstract base class for bindable models, providing common functionality for data binding and UI interactions.
-    /// </summary>
-    public ICommand NavigateExtendedCommand { get; }
     #endregion
 
 
@@ -175,14 +165,6 @@ public abstract class AbstractBindableModel : INotifyPropertyChanged
         return Path.Combine(GetPathToDocumentDirectory(),
             StringsHandler.CreateXmlFileName(pointedName, fileExtenstion));
     }
-
-    /// <summary>
-    /// Gets the path to the current user Document Directory on the device.
-    /// </summary
-    protected async Task<string> PickFolderUpTask()
-    {
-        return await _folderPicker.PickFolder();
-    }
     #endregion
 
 
@@ -201,10 +183,5 @@ public abstract class AbstractBindableModel : INotifyPropertyChanged
         RaisePropertyChanged(propertyName);
         return true;
     }
-    #endregion
-
-
-    #region Private Fields
-    private readonly IFolderPicker _folderPicker;
     #endregion
 }

@@ -14,9 +14,7 @@ public class StatusBarViewModel : AbstractBindableModel, IStatusBar
             (r, m) => { Task.Run(() => _messages.Enqueue(m), _cancellationTokenSource.Token); });
         ReadStatusMessageFromQueueTask(_cancellationTokenSource).GetAwaiter();
     }
-
-
-
+    
     #region Public Properties
     public string CommonInfo
     {

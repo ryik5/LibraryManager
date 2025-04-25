@@ -33,7 +33,7 @@
                                    Grid.Row="0" Grid.Column="1" Placeholder="Input here font size:"/>
 
                             <Label Text="{Binding LabelLibraryHomeFolder, Mode=OneTime}" Grid.Row="1" Grid.Column="0" />
-                            <Button Command="{Binding NavigateExtendedCommand}"
+                            <Button Command="{Binding NavigateCommand}"
                                     CommandParameter="{Binding LabelLibraryHomeFolder, Mode=OneTime}"
                                     Text="{Binding LibraryHomeFolder}"
                                     FontAutoScalingEnabled="True"

@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.Input;
 using LibraryManager.AbstractObjects;
 using LibraryManager.Extensions;
 using LibraryManager.Models;
@@ -19,13 +20,35 @@ public class SettingsViewModel : AbstractBindableModel
         // TODO : Load and save data with SettingsModel instead
         // TODO: write as StaticRoute
 
+        NavigateCommand = new AsyncRelayCommand<string>(PerformAction);
+
         SearchFields = Enum.GetValues<EBibliographicKindInformation>().ToArray();
         Booleans = new[] { true, false };
         SortingDirections = new[] { Constants.SORTING_ASCENDING, Constants.SORTING_DESCENDING };
         BookProperties = new Library().GetBookProperties();
         LoadAllSettings().ConfigureAwait(false);
+        _folderPicker= new FolderPicker();
     }
     
+    protected async Task PerformAction(string? commandParameter)
+    {
+        if (string.IsNullOrWhiteSpace(commandParameter))
+            return;
+
+        switch (commandParameter)
+        {
+            case Constants.LIBRARY_HOME_FOLDER:
+                await Task.Delay(10);
+                LibraryHomeFolder = await PickFolderUpTask();
+                break;
+
+            default:
+            {
+                break;
+            }
+        }
+    }
+
 
     #region Dictionaries
     /// <summary>
@@ -449,6 +472,15 @@ public class SettingsViewModel : AbstractBindableModel
             break;
         }
     }
+
+
+    /// <summary>
+    /// Gets the path to the current user Document Directory on the device.
+    /// </summary
+    protected async Task<string> PickFolderUpTask()
+    {
+        return await _folderPicker.PickFolder();
+    }
     #endregion
 
 
@@ -469,6 +501,7 @@ public class SettingsViewModel : AbstractBindableModel
     private string _thirdSortProperty_SortingDirection;
     private string _book_MaxContentLength_ToolTip;
     private string _libraryHomeFolder;
+    private readonly IFolderPicker _folderPicker;
 
     private readonly Dictionary<string, object> DefaultSettings = new() // Default values for preferences
     {
