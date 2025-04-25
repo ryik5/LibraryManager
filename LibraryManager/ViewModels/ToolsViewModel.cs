@@ -118,8 +118,7 @@ public class ToolsViewModel : AbstractViewModel
                     break;
 
                 default:
-                    await ShowCustomDialogPage(Constants.UNKNOWN_COMMAND,
-                        $"Unknown command '{commandParameter}'on {nameof(ToolsViewModel)}");
+                    await ShowNavigationErrorInDebug($"Unknown command '{commandParameter}'", nameof(ToolsViewModel));
                     break;
             }
 
