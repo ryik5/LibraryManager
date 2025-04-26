@@ -18,7 +18,6 @@ public class ToolsViewModel : AbstractViewModel
     {
         StatusBar = statusBar;
         Settings = settings;
-        Settings.LoadAllSettings().ConfigureAwait(false);
         IsSettingsViewVisible = true;
     }
 
@@ -69,8 +68,7 @@ public class ToolsViewModel : AbstractViewModel
     public string Cancel => Constants.CANCEL;
     public string Reset => Constants.RESET;
     #endregion
-
-
+    
     #region Public Methods
     protected override async Task PerformAction(string? commandParameter)
     {
@@ -106,15 +104,9 @@ public class ToolsViewModel : AbstractViewModel
                     break;
 
                 case Constants.SAVE:
-                    await Settings.SaveSettings();
-                    break;
-
                 case Constants.CANCEL:
-                    await Settings.LoadAllSettings();
-                    break;
-
                 case Constants.RESET:
-                    await Settings.ResetAllSettings();
+                    await Settings.PerformAction(commandParameter);
                     break;
 
                 default:
@@ -130,8 +122,7 @@ public class ToolsViewModel : AbstractViewModel
         }
     }
     #endregion
-
-
+    
     #region Private fields
     private SettingsViewModel _settings;
     private bool _isSettingsVisible;

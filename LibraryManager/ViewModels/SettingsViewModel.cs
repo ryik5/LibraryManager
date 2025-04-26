@@ -17,9 +17,6 @@ public class SettingsViewModel : AbstractBindableModel
     /// </summary>
     public SettingsViewModel()
     {
-        // TODO : Load and save data with SettingsModel instead
-        // TODO: write as StaticRoute
-
         NavigateCommand = new AsyncRelayCommand<string>(PerformAction);
 
         SearchFields = Enum.GetValues<EBibliographicKindInformation>().ToArray();
@@ -27,25 +24,26 @@ public class SettingsViewModel : AbstractBindableModel
         SortingDirections = new[] { Constants.SORTING_ASCENDING, Constants.SORTING_DESCENDING };
         BookProperties = new Library().GetBookProperties();
         LoadAllSettings().ConfigureAwait(false);
-        _folderPicker= new FolderPicker();
+        _folderPicker = new FolderPicker();
     }
-    
-    protected async Task PerformAction(string? commandParameter)
-    {
-        if (string.IsNullOrWhiteSpace(commandParameter))
-            return;
 
+    public async Task PerformAction(string? commandParameter)
+    {
         switch (commandParameter)
         {
             case Constants.LIBRARY_HOME_FOLDER:
                 await Task.Delay(10);
                 LibraryHomeFolder = await PickFolderUpTask();
                 break;
-
-            default:
-            {
+            case Constants.SAVE:
+                await SaveSettings();
                 break;
-            }
+            case Constants.CANCEL:
+                await LoadAllSettings();
+                break;
+            case Constants.RESET:
+                await ResetAllSettings();
+                break;
         }
     }
 
@@ -71,7 +69,6 @@ public class SettingsViewModel : AbstractBindableModel
     /// </summary>
     public string[] BookProperties { get; }
     #endregion
-
 
     #region Public Properties
     /// <summary>
@@ -303,17 +300,7 @@ public class SettingsViewModel : AbstractBindableModel
     public string LabelLibraryHomeFolder => Constants.LIBRARY_HOME_FOLDER;
     #endregion
 
-
-    #region Public methods: Reset, Load, and Save Settings
-    /// <summary>
-    /// Resets all application settings to their default values.
-    /// </summary>
-    public async Task ResetAllSettings()
-    {
-        await ResetPreferencesExtensions();
-        await LoadAllSettings(); // Refresh view model properties
-    }
-
+    #region Public methods
     /// <summary>
     /// Loads all settings into the view model.
     /// </summary>
@@ -353,11 +340,22 @@ public class SettingsViewModel : AbstractBindableModel
 
         return Task.CompletedTask;
     }
+    #endregion
+
+    #region Private methods
+    /// <summary>
+    /// Resets all application settings to their default values.
+    /// </summary>
+    private async Task ResetAllSettings()
+    {
+        await ResetPreferencesExtensions();
+        await LoadAllSettings(); // Refresh view model properties
+    }
 
     /// <summary>
     /// Saves all view model values to preferences.
     /// </summary>
-    public Task SaveSettings()
+    private Task SaveSettings()
     {
         Preferences.Set(nameof(MessageBox_FontSize), MessageBox_FontSize);
         Preferences.Set(nameof(SearchField), (int)SearchField);
@@ -377,10 +375,7 @@ public class SettingsViewModel : AbstractBindableModel
 
         return Task.CompletedTask;
     }
-    #endregion
 
-
-    #region Private methods
     private void SetStringProperty(bool key, ref string _propertyValue, string PropertyName)
     {
         switch (key)
@@ -477,12 +472,11 @@ public class SettingsViewModel : AbstractBindableModel
     /// <summary>
     /// Gets the path to the current user Document Directory on the device.
     /// </summary
-    protected async Task<string> PickFolderUpTask()
+    private async Task<string> PickFolderUpTask()
     {
         return await _folderPicker.PickFolder();
     }
     #endregion
-
 
     #region Private fields
     private long _bookMaxContentLength;
