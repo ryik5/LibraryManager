@@ -244,8 +244,6 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
         get => _library;
         set => SetProperty(ref _library, value);
     }
-
-    public event EventHandler<ActionFinishedEventArgs> LoadingFinished;
     public event EventHandler<TotalBooksEventArgs> TotalBooksChanged;
     #endregion
 
@@ -283,12 +281,7 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
 
         return orderedBooks;
     }
-
-
-    private void BookLoader_LoadingBookFinished(object? sender, ActionFinishedEventArgs e)
-    {
-        LoadingFinished?.Invoke(this, new ActionFinishedEventArgs { Message = e.Message, IsFinished = e.IsFinished });
-    }
+    
 
     /// <summary>
     /// Finds books in the library by a specified book element.

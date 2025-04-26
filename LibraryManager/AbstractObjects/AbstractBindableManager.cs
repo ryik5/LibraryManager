@@ -15,11 +15,21 @@ namespace LibraryManager.AbstractObjects;
 /// <author>YR 2025-03-09</author>
 public abstract class AbstractBindableModel : INotifyPropertyChanged
 {
-    #region Public Properties
+     #region Public Properties
     /// <summary>
     /// Command to perform an action, such as navigate to a different page or view or other actions.
     /// </summary>
     public ICommand NavigateCommand { get; set; }
+    
+    /// <summary>
+    /// Gets or sets the status bar instance.
+    /// </summary>
+    public IStatusBar StatusBar
+    {
+        get => _statusBar;
+        set => SetProperty(ref _statusBar, value);
+    }
+
     #endregion
 
 
@@ -184,4 +194,7 @@ public abstract class AbstractBindableModel : INotifyPropertyChanged
         return true;
     }
     #endregion
+    
+    
+    private IStatusBar _statusBar;
 }

@@ -3,6 +3,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodel="clr-namespace:LibraryManager.ViewModels"
+             xmlns:control="clr-namespace:LibraryManager.Controls"
              x:Class="LibraryManager.Views.AboutPage"
              x:DataType="viewmodel:AboutViewModel">
 
@@ -30,90 +31,93 @@
     </ContentPage.MenuBarItems>
 
     <ContentPage.Content>
-        <Grid Padding="10">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="55" />
-                <RowDefinition />
-                <RowDefinition Height="40" />
-            </Grid.RowDefinitions>
+        <Grid RowDefinitions="*,Auto">
 
-            <!-- Header -->
-            <Label Text="{Binding Header}"
-                   FontSize="18"
-                   FontAttributes="Bold"
-                   HorizontalOptions="Center"
-                   VerticalOptions="Center" />
+            <Grid Row="0" Padding="10,10,20,0" RowDefinitions="55,*,40">
 
-            <!-- Body -->
-            <ScrollView Grid.Row="1" Margin="0,5,0,0">
-                <VerticalStackLayout Spacing="10" Padding="10">
-                    <Label Text="Welcome to the Library Manager!"
-                           FontSize="22"
-                           HorizontalTextAlignment="Center"
-                           FontAttributes="Bold"
-                           TextDecorations="Underline" />
+                <!-- Header -->
+                <Label Text="{Binding Header}"
+                       FontSize="18"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center" />
 
-                    <Label
-                        Text="This application with a modular plugin architecture helps you efficiently manage numerous collections of books."
-                        FontSize="20" />
+                <!-- Body -->
+                <ScrollView Grid.Row="1" Margin="0,5,0,0">
+                    <VerticalStackLayout Spacing="10" Padding="10">
+                        <Label Text="Welcome to the Library Manager!"
+                               FontSize="22"
+                               HorizontalTextAlignment="Center"
+                               FontAttributes="Bold"
+                               TextDecorations="Underline" />
 
-                    <Label Text="Key Features:"
-                           FontSize="20"
-                           FontAttributes="Bold" />
-
-                    <!-- Feature List -->
-                    <StackLayout>
                         <Label
-                            Text="• Load Books from XML: Import a list of books from an XML file using a dedicated plugin."
+                            Text="This application with a modular plugin architecture helps you efficiently manage numerous collections of books."
                             FontSize="20" />
+
+                        <Label Text="Key Features:"
+                               FontSize="20"
+                               FontAttributes="Bold" />
+
+                        <!-- Feature List -->
+                        <StackLayout>
+                            <Label
+                                Text="• Load Books from XML: Import a list of books from an XML file using a dedicated plugin."
+                                FontSize="20" />
+                            <Label
+                                Text="• Add New Books: Input new book details, save book content to the local disk, and clear book content as needed."
+                                FontSize="20" />
+                            <Label Text="• Remove Books: Delete books from the collection."
+                                   FontSize="20" />
+                            <Label
+                                Text="• Sort Books: Organize books alphabetically by author and then by title within each author's works."
+                                FontSize="20" />
+                            <Label
+                                Text="• Search Functionality: Find books by searching for partial matches in the author's name, title, publication year, or total pages."
+                                FontSize="20" />
+                            <Label
+                                Text="• Save Books to XML: Export the current book list to an XML file through a dedicated plugin."
+                                FontSize="20" />
+                        </StackLayout>
+
                         <Label
-                            Text="• Add New Books: Input new book details, save book content to the local disk, and clear book content as needed."
+                            Text="Designed for flexibility and extensibility, this application allows for the integration of additional plugins to enhance or customize its functionality."
                             FontSize="20" />
-                        <Label Text="• Remove Books: Delete books from the collection."
+
+                        <Label Text="Enjoy managing your book collection with ease!"
                                FontSize="20" />
-                        <Label
-                            Text="• Sort Books: Organize books alphabetically by author and then by title within each author's works."
-                            FontSize="20" />
-                        <Label
-                            Text="• Search Functionality: Find books by searching for partial matches in the author's name, title, publication year, or total pages."
-                            FontSize="20" />
-                        <Label
-                            Text="• Save Books to XML: Export the current book list to an XML file through a dedicated plugin."
-                            FontSize="20" />
-                    </StackLayout>
 
-                    <Label
-                        Text="Designed for flexibility and extensibility, this application allows for the integration of additional plugins to enhance or customize its functionality."
-                        FontSize="20" />
+                        <Label Text="For more information and to access the source code, visit: "
+                               FontSize="20" />
+                        <Button Text="GitHub"
+                                Command="{Binding NavigateCommand}"
+                                CommandParameter="https://github.com/ryik5/LibraryManager"
+                                ToolTipProperties.Text="Visit repository on GitHub"
+                                HorizontalOptions="Center"
+                                FontSize="18"
+                                Padding="5" BorderWidth="1">
+                        </Button>
 
-                    <Label Text="Enjoy managing your book collection with ease!"
-                           FontSize="20" />
+                        <Image Source="qr.png"
+                               WidthRequest="100"
+                               HeightRequest="100"
+                               HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+                </ScrollView>
 
-                    <Label Text="For more information and to access the source code, visit: "
-                           FontSize="20" />
-                    <Button Text="GitHub"
-                            Command="{Binding NavigateCommand}"
-                            CommandParameter="https://github.com/ryik5/LibraryManager"
-                            ToolTipProperties.Text="Visit repository on GitHub"
-                            HorizontalOptions="Center"
-                            FontSize="18"
-                            Padding="5" BorderWidth="1">
-                    </Button>
+                <!-- Footer -->
+                <Label Grid.Row="2"
+                       Text="{Binding Footer}"
+                       FontSize="18"
+                       HorizontalOptions="Start"
+                       VerticalOptions="End" />
+            </Grid>
 
-                    <Image Source="qr.png"
-                           WidthRequest="100"
-                           HeightRequest="100"
-                           HorizontalOptions="Center" />
-                </VerticalStackLayout>
-            </ScrollView>
-
-            <!-- Footer -->
-            <Label Text="{Binding Footer}"
-                   FontSize="18"
-                   HorizontalOptions="Start"
-                   VerticalOptions="End"
-                   Grid.Row="2" />
+            <!-- StatusBar -->
+            <control:StatusBarPanel Grid.Row="1" BindingContext="{Binding}"
+                                    StatusBar="{Binding StatusBar, Mode=OneWay}"
+                                    BackgroundColor="{StaticResource Quaternary}"
+                                    Margin="0" />
         </Grid>
-
     </ContentPage.Content>
 </ContentPage>

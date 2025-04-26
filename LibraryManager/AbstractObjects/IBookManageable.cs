@@ -8,9 +8,6 @@ namespace LibraryManager.AbstractObjects;
 /// <author>YR 2025-01-09</author>
 public interface IBookManageable
 {
-    public event EventHandler<TotalBooksEventArgs> TotalBooksChanged;
-    public event EventHandler<ActionFinishedEventArgs> LoadingFinished;
-
     /// <summary>
     /// Executes a specified command within the context of book management.
     /// </summary>

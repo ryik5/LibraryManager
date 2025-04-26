@@ -22,15 +22,6 @@ public abstract class AbstractBookViewModel : AbstractViewModel
 
     #region Public properties
     /// <summary>
-    /// Gets or sets the status bar instance.
-    /// </summary>
-    public IStatusBar StatusBar
-    {
-        get => _statusBar;
-        set => SetProperty(ref _statusBar, value);
-    }
-
-    /// <summary>
     /// Gets or sets the library instance.
     /// </summary>
     public ILibrary Library
@@ -146,6 +137,5 @@ public abstract class AbstractBookViewModel : AbstractViewModel
     private bool _canEditBook;
     private bool _isEditBookViewVisible;
     private bool _isBooksCollectionViewVisible;
-    private IStatusBar _statusBar;
     #endregion
 }

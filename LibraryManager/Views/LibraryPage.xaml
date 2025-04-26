@@ -4,7 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:control="clr-namespace:LibraryManager.Controls"
              x:Class="LibraryManager.Views.LibraryPage">
-    
+
     <ContentPage.MenuBarItems>
         <MenuBarItem Text="Library">
             <!--  To make menu like menu with SubMenu -->
@@ -53,8 +53,8 @@
 
     <ContentPage.Content>
         <Grid RowDefinitions="*, Auto">
-            <Grid Grid.Row="0" 
-                  BackgroundColor="{StaticResource White}" 
+            <Grid Grid.Row="0"
+                  BackgroundColor="{StaticResource White}"
                   Padding="10">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="55" />
@@ -72,24 +72,24 @@
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Create a new library"
                             ToolTipProperties.Text="Click to Create a new library" />
-                    <Button Text="Load Library" 
+                    <Button Text="Load Library"
                             Margin="10,0,10,0"
-                            ToolTipProperties.Text="Load a saved library" 
+                            ToolTipProperties.Text="Load a saved library"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Load the library" />
                     <Button Text="Save Library"
-                            ToolTipProperties.Text="Click to save the current library" 
+                            ToolTipProperties.Text="Click to save the current library"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Save Library"
                             IsEnabled="{Binding CanOperateWithBooks, Mode=TwoWay}" />
                     <Button Text="Save As Library"
                             Margin="10,0,10,0"
-                            ToolTipProperties.Text="Click to save the current library with a new name" 
+                            ToolTipProperties.Text="Click to save the current library with a new name"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Save the library with a new name"
                             IsEnabled="{Binding CanOperateWithBooks, Mode=TwoWay}" />
                     <Button Text="Close Library"
-                            ToolTipProperties.Text="Click to close current library" 
+                            ToolTipProperties.Text="Click to close current library"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Close the current library"
                             IsEnabled="{Binding CanCloseLibrary}" />

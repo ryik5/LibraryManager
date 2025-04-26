@@ -39,7 +39,7 @@
     </ContentPage.MenuBarItems>
 
     <ContentPage.Content>
-        <Grid RowDefinitions="Auto, *">
+        <Grid RowDefinitions="Auto, *, Auto">
 
             <!-- Menu -->
             <control:ThreeButtonsPanel Grid.Row="0" HeightRequest="35"
@@ -76,7 +76,7 @@
             </Grid>
 
             <!--Debug View-->
-            <control:DebugView x:Name="DebugView" 
+            <control:DebugView x:Name="DebugView"
                                Grid.Row="1" Margin="20"
                                IsVisible="{Binding IsDebugViewVisible}"
                                DebugTextView="{Binding  StatusBar.DebugInfo}" />
@@ -84,6 +84,11 @@
             <!--Tools View-->
             <!--TODO : -->
 
+            <!-- StatusBar -->
+            <control:StatusBarPanel Grid.Row="2" BindingContext="{Binding}"
+                                    StatusBar="{Binding StatusBar, Mode=OneWay}"
+                                    BackgroundColor="{StaticResource Quaternary}"
+                                    Margin="0" />
         </Grid>
     </ContentPage.Content>
 </ContentPage>

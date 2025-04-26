@@ -8,8 +8,10 @@ namespace LibraryManager.ViewModels;
 /// <author>YR 2025-02-09</author>
 public class AboutViewModel : AbstractViewModel
 {
-    public AboutViewModel()
+    public AboutViewModel(IStatusBar statusBar)
     {
+        StatusBar = statusBar;
+
         if (Assembly.GetEntryAssembly()?.Location is string fileName)
         {
             var versionInfo = FileVersionInfo.GetVersionInfo(fileName);

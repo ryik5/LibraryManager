@@ -99,19 +99,19 @@
                             Margin="10,0,10,0" />
 
                     <Button Text="Edit Book"
-                            IsEnabled="{Binding CanEditBook, Mode=TwoWay}" 
+                            IsEnabled="{Binding CanEditBook, Mode=TwoWay}"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Edit Book"
                             ToolTipProperties.Text="Edit the selected book"
                             MinimumWidthRequest="100"
-                            Margin="10,0,20,0"/>
+                            Margin="10,0,20,0" />
 
                     <Button Text="Delete Book(s)"
-                            IsEnabled="{Binding CanEditBook, Mode=TwoWay}" 
+                            IsEnabled="{Binding CanEditBook, Mode=TwoWay}"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Delete the selected book"
                             ToolTipProperties.Text="Delete the selected books"
-                            MinimumWidthRequest="100"/>
+                            MinimumWidthRequest="100" />
 
                 </StackLayout>
 
