@@ -22,6 +22,40 @@ public abstract class AbstractViewModel : AbstractBindableModel
     protected abstract Task PerformAction(string? commandParameter);
 
     /// <summary>
+    /// Refreshes the controls on appearing by executing the tasks in the following order:
+    /// <list type="number">
+    /// <item>HandleBeforeRefreshControlsOnAppearingTask</item>
+    /// <item>Task.Delay(20)</item>
+    /// <item>HandlePostRefreshControlsOnAppearingTask</item>
+    /// </list>
+    /// </summary>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    public async Task RefreshControlsOnAppearing()
+    {
+        await HandleBeforeRefreshControlsOnAppearingTask();
+        await Task.Delay(20);
+        await HandlePostRefreshControlsOnAppearingTask();
+    }
+
+    /// <summary>
+    /// Handles operations that should occur before refreshing the controls when appearing.
+    /// </summary>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    public virtual async Task HandleBeforeRefreshControlsOnAppearingTask()
+    {
+    }
+
+    /// <summary>
+    /// Handles operations that should occur after refreshing the controls when appearing.
+    /// This method can be overridden by derived classes to implement specific post-refresh actions.
+    /// </summary>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    protected virtual async Task HandlePostRefreshControlsOnAppearingTask()
+    {
+    }
+
+
+    /// <summary>
     /// Shows a display alert to the user, with the option to either press "OK" or "Cancel".
     /// </summary>
     /// <param name="title">The title of the alert.</param>
@@ -66,37 +100,6 @@ public abstract class AbstractViewModel : AbstractBindableModel
         await gotoPageTask;
     }
 
-    public async Task RefreshControlsOnAppearingTask()
-    {
-        var refreshTask = RefreshControlsOnAppearing();
-        await Task.Delay(20);
-        await refreshTask;
-    }
-
-
-    protected async virtual Task RefreshControlsOnAppearing()
-    {
-    }
-
-    /// <summary>
-    /// Attempts to navigate to an application's page specified by a command parameter, handling any navigation errors that may occur.
-    /// </summary>
-    /// <param name="commandParameter">The command parameter specifying the page to navigate to.</param>
-    private async Task GoToPage(string commandParameter)
-    {
-        try
-        {
-            // Dynamically navigate using the provided commandParameter
-            // begins '//' added in the beginning to switch a Menu as well as Page. without '//' it switch only Page
-            await Shell.Current.GoToAsync($"//{commandParameter}").ConfigureAwait(false);
-        }
-        catch (Exception ex) // Handle any issues with navigation
-        {
-            #if DEBUG
-            Debug.WriteLine($"Navigation error: {ex.Message}");
-            #endif
-        }
-    }
 
     /// <summary>
     /// Attempts to open a URL in the platform's default web browser, handling any errors that may occur.
@@ -128,6 +131,7 @@ public abstract class AbstractViewModel : AbstractBindableModel
         }*/
     }
 
+
     /// <summary>
     /// Checks if the current route is equal to the provided page.
     /// </summary>
@@ -135,6 +139,7 @@ public abstract class AbstractViewModel : AbstractBindableModel
     /// <returns>true if the current route is equal to the provided page, false otherwise.</returns>
     protected static bool IsCurrentRoute(string page) =>
         Shell.Current.CurrentState.Location.OriginalString == $"//{page}";
+
 
     protected Task ShowNavigationErrorInDebug(string commandParameter, string className)
     {
@@ -145,6 +150,7 @@ public abstract class AbstractViewModel : AbstractBindableModel
 
         return Task.CompletedTask;
     }
+
 
     /// <summary>
     /// Displays the navigation command parameter in debug mode.
@@ -159,19 +165,45 @@ public abstract class AbstractViewModel : AbstractBindableModel
     protected Task ShowNavigationCommandInDebug(string commandParameter, string className)
     {
         #if DEBUG
-        Debug.WriteLine(
-            $"NavigateCommand on {className} triggered with commandParameter: {commandParameter}");
+        Debug.WriteLine($"NavigateCommand on {className} triggered with commandParameter: {commandParameter}");
         #endif
 
         return Task.CompletedTask;
     }
 
-    protected static bool NotZero(int? number)
+
+    /// <summary>
+    /// Determines whether the specified number is not null and not zero.
+    /// </summary>
+    /// <param name="number">The number to check.</param>
+    /// <returns>true if the number is not null and not zero; otherwise, false.</returns>
+    protected static bool IsNotZero(int? number)
     {
-        if (number is int && number == 0)
+        if (number is not int || number == 0)
             return false;
 
         return true;
     }
     #endregion
+
+
+    /// <summary>
+    /// Attempts to navigate to an application's page specified by a command parameter, handling any navigation errors that may occur.
+    /// </summary>
+    /// <param name="commandParameter">The command parameter specifying the page to navigate to.</param>
+    private async Task GoToPage(string commandParameter)
+    {
+        try
+        {
+            // Dynamically navigate using the provided commandParameter
+            // begins '//' added in the beginning to switch a Menu as well as Page. without '//' it switch only Page
+            await Shell.Current.GoToAsync($"//{commandParameter}").ConfigureAwait(false);
+        }
+        catch (Exception ex) // Handle any issues with navigation
+        {
+            #if DEBUG
+            Debug.WriteLine($"Navigation error: {ex.Message}");
+            #endif
+        }
+    }
 }

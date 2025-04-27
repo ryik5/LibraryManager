@@ -116,7 +116,7 @@ public abstract class AbstractBookViewModel : AbstractViewModel
     /// <remarks>
     /// A library is considered valid if its ID is not zero.
     /// </remarks>
-    protected bool IsValidLibrary => NotZero(Library?.Id);
+    protected bool IsValidLibrary => IsNotZero(Library?.Id);
 
     /// <summary>
     /// Checks if the library is not empty based on its total books count.
@@ -124,7 +124,7 @@ public abstract class AbstractBookViewModel : AbstractViewModel
     /// <remarks>
     /// A library is considered not empty if its total books count is not zero.
     /// </remarks>
-    protected bool IsNotEmptyLibrary => NotZero(Library?.TotalBooks);
+    protected bool IsNotEmptyLibrary => IsNotZero(Library?.TotalBooks);
     #endregion
 
 

@@ -11,7 +11,7 @@ namespace LibraryManager.ViewModels;
 /// <author>YR 2025-02-09</author>
 public sealed class FindBooksViewModel : AbstractBookViewModel, IRefreshable
 {
-    public FindBooksViewModel(ILibrary library, SettingsViewModel settings, IStatusBar statusBar) 
+    public FindBooksViewModel(ILibrary library, SettingsViewModel settings, IStatusBar statusBar)
         : base(library, statusBar)
     {
         SearchFields = Enum.GetValues(typeof(EBibliographicKindInformation)).Cast<EBibliographicKindInformation>()
@@ -27,7 +27,7 @@ public sealed class FindBooksViewModel : AbstractBookViewModel, IRefreshable
         _bookManageable = new BookManagerModel(Library, settings, statusBar);
 
         OK = Constants.SAVE_CHANGES;
-        HandleOperateWithBooks();
+        RefreshControlsOnAppearing();
     }
 
 
@@ -128,7 +128,7 @@ public sealed class FindBooksViewModel : AbstractBookViewModel, IRefreshable
                 {
                     if (!CanSearchBooks)
                     {
-                        await RefreshControlsOnAppearingTask();
+                        await RefreshControlsOnAppearing();
                         return;
                     }
 
@@ -161,7 +161,7 @@ public sealed class FindBooksViewModel : AbstractBookViewModel, IRefreshable
                 {
                     if (!IsBookSelected)
                     {
-                        await RefreshControlsOnAppearingTask();
+                        await RefreshControlsOnAppearing();
                         return;
                     }
 
@@ -218,15 +218,21 @@ public sealed class FindBooksViewModel : AbstractBookViewModel, IRefreshable
         await UpdateButtonContentState(Book.Content?.IsLoaded ?? false);
     }
 
-    protected override async Task RefreshControlsOnAppearing()
+    public override async Task HandleBeforeRefreshControlsOnAppearingTask()
     {
         await RunInMainThreadAsync(() => SelectedBooks.Clear());
+    }
+
+
+    protected override async Task HandlePostRefreshControlsOnAppearingTask()
+    {
         IsBooksCollectionViewVisible = true;
         IsEditBookViewVisible = false;
-        await HandleOperateWithBooks();
+        CanOperateWithBooks = CanSearchBooks;
+        CanEditBook = IsBookSelected;
     }
     #endregion
-    
+
     #region Private methods
     /// <summary>
     /// Finds books based on the search text. Updates <see cref="FoundBookList"/>.
@@ -251,21 +257,14 @@ public sealed class FindBooksViewModel : AbstractBookViewModel, IRefreshable
         FoundBookList.ResetAndAddRange(foundBooks);
     }
 
-    private async Task HandleOperateWithBooks()
-    {
-        await Task.Delay(20);
-        CanOperateWithBooks = CanSearchBooks;
-        CanEditBook = IsBookSelected;
-    }
-
     private bool CanSearchBooks => IsValidLibrary && IsNotEmptyLibrary;
 
-    private bool IsBookSelected => NotZero(SelectedBooks?.Count);
+    private bool IsBookSelected => IsNotZero(SelectedBooks?.Count);
 
 
     private void Handle_TotalBooksChanged(object? sender, TotalBooksEventArgs e)
     {
-        HandleOperateWithBooks().GetAwaiter();
+        RefreshControlsOnAppearing().GetAwaiter();
     }
 
     /// <summary>
@@ -289,8 +288,7 @@ public sealed class FindBooksViewModel : AbstractBookViewModel, IRefreshable
 
     private async Task HandleLibraryIdChangedTask()
     {
-        await Task.Delay(10);
-        await HandleOperateWithBooks();
+        await RefreshControlsOnAppearing();
     }
 
 

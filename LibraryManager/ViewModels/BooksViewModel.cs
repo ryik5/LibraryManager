@@ -126,7 +126,7 @@ public sealed class BooksViewModel : AbstractBookViewModel, IRefreshable
                 {
                     if (!IsBookSelected)
                     {
-                        await RefreshControlsOnAppearingTask();
+                        await RefreshControlsOnAppearing();
                         return;
                     }
 
@@ -144,7 +144,7 @@ public sealed class BooksViewModel : AbstractBookViewModel, IRefreshable
                 {
                     if (!IsBookSelected)
                     {
-                        await RefreshControlsOnAppearingTask();
+                        await RefreshControlsOnAppearing();
                         return;
                     }
 
@@ -196,7 +196,7 @@ public sealed class BooksViewModel : AbstractBookViewModel, IRefreshable
         );
     }
 
-    protected override async Task RefreshControlsOnAppearing()
+    protected override async Task HandlePostRefreshControlsOnAppearingTask()
     {
         await RunInMainThreadAsync(() =>
         {
@@ -241,7 +241,7 @@ public sealed class BooksViewModel : AbstractBookViewModel, IRefreshable
     }
 
     private Book? FirstSelectedBook => GetSelectedBooks()[0];
-    private bool IsBookSelected => NotZero(SelectedBooks?.Count);
+    private bool IsBookSelected => IsNotZero(SelectedBooks?.Count);
 
 
     private Task UpdateButtonContentState(bool isContentLoaded)

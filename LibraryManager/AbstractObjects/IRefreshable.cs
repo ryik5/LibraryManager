@@ -10,5 +10,5 @@ public interface IRefreshable
     /// Refreshes the controls when the object appears.
     /// </summary>
     /// <returns>A task representing the asynchronous operation.</returns>
-    Task RefreshControlsOnAppearingTask();
+    Task RefreshControlsOnAppearing();
 }
