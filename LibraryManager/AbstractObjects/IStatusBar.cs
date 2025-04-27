@@ -22,7 +22,7 @@ public interface IStatusBar
     /// <summary>
     /// Gets the status information displayed in the end of the status bar.
     /// </summary>
-    string StatusInfo { get; }
+    string TotalBooksInfo { get; }
 
     /// <summary>
     /// Gets a list of debug information strings.

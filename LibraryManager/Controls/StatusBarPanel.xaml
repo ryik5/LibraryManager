@@ -3,6 +3,8 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="LibraryManager.Controls.StatusBarPanel"
+             xmlns:vm="clr-namespace:LibraryManager.ViewModels"
+             x:DataType="vm:StatusBarViewModel"
              HeightRequest="40"
              VerticalOptions="Center">
 
@@ -20,17 +22,17 @@
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <Label Padding="5,0,5,0"
-               Text="{Binding  StatusBar.CommonInfo}"
+               Text="{Binding  StatusBar.CommonInfo, Mode=OneWay}"
                ToolTipProperties.Text="{Binding  StatusBar.CommonInfo, Mode=OneWay}"
                Grid.Column="0" />
         <Label Grid.Column="1" Text="I" Padding="1,0,5,0" />
         <Label Padding="10,0,10,0"
-               Text="{Binding StatusBar.CurrentInfo}"
+               Text="{Binding StatusBar.CurrentInfo, Mode=OneWay}"
                ToolTipProperties.Text="Information about the current operation"
                Grid.Column="1" />
         <Label Grid.Column="2" Text="I" Padding="1,0,5,0" />
         <Label Padding="10,0,10,0"
-               Text="{Binding StatusBar.StatusInfo}"
+               Text="{Binding StatusBar.TotalBooksInfo, Mode=OneWay}"
                ToolTipProperties.Text="Total number of books in current Library"
                Grid.Column="2" />
     </Grid>

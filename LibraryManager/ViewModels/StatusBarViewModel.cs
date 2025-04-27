@@ -17,24 +17,36 @@ public class StatusBarViewModel : AbstractBindableModel, IStatusBar
     }
     
     #region Public Properties
+    /// <summary>
+    /// General information about the application or system.
+    /// </summary>
     public string CommonInfo
     {
         get => _commonInfo;
         private set => SetProperty(ref _commonInfo, value);
     }
 
+    /// <summary>
+    /// Information about the current state or operation being performed.
+    /// </summary>
     public string CurrentInfo
     {
         get => _currentInfo;
         private set => SetProperty(ref _currentInfo, value);
     }
 
-    public string StatusInfo
+    /// <summary>
+    /// Total number of books in the current library.
+    /// </summary>
+    public string TotalBooksInfo
     {
-        get => _statusInfo;
-        private set => SetProperty(ref _statusInfo, value);
+        get => _totalBooksInfo;
+        private set => SetProperty(ref _totalBooksInfo, value);
     }
 
+    /// <summary>
+    /// Detailed information for debugging purposes, typically used for troubleshooting.
+    /// </summary>
     public List<IndexedString> DebugInfo
     {
         get => _debugInfo;
@@ -84,7 +96,7 @@ public class StatusBarViewModel : AbstractBindableModel, IStatusBar
 
     private Task SetTotalBooks(string message)
     {
-        StatusInfo = message;
+        TotalBooksInfo = message;
         return Task.CompletedTask;
     }
 
@@ -110,7 +122,7 @@ public class StatusBarViewModel : AbstractBindableModel, IStatusBar
 
  
     #region Private fields
-    private string _statusInfo = String.Empty;
+    private string _totalBooksInfo = String.Empty;
     private string _commonInfo = String.Empty;
     private string _currentInfo = String.Empty;
     private List<IndexedString> _debugInfo = new();
