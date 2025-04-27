@@ -1,7 +1,8 @@
-using LibraryManager.ViewModels;
+using LibraryManager.Models;
 
 namespace LibraryManager.Controls;
 
+/// <author>YR 2025-02-09</author>
 public partial class DebugView : ContentView
 {
     public DebugView()

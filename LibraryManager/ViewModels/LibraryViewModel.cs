@@ -8,8 +8,8 @@ namespace LibraryManager.ViewModels;
 /// <author>YR 2025-02-09</author>
 public sealed class LibraryViewModel : AbstractBookViewModel, IRefreshable
 {
-    public LibraryViewModel(ILibrary library, SettingsViewModel settings, IStatusBar statusBar) : base(library,
-        statusBar)
+    public LibraryViewModel(ILibrary library, SettingsViewModel settings, IStatusBar statusBar) 
+        : base(library, statusBar)
     {
         _settings = settings;
         _libraryManager = new LibraryManagerModel(Library, statusBar);
@@ -132,7 +132,6 @@ public sealed class LibraryViewModel : AbstractBookViewModel, IRefreshable
     }
     #endregion
 
-
     #region Public Properties
     /// <summary>
     /// Gets or sets a value indicating whether the book can be edited.
@@ -143,7 +142,6 @@ public sealed class LibraryViewModel : AbstractBookViewModel, IRefreshable
         set => SetProperty(ref _canCloseLibrary, value);
     }
     #endregion
-
 
     #region Private methods
     private async Task UpdateControlsOnChangeID()
@@ -192,8 +190,7 @@ public sealed class LibraryViewModel : AbstractBookViewModel, IRefreshable
 
     private string GetPathToCurrentLibraryFile() => GetPathToFile(Library.Id.ToString());
     #endregion
-
-
+    
     #region Private Members
     private readonly SettingsViewModel _settings;
     private readonly ILibraryManageable _libraryManager;

@@ -52,8 +52,7 @@ public sealed class BooksViewModel : AbstractBookViewModel, IRefreshable
         set => SetProperty(ref _canClearContent, value);
     }
     #endregion
-
-
+    
     #region Public Methods
     protected override async Task PerformAction(string? commandParameter)
     {
@@ -211,7 +210,6 @@ public sealed class BooksViewModel : AbstractBookViewModel, IRefreshable
     }
     #endregion
 
-
     #region Private methods
     private void Handle_LibraryIdChanged(object? sender, EventArgs e)
     {
@@ -255,7 +253,6 @@ public sealed class BooksViewModel : AbstractBookViewModel, IRefreshable
 
     private IList<Book> GetSelectedBooks() => SelectedBooks?.Select(b => b as Book)?.ToList();
     #endregion
-
 
     #region Private fields
     private readonly IBookManageable _bookManageable;

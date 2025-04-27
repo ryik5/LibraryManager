@@ -21,8 +21,7 @@ public class AboutViewModel : AbstractViewModel
             Footer = $"Developer: @YR{Environment.NewLine}Designer: @Ila Yavorska";
         }
     }
-
-
+    
     #region Properties
     /// <summary>
     /// Gets the Header of the About Page.
@@ -34,8 +33,7 @@ public class AboutViewModel : AbstractViewModel
     /// </summary>
     public string Footer { get; }
     #endregion
-
-
+    
     #region Public Methods
     protected override async Task PerformAction(string? commandParameter)
     {

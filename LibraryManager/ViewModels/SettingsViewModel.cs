@@ -27,26 +27,6 @@ public class SettingsViewModel : AbstractBindableModel
         _folderPicker = new FolderPicker();
     }
 
-    public async Task PerformAction(string? commandParameter)
-    {
-        switch (commandParameter)
-        {
-            case Constants.LIBRARY_HOME_FOLDER:
-                await Task.Delay(10);
-                LibraryHomeFolder = await PickFolderUpTask();
-                break;
-            case Constants.SAVE:
-                await SaveSettings();
-                break;
-            case Constants.CANCEL:
-                await LoadAllSettings();
-                break;
-            case Constants.RESET:
-                await ResetAllSettings();
-                break;
-        }
-    }
-
 
     #region Dictionaries
     /// <summary>
@@ -301,6 +281,26 @@ public class SettingsViewModel : AbstractBindableModel
     #endregion
 
     #region Public methods
+    public async Task PerformAction(string? commandParameter)
+    {
+        switch (commandParameter)
+        {
+            case Constants.LIBRARY_HOME_FOLDER:
+                await Task.Delay(10);
+                LibraryHomeFolder = await PickFolderUpTask();
+                break;
+            case Constants.SAVE:
+                await SaveSettings();
+                break;
+            case Constants.CANCEL:
+                await LoadAllSettings();
+                break;
+            case Constants.RESET:
+                await ResetAllSettings();
+                break;
+        }
+    }
+
     /// <summary>
     /// Loads all settings into the view model.
     /// </summary>

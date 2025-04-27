@@ -63,6 +63,7 @@ public abstract class AbstractBindableModel : INotifyPropertyChanged
     /// <param name="action">The action to invoke.</param>
     protected void RunInMainThread(Action action) => MainThread.BeginInvokeOnMainThread(action);
 
+    
     /// <summary>
     /// Invokes the specified action on the UI thread.
     /// </summary>
@@ -88,6 +89,7 @@ public abstract class AbstractBindableModel : INotifyPropertyChanged
         return result;
     }
 
+    
     /// <summary>
     /// Runs code in the UI thread, best for page- or application-scoped logic.
     /// </summary>
@@ -102,6 +104,7 @@ public abstract class AbstractBindableModel : INotifyPropertyChanged
         Application.Current?.Dispatcher.Dispatch(a.Invoke);
     }
 
+    
     /// <summary>
     /// Attempts to pick a file up from the file system.
     /// </summary>
@@ -141,6 +144,7 @@ public abstract class AbstractBindableModel : INotifyPropertyChanged
         return null;
     }
 
+    
     /// <summary>
     /// Gets the path to the current user Document Directory on the device.
     /// </summary>
@@ -165,6 +169,7 @@ public abstract class AbstractBindableModel : INotifyPropertyChanged
         return Path.Combine(GetPathToDocumentDirectory(), StringsHandler.CreateXmlFileName(pointedName));
     }
 
+    
     /// <summary>
     /// Gets the path to an XML file in the document directory.
     /// </summary>

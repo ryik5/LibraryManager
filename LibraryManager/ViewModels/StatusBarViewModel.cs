@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.Messaging;
 using LibraryManager.AbstractObjects;
+using LibraryManager.Models;
 using System.Collections.Concurrent;
 
 namespace LibraryManager.ViewModels;
@@ -107,26 +108,17 @@ public class StatusBarViewModel : AbstractBindableModel, IStatusBar
     #endregion
 
 
-    private readonly CancellationTokenSource _cancellationTokenSource;
-    private static readonly ConcurrentQueue<StatusMessage> _messages = new();
-
+ 
     #region Private fields
     private string _statusInfo = String.Empty;
     private string _commonInfo = String.Empty;
     private string _currentInfo = String.Empty;
     private List<IndexedString> _debugInfo = new();
     private bool _isExisted;
+   private readonly CancellationTokenSource _cancellationTokenSource;
+    private static readonly ConcurrentQueue<StatusMessage> _messages = new();
     #endregion
 }
 
-public class StatusMessage
-{
-    public EInfoKind InfoKind { get; set; }
-    public string Message { get; set; }
-}
 
-public class IndexedString
-{
-    public string TimeStamp { get; set; }
-    public string Message { get; set; }
-}
+

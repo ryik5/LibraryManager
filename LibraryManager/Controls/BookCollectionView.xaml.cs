@@ -4,6 +4,7 @@ using System.Windows.Input;
 
 namespace LibraryManager.Controls;
 
+/// <author>YR 2025-02-09</author>
 public partial class BookCollectionView : ContentView
 {
     public static readonly BindableProperty NavigateCommandProperty = BindableProperty.Create(nameof(NavigateCommand),

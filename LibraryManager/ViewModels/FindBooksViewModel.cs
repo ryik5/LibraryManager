@@ -11,8 +11,8 @@ namespace LibraryManager.ViewModels;
 /// <author>YR 2025-02-09</author>
 public sealed class FindBooksViewModel : AbstractBookViewModel, IRefreshable
 {
-    public FindBooksViewModel(ILibrary library, SettingsViewModel settings, IStatusBar statusBar) : base(library,
-        statusBar)
+    public FindBooksViewModel(ILibrary library, SettingsViewModel settings, IStatusBar statusBar) 
+        : base(library, statusBar)
     {
         SearchFields = Enum.GetValues(typeof(EBibliographicKindInformation)).Cast<EBibliographicKindInformation>()
             .ToList();
@@ -83,7 +83,6 @@ public sealed class FindBooksViewModel : AbstractBookViewModel, IRefreshable
     }
     #endregion
 
-
     #region CommandParameters
     // TODO : 
     public string ContentState
@@ -104,7 +103,6 @@ public sealed class FindBooksViewModel : AbstractBookViewModel, IRefreshable
         set => SetProperty(ref _canClearContent, value);
     }
     #endregion
-
 
     #region Public Methods
     protected override async Task PerformAction(string? commandParameter)
@@ -228,8 +226,7 @@ public sealed class FindBooksViewModel : AbstractBookViewModel, IRefreshable
         await HandleOperateWithBooks();
     }
     #endregion
-
-
+    
     #region Private methods
     /// <summary>
     /// Finds books based on the search text. Updates <see cref="FoundBookList"/>.
@@ -308,7 +305,6 @@ public sealed class FindBooksViewModel : AbstractBookViewModel, IRefreshable
 
     private IList<Book> GetSelectedBooks() => SelectedBooks.Select(b => b as Book)?.ToList();
     #endregion
-
 
     #region Private fields
     private ObservableCollection<Book> _foundBookList = new();

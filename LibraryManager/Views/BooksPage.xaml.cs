@@ -3,6 +3,7 @@ using LibraryManager.ViewModels;
 
 namespace LibraryManager.Views;
 
+/// <author>YR 2025-02-09</author>
 public partial class BooksPage : ContentPage
 {
     // Parameterless constructor required by .NET MAUI Shell navigation

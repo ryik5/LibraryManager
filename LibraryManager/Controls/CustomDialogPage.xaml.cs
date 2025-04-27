@@ -1,5 +1,6 @@
 namespace LibraryManager.Views;
 
+/// <author>YR 2025-02-09</author>
 public partial class CustomDialogPage : ContentPage
 {
     public CustomDialogPage(string title, string message, bool isInputVisible=false)

@@ -2,6 +2,7 @@ using Microsoft.Maui.Controls;
 
 namespace LibraryManager.Views;
 
+/// <author>YR 2025-02-09</author>
 public partial class TooltipView : ContentView
 {
     public TooltipView()

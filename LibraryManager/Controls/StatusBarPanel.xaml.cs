@@ -2,6 +2,7 @@ using LibraryManager.ViewModels;
 
 namespace LibraryManager.Controls;
 
+/// <author>YR 2025-02-09</author>
 public partial class StatusBarPanel : ContentView
 {
     public StatusBarPanel()
