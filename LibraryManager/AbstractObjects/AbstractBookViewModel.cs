@@ -14,7 +14,7 @@ public abstract class AbstractBookViewModel : AbstractViewModel
     /// </summary>
     /// <param name="library">The library instance.</param>
     /// <param name="statusBar">The status bar instance.</param>
-    public AbstractBookViewModel(ILibrary library, IStatusBar statusBar)
+    public AbstractBookViewModel(ILibrary library, IStatusBar statusBar, IPopupService popup) : base(popup)
     {
         StatusBar = statusBar;
         Library = library;

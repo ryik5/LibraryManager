@@ -47,11 +47,11 @@
     <ItemGroup>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0"/>
+        <PackageReference Include="RGPopup.Maui" Version="1.1.2" />
     </ItemGroup>
     
     <ItemGroup>
       <Folder Include="Events\" />
-      <Folder Include="Managers\" />
     </ItemGroup>
     
     <ItemGroup>

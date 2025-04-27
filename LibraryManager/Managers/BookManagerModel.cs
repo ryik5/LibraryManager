@@ -15,10 +15,12 @@ namespace LibraryManager.Models;
 /// <author>YR 2025-01-09</author>
 public class BookManagerModel : AbstractBindableModel, IBookManageable
 {
-    public BookManagerModel(ILibrary library, SettingsViewModel settings, IStatusBar statusBar)
+    public BookManagerModel(ILibrary library, SettingsViewModel settings, IStatusBar statusBar,
+        IPopupService popupService)
     {
         _settings = settings;
         _statusBar = statusBar;
+        _popupService = popupService;
 
         if (library is null)
             throw new ArgumentNullException(nameof(library));
@@ -244,6 +246,7 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
         get => _library;
         set => SetProperty(ref _library, value);
     }
+
     public event EventHandler<TotalBooksEventArgs> TotalBooksChanged;
     #endregion
 
@@ -281,7 +284,7 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
 
         return orderedBooks;
     }
-    
+
 
     /// <summary>
     /// Finds books in the library by a specified book element.
@@ -562,5 +565,6 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
     private ILibrary _library;
     private SettingsViewModel _settings;
     private readonly IStatusBar _statusBar;
+    private readonly IPopupService _popupService;
     #endregion
 }

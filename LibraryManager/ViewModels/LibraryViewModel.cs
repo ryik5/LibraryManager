@@ -8,11 +8,12 @@ namespace LibraryManager.ViewModels;
 /// <author>YR 2025-02-09</author>
 public sealed class LibraryViewModel : AbstractBookViewModel, IRefreshable
 {
-    public LibraryViewModel(ILibrary library, SettingsViewModel settings, IStatusBar statusBar)
-        : base(library, statusBar)
+    public LibraryViewModel(ILibrary library, SettingsViewModel settings, IStatusBar statusBar,
+        IPopupService popupService)
+        : base(library, statusBar, popupService)
     {
         _settings = settings;
-        _libraryManager = new LibraryManagerModel(Library, statusBar);
+        _libraryManager = new LibraryManagerModel(Library, statusBar, popupService);
     }
 
 

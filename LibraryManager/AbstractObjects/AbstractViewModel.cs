@@ -1,14 +1,16 @@
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.Input;
+using LibraryManager.ViewModels;
 
 namespace LibraryManager.AbstractObjects;
 
 public abstract class AbstractViewModel : AbstractBindableModel
 {
-    protected AbstractViewModel()
+    protected AbstractViewModel(IPopupService popupService)
     {
         // Initialize the generic navigation command
         NavigateCommand = new AsyncRelayCommand<string>(PerformAction);
+        _popupService = popupService;
     }
 
 
@@ -206,4 +208,29 @@ public abstract class AbstractViewModel : AbstractBindableModel
             #endif
         }
     }
+
+    protected async Task ShowPopUpView(PopUpViewModel popup)
+    {
+        await _popupService.ShowPopup(popup)!;
+
+        await UpdateTimeOnUI(popup.CancellationTokenSource);
+    }
+
+
+    private Task UpdateTimeOnUI(CancellationTokenSource cts)
+    {
+        // Run the task on a separate thread.
+        return Task.Run(async () =>
+        {
+            // Loop until the cancellation token is cancelled.
+            while (!cts.IsCancellationRequested)
+            {
+                // Sleep for 1 second.
+                await Task.Delay(1000);
+            }
+        }, cts.Token);
+    }
+
+
+    private readonly IPopupService _popupService;
 }

@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using LibraryManager.Models;
 using LibraryManager.ViewModels;
 using Microsoft.Extensions.Logging;
+using RGPopup.Maui.Extensions;
 
 namespace LibraryManager;
 
@@ -16,6 +17,11 @@ public static class MauiProgram
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
+            .UseMauiRGPopup(config =>
+            {
+                config.BackPressHandler = null;
+                config.FixKeyboardOverlap = true;
+            })
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -39,15 +45,21 @@ public static class MauiProgram
         var settings = new SettingsViewModel();
         var statusBar = new StatusBarViewModel();
         var package = AppInfo.Current.PackageName;
-        WeakReferenceMessenger.Default.Send(new StatusMessage(){ InfoKind = EInfoKind.DebugInfo, Message = $"{AppInfo.Current.Name} started with package '{package}'."});
-        
-       // statusBar.SetStatusMessage(EInfoKind.DebugInfo, $"{AppInfo.Current.Name} started with package '{package}'.");
-       WeakReferenceMessenger.Default.Send(new StatusMessage(){ InfoKind = EInfoKind.CommonInfo, Message = $"v.{AppInfo.Current.VersionString}, b.{AppInfo.Current.BuildString}"});
+        WeakReferenceMessenger.Default.Send(new StatusMessage()
+            { InfoKind = EInfoKind.DebugInfo, Message = $"{AppInfo.Current.Name} started with package '{package}'." });
+
+        // statusBar.SetStatusMessage(EInfoKind.DebugInfo, $"{AppInfo.Current.Name} started with package '{package}'.");
+        WeakReferenceMessenger.Default.Send(new StatusMessage()
+        {
+            InfoKind = EInfoKind.CommonInfo,
+            Message = $"v.{AppInfo.Current.VersionString}, b.{AppInfo.Current.BuildString}"
+        });
         //statusBar.SetStatusMessage(EInfoKind.CommonInfo,  $"v.{AppInfo.Current.VersionString}, b.{AppInfo.Current.BuildString}");
-       // statusBar.SetStatusMessage(EInfoKind.CurrentInfo,$"Current Library ID: '{library.Id}'");
-       WeakReferenceMessenger.Default.Send(new StatusMessage(){ InfoKind = EInfoKind.CurrentInfo, Message = $"Current Library ID: '{library.Id}'"});
-       // statusBar.SetStatusMessage(EInfoKind.TotalBooks,0);
-       WeakReferenceMessenger.Default.Send(new StatusMessage(){ InfoKind = EInfoKind.TotalBooks, Message = "0"});
+        // statusBar.SetStatusMessage(EInfoKind.CurrentInfo,$"Current Library ID: '{library.Id}'");
+        WeakReferenceMessenger.Default.Send(new StatusMessage()
+            { InfoKind = EInfoKind.CurrentInfo, Message = $"Current Library ID: '{library.Id}'" });
+        // statusBar.SetStatusMessage(EInfoKind.TotalBooks,0);
+        WeakReferenceMessenger.Default.Send(new StatusMessage() { InfoKind = EInfoKind.TotalBooks, Message = "0" });
 
         builder.Services.AddTransient<Book>();
         builder.Services.AddTransient<App>();
@@ -65,6 +77,8 @@ public static class MauiProgram
 
         builder.Services.AddTransient<AboutViewModel>();
         builder.Services.AddTransient<ToolsViewModel>();
+
+        builder.Services.AddTransient<IPopupService, PopupService>();
         #if DEBUG
         builder.Logging.AddDebug();
         #endif

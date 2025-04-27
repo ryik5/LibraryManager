@@ -8,7 +8,7 @@ namespace LibraryManager.ViewModels;
 /// <author>YR 2025-02-09</author>
 public class AboutViewModel : AbstractViewModel
 {
-    public AboutViewModel(IStatusBar statusBar)
+    public AboutViewModel(IStatusBar statusBar, IPopupService popupService) : base(popupService)
     {
         StatusBar = statusBar;
 
@@ -21,7 +21,7 @@ public class AboutViewModel : AbstractViewModel
             Footer = $"Developer: @YR{Environment.NewLine}Designer: @Ila Yavorska";
         }
     }
-    
+
     #region Properties
     /// <summary>
     /// Gets the Header of the About Page.
@@ -33,11 +33,11 @@ public class AboutViewModel : AbstractViewModel
     /// </summary>
     public string Footer { get; }
     #endregion
-    
+
     #region Public Methods
     protected override async Task PerformAction(string? commandParameter)
     {
-        await   ShowNavigationCommandInDebug(commandParameter,nameof(AboutPage));
+        await ShowNavigationCommandInDebug(commandParameter, nameof(AboutPage));
 
         if (string.IsNullOrWhiteSpace(commandParameter))
             return;

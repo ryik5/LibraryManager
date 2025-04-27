@@ -38,18 +38,11 @@
     </ContentPage.MenuBarItems>
 
     <ContentPage.Content>
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <Grid Grid.Row="0" BackgroundColor="{StaticResource White}" Padding="10">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
+        <Grid RowDefinitions="*, Auto">
+            <Grid Grid.Row="0"
+                  BackgroundColor="{StaticResource White}"
+                  Padding="10"
+                  RowDefinitions="Auto, *, Auto, Auto">
                 <Grid.Resources>
                     <Style TargetType="Button">
                         <Setter Property="FontSize" Value="18" />
@@ -111,6 +104,11 @@
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Delete the selected book"
                             ToolTipProperties.Text="Delete the selected books"
+                            MinimumWidthRequest="100" />
+
+                    <Button Text="Test Pop Up"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="Test"
                             MinimumWidthRequest="100" />
 
                 </StackLayout>

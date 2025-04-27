@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using System.Xml;
 using LibraryManager.AbstractObjects;
-using LibraryManager.ViewModels;
 
 namespace LibraryManager.Models;
 
@@ -11,7 +10,7 @@ namespace LibraryManager.Models;
 /// <author>YR 2025-01-09</author>
 public class LibraryManagerModel : AbstractBindableModel, ILibraryManageable
 {
-    public LibraryManagerModel(ILibrary? library, IStatusBar statusBar)
+    public LibraryManagerModel(ILibrary? library, IStatusBar statusBar, IPopupService popupService)
     {
         if (library is null)
             throw new ArgumentNullException(nameof(library));
@@ -24,8 +23,9 @@ public class LibraryManagerModel : AbstractBindableModel, ILibraryManageable
         {
             _library = library;
         }
-        
+
         _statusBar = statusBar;
+        _popupService = popupService;
     }
 
 
@@ -41,8 +41,11 @@ public class LibraryManagerModel : AbstractBindableModel, ILibraryManageable
                 break;
 
             case Constants.LIBRARY_LOAD:
-                var msg = await TryLoadLibrary() ? $"Loaded the Library with ID:{Library.Id}" :$"Error loading the Library";
-                WeakReferenceMessenger.Default.Send(new StatusMessage(){ InfoKind = EInfoKind.CurrentInfo, Message = msg});
+                var msg = await TryLoadLibrary()
+                    ? $"Loaded the Library with ID:{Library.Id}"
+                    : $"Error loading the Library";
+                WeakReferenceMessenger.Default.Send(new StatusMessage()
+                    { InfoKind = EInfoKind.CurrentInfo, Message = msg });
                 break;
 
             case Constants.LIBRARY_SAVE:
@@ -103,7 +106,8 @@ public class LibraryManagerModel : AbstractBindableModel, ILibraryManageable
 
         Library.Id = new Random().Next();
 
-        WeakReferenceMessenger.Default.Send(new StatusMessage(){ InfoKind = EInfoKind.CurrentInfo, Message = $"Created new library with ID:{Library.Id}."});
+        WeakReferenceMessenger.Default.Send(new StatusMessage()
+            { InfoKind = EInfoKind.CurrentInfo, Message = $"Created new library with ID:{Library.Id}." });
         return Task.CompletedTask;
     }
 
@@ -150,7 +154,8 @@ public class LibraryManagerModel : AbstractBindableModel, ILibraryManageable
         Library.Name = string.Empty;
         Library.Description = string.Empty;
         Library.Id = 0;
-        WeakReferenceMessenger.Default.Send(new StatusMessage(){ InfoKind = EInfoKind.CurrentInfo, Message = "Library closed."});
+        WeakReferenceMessenger.Default.Send(new StatusMessage()
+            { InfoKind = EInfoKind.CurrentInfo, Message = "Library closed." });
     }
     #endregion
 
@@ -185,5 +190,6 @@ public class LibraryManagerModel : AbstractBindableModel, ILibraryManageable
     #region Private fields
     private ILibrary? _library;
     private readonly IStatusBar _statusBar;
+    private readonly IPopupService _popupService;
     #endregion
 }

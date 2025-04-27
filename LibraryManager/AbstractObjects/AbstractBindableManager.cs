@@ -15,12 +15,12 @@ namespace LibraryManager.AbstractObjects;
 /// <author>YR 2025-03-09</author>
 public abstract class AbstractBindableModel : INotifyPropertyChanged
 {
-     #region Public Properties
+    #region Public Properties
     /// <summary>
     /// Command to perform an action, such as navigate to a different page or view or other actions.
     /// </summary>
     public ICommand NavigateCommand { get; set; }
-    
+
     /// <summary>
     /// Gets or sets the status bar instance.
     /// </summary>
@@ -29,7 +29,6 @@ public abstract class AbstractBindableModel : INotifyPropertyChanged
         get => _statusBar;
         set => SetProperty(ref _statusBar, value);
     }
-
     #endregion
 
 
@@ -56,6 +55,11 @@ public abstract class AbstractBindableModel : INotifyPropertyChanged
         return new ResultInput(result, inputText);
     }
 
+    protected async Task ShowDisplayPromptAsync(string message)
+    {
+        await Application.Current.MainPage.DisplayPromptAsync("Error", message);
+    }
+
 
     /// <summary>
     /// Invokes the specified action on the UI thread.
@@ -63,7 +67,7 @@ public abstract class AbstractBindableModel : INotifyPropertyChanged
     /// <param name="action">The action to invoke.</param>
     protected void RunInMainThread(Action action) => MainThread.BeginInvokeOnMainThread(action);
 
-    
+
     /// <summary>
     /// Invokes the specified action on the UI thread.
     /// </summary>
@@ -89,7 +93,7 @@ public abstract class AbstractBindableModel : INotifyPropertyChanged
         return result;
     }
 
-    
+
     /// <summary>
     /// Runs code in the UI thread, best for page- or application-scoped logic.
     /// </summary>
@@ -104,7 +108,7 @@ public abstract class AbstractBindableModel : INotifyPropertyChanged
         Application.Current?.Dispatcher.Dispatch(a.Invoke);
     }
 
-    
+
     /// <summary>
     /// Attempts to pick a file up from the file system.
     /// </summary>
@@ -144,7 +148,7 @@ public abstract class AbstractBindableModel : INotifyPropertyChanged
         return null;
     }
 
-    
+
     /// <summary>
     /// Gets the path to the current user Document Directory on the device.
     /// </summary>
@@ -169,7 +173,7 @@ public abstract class AbstractBindableModel : INotifyPropertyChanged
         return Path.Combine(GetPathToDocumentDirectory(), StringsHandler.CreateXmlFileName(pointedName));
     }
 
-    
+
     /// <summary>
     /// Gets the path to an XML file in the document directory.
     /// </summary>
@@ -199,7 +203,7 @@ public abstract class AbstractBindableModel : INotifyPropertyChanged
         return true;
     }
     #endregion
-    
-    
+
+
     private IStatusBar _statusBar;
 }

@@ -10,14 +10,15 @@ namespace LibraryManager.ViewModels;
 /// <author>YR 2025-02-09</author>
 public sealed class BooksViewModel : AbstractBookViewModel, IRefreshable
 {
-    public BooksViewModel(ILibrary library, SettingsViewModel settings, IStatusBar statusBar) : base(library, statusBar)
+    public BooksViewModel(ILibrary library, SettingsViewModel settings, IStatusBar statusBar,
+        IPopupService popupService) : base(library, statusBar, popupService)
     {
         Library.LibraryIdChanged += Handle_LibraryIdChanged;
         Library.BookList.CollectionChanged += Handle_BookListCollectionChanged;
         Library.TotalBooksChanged += Handle_TotalBooksChanged;
         IsBooksCollectionViewVisible = true;
         IsEditBookViewVisible = false;
-        _bookManageable = new BookManagerModel(Library, settings, statusBar);
+        _bookManageable = new BookManagerModel(Library, settings, statusBar, popupService);
         ContentState = Constants.LOAD_CONTENT;
         ClearingState = Constants.CLEAR_CONTENT;
         ValidateOperations().GetAwaiter();
@@ -52,7 +53,7 @@ public sealed class BooksViewModel : AbstractBookViewModel, IRefreshable
         set => SetProperty(ref _canClearContent, value);
     }
     #endregion
-    
+
     #region Public Methods
     protected override async Task PerformAction(string? commandParameter)
     {

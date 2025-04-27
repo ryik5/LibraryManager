@@ -14,7 +14,8 @@ public class ToolsViewModel : AbstractViewModel
     /// </summary>
     /// <param name="settings">The settings view model.</param>
     /// <param name="statusBar">The status bar.</param>
-    public ToolsViewModel(SettingsViewModel settings, IStatusBar statusBar)
+    public ToolsViewModel(SettingsViewModel settings, IStatusBar statusBar, IPopupService popupService) :
+        base(popupService)
     {
         StatusBar = statusBar;
         Settings = settings;
@@ -68,7 +69,7 @@ public class ToolsViewModel : AbstractViewModel
     public string Cancel => Constants.CANCEL;
     public string Reset => Constants.RESET;
     #endregion
-    
+
     #region Public Methods
     protected override async Task PerformAction(string? commandParameter)
     {
@@ -122,7 +123,7 @@ public class ToolsViewModel : AbstractViewModel
         }
     }
     #endregion
-    
+
     #region Private fields
     private SettingsViewModel _settings;
     private bool _isSettingsVisible;

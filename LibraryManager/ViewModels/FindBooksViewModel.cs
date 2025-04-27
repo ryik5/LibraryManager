@@ -11,8 +11,9 @@ namespace LibraryManager.ViewModels;
 /// <author>YR 2025-02-09</author>
 public sealed class FindBooksViewModel : AbstractBookViewModel, IRefreshable
 {
-    public FindBooksViewModel(ILibrary library, SettingsViewModel settings, IStatusBar statusBar)
-        : base(library, statusBar)
+    public FindBooksViewModel(ILibrary library, SettingsViewModel settings, IStatusBar statusBar,
+        IPopupService popupService)
+        : base(library, statusBar, popupService)
     {
         SearchFields = Enum.GetValues(typeof(EBibliographicKindInformation)).Cast<EBibliographicKindInformation>()
             .ToList();
@@ -24,7 +25,7 @@ public sealed class FindBooksViewModel : AbstractBookViewModel, IRefreshable
         IsEditBookViewVisible = false;
         ContentState = Constants.LOAD_CONTENT;
         ClearingState = Constants.CLEAR_CONTENT;
-        _bookManageable = new BookManagerModel(Library, settings, statusBar);
+        _bookManageable = new BookManagerModel(Library, settings, statusBar, popupService);
 
         OK = Constants.SAVE_CHANGES;
         RefreshControlsOnAppearing();
@@ -200,6 +201,20 @@ public sealed class FindBooksViewModel : AbstractBookViewModel, IRefreshable
                     Book = book;
                     break;
 
+                case "Test":
+                    // await ShowDisplayPromptAsync("Test");
+                    var popup = new PopUpViewModel
+                    {
+                        TextField = "Just text",
+                        InputTextField = "Input something"
+                    };
+
+                    // TODO : remove it after test
+                    await ShowPopUpView(popup);
+
+                    await TryGoToPage(nameof(FindBooksPage));
+                    break;
+
                 default: //jobs perform without creating views
                 {
                     // Performing actions by the BooksManager
@@ -209,14 +224,15 @@ public sealed class FindBooksViewModel : AbstractBookViewModel, IRefreshable
                     break;
                 }
             }
+
+            await UpdateButtonContentState(Book.Content?.IsLoaded ?? false);
         }
         else
         {
             await ShowNavigationErrorInDebug(commandParameter, nameof(FindBooksViewModel));
         }
-
-        await UpdateButtonContentState(Book.Content?.IsLoaded ?? false);
     }
+
 
     public override async Task HandleBeforeRefreshControlsOnAppearingTask()
     {
