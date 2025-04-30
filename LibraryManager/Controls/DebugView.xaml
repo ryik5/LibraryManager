@@ -2,7 +2,8 @@
 
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="LibraryManager.Controls.DebugView">
+             x:Class="LibraryManager.Controls.DebugView"
+             xmlns:ext="clr-namespace:LibraryManager.Extensions">
 
     <ContentView.ControlTemplate>
         <ControlTemplate>
@@ -16,7 +17,11 @@
                         <DataTemplate>
                             <ContentView Padding="0,2,0,2">
                                 <Grid ColumnDefinitions="*,3*" HorizontalOptions="Start">
-                                    <Label Grid.Column="0" HorizontalTextAlignment="End" TextColor="{StaticResource Primary}">
+                                    <Label Grid.Column="0" 
+                                           HorizontalTextAlignment="End" 
+                                           VerticalTextAlignment="Center"
+                                           TextColor="{StaticResource Primary}"
+                                           FontSize="{ext:DebugFontSize}">
                                         <Label.FormattedText>
                                             <FormattedString>
                                                 <Span FontAttributes="Bold">
@@ -31,6 +36,7 @@
                                     </Label>
                                     <Label Text="{Binding Message, Mode=OneWay}"
                                            TextColor="{StaticResource Primary}"
+                                           FontSize="{ext:DebugFontSize}"
                                            Grid.Column="1"
                                            HorizontalOptions="Start"
                                            VerticalOptions="Center" 

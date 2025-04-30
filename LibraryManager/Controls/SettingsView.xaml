@@ -86,6 +86,7 @@
 
                             <Label Text="Text's font size" Grid.Row="0" Grid.Column="0" />
                             <Entry Text="{Binding Debug_TextFontSize}"
+                                   ToolTipProperties.Text="Changes to this value will take effect after restarting the app."
                                    TextChanged="OnTextFontSizeChanged"
                                    Grid.Row="0" Grid.Column="1"/>
                         </Grid>
