@@ -17,6 +17,7 @@
             <Grid.Resources>
                 <Style TargetType="Label">
                     <Setter Property="VerticalTextAlignment" Value="Center" />
+                    <Setter Property="FontSize" Value="{Binding MessageBox_FontSize, Mode=OneWay}"></Setter>
                 </Style>
             </Grid.Resources>
 
