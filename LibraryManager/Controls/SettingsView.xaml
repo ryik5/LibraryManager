@@ -48,16 +48,7 @@
                 <StackLayout Margin="10">
                     <Label Text="'Find Books' Page" FontSize="18" Margin="0,0,0,10" />
                     <Frame CornerRadius="10" BorderColor="{StaticResource Primary}" Padding="10">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-
+                        <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto">
                             <Label Text="Search Fields" Grid.Row="0" Grid.Column="0" />
                             <Picker ItemsSource="{Binding SearchFields, Mode=OneWay}"
                                     SelectedItem="{Binding SearchField}"
@@ -74,16 +65,7 @@
                 <StackLayout Margin="10">
                     <Label Text="'Debug' Page" FontSize="18" Margin="0,0,0,10" />
                     <Frame CornerRadius="10" BorderColor="{StaticResource Primary}" Padding="10">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-
+                        <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto">
                             <Label Text="Text's font size" Grid.Row="0" Grid.Column="0" />
                             <Entry Text="{Binding Debug_TextFontSize}"
                                    ToolTipProperties.Text="Changes to this value will take effect after restarting the app."
@@ -101,12 +83,8 @@
                     <Label Text="'Create and Edit Book' Pages" FontSize="18" Margin="0,0,0,10" />
                     <Frame CornerRadius="10" BorderColor="{StaticResource Primary}" Padding="10">
                         <Grid ColumnDefinitions="*,*" RowDefinitions="Auto">
-
-                            <Label Grid.Row="0" Grid.Column="0"
-                                   Text="Max content length, byte" />
-                            <Entry Grid.Row="0" Grid.Column="1"
-                                   Text="{Binding Book_MaxContentLength}" />
-
+                            <Label Grid.Row="0" Grid.Column="0" Text="Max content length, byte" />
+                            <Entry Grid.Row="0" Grid.Column="1" Text="{Binding Book_MaxContentLength}" />
                         </Grid>
                     </Frame>
                 </StackLayout>
@@ -114,18 +92,7 @@
                 <StackLayout Margin="10">
                     <Label Text="'Books' Page. Sort" FontSize="18" Margin="0,0,0,10" />
                     <Frame CornerRadius="10" BorderColor="{StaticResource Primary}" Padding="10">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="0.45*" />
-                                <ColumnDefinition Width="0.25*" />
-                                <ColumnDefinition Width="0.4*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-
+                        <Grid ColumnDefinitions="0.45*,0.25*,0.4*" RowDefinitions="Auto,Auto,Auto">
                             <Label Grid.Row="0" Grid.Column="0"
                                    Text="First Property" />
                             <Picker Grid.Row="0" Grid.Column="1"

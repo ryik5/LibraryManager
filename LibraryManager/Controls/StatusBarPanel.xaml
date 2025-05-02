@@ -8,7 +8,7 @@
              HeightRequest="40"
              VerticalOptions="Center">
 
-    <Grid>
+    <Grid ColumnDefinitions="50,*,Auto">
         <Grid.Resources>
             <Style TargetType="Label">
                 <Setter Property="FontSize" Value="16" />
@@ -16,11 +16,6 @@
                 <Setter Property="HorizontalTextAlignment" Value="Start" />
             </Style>
         </Grid.Resources>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="50" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
         <Label Padding="5,0,5,0"
                Text="{Binding  StatusBar.CommonInfo, Mode=OneWay}"
                ToolTipProperties.Text="{Binding  StatusBar.CommonInfo, Mode=OneWay}"

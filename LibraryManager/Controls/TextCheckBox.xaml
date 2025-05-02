@@ -6,11 +6,7 @@
 
     <ContentView.ControlTemplate>
         <ControlTemplate>
-            <Grid MinimumWidthRequest="50">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
+            <Grid MinimumWidthRequest="50" ColumnDefinitions="Auto,*">
 
                 <CheckBox Grid.Column="0"
                           IsChecked="{Binding Source={RelativeSource TemplatedParent}, Path=IsChecked}"

@@ -4,7 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="LibraryManager.Controls.LibraryPropertiesView">
 
-    <Grid>
+    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,*">
         <Grid.Resources>
             <Style TargetType="Label">
                 <Setter Property="VerticalTextAlignment" Value="Center" />
@@ -24,16 +24,6 @@
                 <Setter Property="Margin" Value="10,10,10,5" />
             </Style>
         </Grid.Resources>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
 
         <Label Text="ID" Grid.Row="0" Grid.Column="0" />
         <Entry Text="{Binding Library.Id}"
