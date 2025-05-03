@@ -60,14 +60,10 @@ public class LibraryManagerModel : AbstractBindableModel, ILibraryManageable
         }
     }
 
-    public async Task<bool> TryLoadLibrary()
-    {
-        return await TryLoadLibrary(await TryPickFileUpTask("Please select a library file", new string[] { "xml" }));
-    }
 
-
-    private async Task<bool> TryLoadLibrary(FileResult result)
+    private async Task<bool> TryLoadLibrary()
     {
+        var result = await TryPickFileUpTask("Please select a library file", new string[] { "xml" });
         try
         {
             await using var fileStream = await result.OpenReadAsync();
