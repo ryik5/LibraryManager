@@ -1,5 +1,7 @@
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using LibraryManager.Models;
 using LibraryManager.ViewModels;
 
 namespace LibraryManager.AbstractObjects;
@@ -145,10 +147,12 @@ public abstract class AbstractViewModel : AbstractBindableModel
 
     protected Task ShowNavigationErrorInDebug(string commandParameter, string className)
     {
-        #if DEBUG
-        Debug.WriteLine(
-            $"Navigation error path '{commandParameter}' in class '{className}' by method '{nameof(PerformAction)}'");
-        #endif
+         WeakReferenceMessenger.Default.Send(new StatusMessage()
+        {
+            InfoKind = EInfoKind.DebugInfo,
+            LogLevel = ELogLevel.Warn,
+            Message = $"Navigation error path '{commandParameter}' in class '{className}' by method '{nameof(PerformAction)}'"
+        });
 
         return Task.CompletedTask;
     }
@@ -166,10 +170,12 @@ public abstract class AbstractViewModel : AbstractBindableModel
     /// <returns>A task representing the asynchronous operation.</returns>
     protected Task ShowNavigationCommandInDebug(string commandParameter, string className)
     {
-        #if DEBUG
-        Debug.WriteLine($"NavigateCommand on {className} triggered with commandParameter: {commandParameter}");
-        #endif
-
+        WeakReferenceMessenger.Default.Send(new StatusMessage()
+        {
+            InfoKind = EInfoKind.DebugInfo,
+            LogLevel = ELogLevel.Info,
+            Message = $"NavigateCommand on {className} triggered with commandParameter: {commandParameter}"
+        });
         return Task.CompletedTask;
     }
 

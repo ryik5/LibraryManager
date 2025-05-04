@@ -6,5 +6,8 @@ namespace LibraryManager.Models;
 public class StatusMessage
 {
     public EInfoKind InfoKind { get; set; }
+
+    public ELogLevel LogLevel { get; set; } = ELogLevel.Info;
+    
     public string Message { get; set; }
 }

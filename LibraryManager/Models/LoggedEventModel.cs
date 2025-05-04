@@ -28,7 +28,7 @@ public sealed class LoggedEventModel
     /// </summary>
     /// <param name="level">The log level of the event.</param>
     /// <param name="message">The message text.</param>
-    public LoggedEventModel(ELogLevel level, string message)
+    public LoggedEventModel(AbstractObjects.ELogLevel level, string message)
     {
         LogLevel = level;
         Message = message;

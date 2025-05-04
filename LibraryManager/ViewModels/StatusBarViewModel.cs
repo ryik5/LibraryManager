@@ -15,7 +15,7 @@ public class StatusBarViewModel : AbstractBindableModel, IStatusBar
             (r, m) => { Task.Run(() => _messages.Enqueue(m), _cancellationTokenSource.Token); });
         ReadStatusMessageFromQueueTask(_cancellationTokenSource).GetAwaiter();
     }
-    
+
     #region Public Properties
     /// <summary>
     /// General information about the application or system.
@@ -55,26 +55,26 @@ public class StatusBarViewModel : AbstractBindableModel, IStatusBar
     #endregion
 
     #region Private Methods
-    private async Task SetStatusMessageTask(EInfoKind infoKind, string message)
+    private async Task SetStatusMessageTask(StatusMessage message)
     {
-        switch (infoKind)
+        switch (message.InfoKind)
         {
             case EInfoKind.CommonInfo:
-                await SetCommonInfo(message);
+                await SetCommonInfo(message.Message);
                 await SetDebugInfo(message);
                 break;
             case EInfoKind.CurrentInfo:
-                await SetCurrentInfo(message);
+                await SetCurrentInfo(message.Message);
                 await SetDebugInfo(message);
                 break;
             case EInfoKind.TotalBooks:
                 var msg = $"Total book(s): {message}";
-                await SetTotalBooks(msg);
-                await SetDebugInfo(msg);
+                await SetTotalBooks(message.Message);
+                await SetDebugInfo(message);
                 break;
         }
     }
- 
+
     private Task ReadStatusMessageFromQueueTask(CancellationTokenSource cts)
     {
         // Run the task on a separate thread.
@@ -85,7 +85,7 @@ public class StatusBarViewModel : AbstractBindableModel, IStatusBar
             {
                 if (_messages.TryDequeue(out var msg))
                 {
-                    await SetStatusMessageTask(msg.InfoKind, msg.Message);
+                    await SetStatusMessageTask(msg);
                 }
 
                 // Sleep for 200 milliseconds.
@@ -112,25 +112,26 @@ public class StatusBarViewModel : AbstractBindableModel, IStatusBar
         return Task.CompletedTask;
     }
 
-    private Task SetDebugInfo(string message)
+    private Task SetDebugInfo(StatusMessage message)
     {
-        DebugInfo.Add(new IndexedString { TimeStamp = $"{DateTime.Now:HH:mm:ss:fff}", Message = message });
+        DebugInfo.Add(new IndexedString
+        {
+            TimeStamp = $"{DateTime.Now:HH:mm:ss:fff}",
+            LogLevel = message.LogLevel,
+            Message = message.Message
+        });
         return Task.CompletedTask;
     }
     #endregion
 
 
- 
     #region Private fields
     private string _totalBooksInfo = String.Empty;
     private string _commonInfo = String.Empty;
     private string _currentInfo = String.Empty;
     private List<IndexedString> _debugInfo = new();
     private bool _isExisted;
-   private readonly CancellationTokenSource _cancellationTokenSource;
+    private readonly CancellationTokenSource _cancellationTokenSource;
     private static readonly ConcurrentQueue<StatusMessage> _messages = new();
     #endregion
 }
-
-
-

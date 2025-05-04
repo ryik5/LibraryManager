@@ -16,7 +16,7 @@
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <ContentView Padding="0,2,0,2">
-                                <Grid ColumnDefinitions="*,3*" HorizontalOptions="Start">
+                                <Grid ColumnDefinitions="*,*,3*" HorizontalOptions="Start">
                                     <Label Grid.Column="0" 
                                            HorizontalTextAlignment="End" 
                                            VerticalTextAlignment="Center"
@@ -34,11 +34,22 @@
                                             </FormattedString>
                                         </Label.FormattedText>
                                     </Label>
-                                    <Label Text="{Binding Message, Mode=OneWay}"
+                                    
+                                    <Label Text="{Binding LogLevel, Mode=OneWay}"
                                            TextColor="{StaticResource Primary}"
                                            FontSize="{ext:DebugFontSize}"
                                            Grid.Column="1"
                                            HorizontalOptions="Start"
+                                           VerticalOptions="Center" 
+                                           Margin="5,0,0,0"
+                                           Padding="5,0,0,0"/>
+
+                                    <Label Text="{Binding Message, Mode=OneWay}"
+                                           TextColor="{StaticResource Primary}"
+                                           FontFamily="OpenSansRegular"
+                                           FontSize="{ext:DebugFontSize}"
+                                           Grid.Column="2"
+                                           HorizontalOptions="Center"
                                            VerticalOptions="Center" 
                                            Margin="5,0,0,0"
                                            Padding="5,0,0,0"/>
