@@ -1,4 +1,6 @@
+using CommunityToolkit.Mvvm.Messaging;
 using LibraryManager.AbstractObjects;
+using LibraryManager.Models;
 using LibraryManager.Views;
 
 namespace LibraryManager.ViewModels;
@@ -73,8 +75,9 @@ public class ToolsViewModel : AbstractViewModel
     #region Public Methods
     protected override async Task PerformAction(string? commandParameter)
     {
+        #if DEBUG
         await ShowNavigationCommandInDebug(commandParameter, nameof(ToolsPage));
-
+        #endif
         if (string.IsNullOrWhiteSpace(commandParameter))
             return;
 
@@ -92,11 +95,22 @@ public class ToolsViewModel : AbstractViewModel
                 case Constants.SETTINGS: //SettingsView
                     IsDebugViewVisible = false;
                     IsSettingsViewVisible = true;
+                    WeakReferenceMessenger.Default.Send(new StatusMessage()
+                    {
+                        InfoKind = EInfoKind.DebugInfo,
+                        LogLevel = ELogLevel.Debug,
+                        Message = $"Selected Settings view"
+                    });
                     break;
 
                 case Constants.DEBUG: //DebugView
                     IsDebugViewVisible = true;
                     IsSettingsViewVisible = false;
+                    WeakReferenceMessenger.Default.Send(new StatusMessage()
+                    {
+                        InfoKind = EInfoKind.DebugInfo,
+                        Message = $"Selected Debug view"
+                    });
                     break;
 
                 case Constants.TOOLS: //ToolsView
@@ -108,6 +122,12 @@ public class ToolsViewModel : AbstractViewModel
                 case Constants.CANCEL:
                 case Constants.RESET:
                     await Settings.PerformAction(commandParameter);
+                    WeakReferenceMessenger.Default.Send(new StatusMessage()
+                    {
+                        InfoKind = EInfoKind.DebugInfo,
+                        Message = $"Changed setting '{commandParameter}'"
+                    });
+
                     break;
 
                 default:
@@ -119,7 +139,9 @@ public class ToolsViewModel : AbstractViewModel
         }
         else
         {
+            #if DEBUG
             await ShowNavigationErrorInDebug(commandParameter, nameof(ToolsViewModel));
+            #endif
         }
     }
     #endregion

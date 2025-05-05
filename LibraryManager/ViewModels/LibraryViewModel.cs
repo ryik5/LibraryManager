@@ -20,7 +20,9 @@ public sealed class LibraryViewModel : AbstractBookViewModel, IRefreshable
     #region Public Methods
     protected override async Task PerformAction(string? commandParameter)
     {
+        #if DEBUG
         await ShowNavigationCommandInDebug(commandParameter, nameof(LibraryPage));
+        #endif
 
         if (string.IsNullOrWhiteSpace(commandParameter))
             return;
@@ -114,7 +116,9 @@ public sealed class LibraryViewModel : AbstractBookViewModel, IRefreshable
         }
         else
         {
+            #if DEBUG
             await ShowNavigationErrorInDebug(commandParameter, nameof(FindBooksViewModel));
+            #endif
         }
     }
 

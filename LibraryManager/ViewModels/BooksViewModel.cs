@@ -57,8 +57,9 @@ public sealed class BooksViewModel : AbstractBookViewModel, IRefreshable
     #region Public Methods
     protected override async Task PerformAction(string? commandParameter)
     {
+        #if DEBUG
         await ShowNavigationCommandInDebug(commandParameter, nameof(BooksPage));
-
+        #endif
         if (string.IsNullOrWhiteSpace(commandParameter))
             return;
 
@@ -184,7 +185,9 @@ public sealed class BooksViewModel : AbstractBookViewModel, IRefreshable
         }
         else
         {
+            #if DEBUG
             await ShowNavigationErrorInDebug(commandParameter, nameof(BooksViewModel));
+            #endif
         }
 
         await UpdateButtonContentState(Book.Content?.IsLoaded ?? false);

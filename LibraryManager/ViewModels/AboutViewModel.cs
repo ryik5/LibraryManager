@@ -37,8 +37,9 @@ public class AboutViewModel : AbstractViewModel
     #region Public Methods
     protected override async Task PerformAction(string? commandParameter)
     {
+        #if DEBUG
         await ShowNavigationCommandInDebug(commandParameter, nameof(AboutPage));
-
+        #endif
         if (string.IsNullOrWhiteSpace(commandParameter))
             return;
 
@@ -62,7 +63,9 @@ public class AboutViewModel : AbstractViewModel
         }
         else
         {
+            #if DEBUG
             await ShowNavigationErrorInDebug(commandParameter, nameof(AboutViewModel));
+            #endif
         }
     }
     #endregion

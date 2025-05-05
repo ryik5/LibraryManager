@@ -108,8 +108,9 @@ public sealed class FindBooksViewModel : AbstractBookViewModel, IRefreshable
     #region Public Methods
     protected override async Task PerformAction(string? commandParameter)
     {
+        #if DEBUG
         await ShowNavigationCommandInDebug(commandParameter, nameof(FindBooksPage));
-
+#endif
         if (string.IsNullOrWhiteSpace(commandParameter))
             return;
 
@@ -229,7 +230,9 @@ public sealed class FindBooksViewModel : AbstractBookViewModel, IRefreshable
         }
         else
         {
+            #if DEBUG
             await ShowNavigationErrorInDebug(commandParameter, nameof(FindBooksViewModel));
+            #endif
         }
     }
 

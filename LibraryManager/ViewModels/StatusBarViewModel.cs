@@ -61,18 +61,17 @@ public class StatusBarViewModel : AbstractBindableModel, IStatusBar
         {
             case EInfoKind.CommonInfo:
                 await SetCommonInfo(message.Message);
-                await SetDebugInfo(message);
                 break;
             case EInfoKind.CurrentInfo:
                 await SetCurrentInfo(message.Message);
-                await SetDebugInfo(message);
                 break;
             case EInfoKind.TotalBooks:
-                var msg = $"Total book(s): {message}";
+                message.Message = $"Total book(s): {message.Message}";
                 await SetTotalBooks(message.Message);
-                await SetDebugInfo(message);
                 break;
         }
+
+        await SetDebugInfo(message);
     }
 
     private Task ReadStatusMessageFromQueueTask(CancellationTokenSource cts)
