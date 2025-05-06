@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.Messaging;
 using LibraryManager.AbstractObjects;
 using LibraryManager.Models;
 using LibraryManager.Utils;
@@ -73,7 +74,19 @@ public sealed class LibraryViewModel : AbstractBookViewModel, IRefreshable
                     var res = await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(),
                         GetPathToCurrentLibraryFile());
                     if (res)
+                    {
                         await UpdateLibraryHashCode();
+                    }
+
+                    var msg = res
+                        ? $"Library with ID:{Library.Id} saved successfully."
+                        : $"Error saving the Library with ID:{Library.Id}";
+                    WeakReferenceMessenger.Default.Send(new StatusMessage()
+                    {
+                        InfoKind = EInfoKind.CurrentInfo,
+                        Message = msg
+                    });
+
                     break;
                 }
                 case Constants.LIBRARY_SAVE_WITH_NEW_NAME:
@@ -86,8 +99,15 @@ public sealed class LibraryViewModel : AbstractBookViewModel, IRefreshable
                         ? castomDialog.InputString
                         : Library.Id.ToString();
 
-                    if (await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(), GetPathToFile(libName)))
+                    var res = await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(), GetPathToFile(libName));
+                    if (res)
                         await UpdateLibraryHashCode();
+                    var msg= res? $"Library with ID:{Library.Id} saved on disk with name '{libName}' successfully." : $"Error saving the Library with ID:{Library.Id}";
+                    WeakReferenceMessenger.Default.Send(new StatusMessage()
+                    {
+                        InfoKind = EInfoKind.CurrentInfo,
+                        Message = msg
+                    });
                     break;
                 }
                 case Constants.LIBRARY_CLOSE:
