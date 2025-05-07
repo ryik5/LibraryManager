@@ -37,14 +37,18 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
         {
             case Constants.IMPORT_BOOK:
             {
-                await TryLoadBook();
+               var result = await TryLoadBook();
+                WeakReferenceMessenger.Default.Send(
+                    new StatusMessage()
+                        { InfoKind = EInfoKind.CurrentInfo, Message = result ? $"Book of '{_temporaryBook.Author}' was successfully imported." : "Book was not loaded." });
+
                 break;
             }
             case Constants.ADD_BOOK:
             {
                 await AddBookTask(BookModelMaker.GenerateDemoBook());
                 WeakReferenceMessenger.Default.Send(
-                    new StatusMessage() { InfoKind = EInfoKind.CurrentInfo, Message = "Book added." });
+                    new StatusMessage() { InfoKind = EInfoKind.CurrentInfo, Message = $"Book was added." });
                 break;
             }
             case Constants.DEMO_ADD_BOOKS:
@@ -121,13 +125,7 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
 
     private async Task<bool> TryLoadBook()
     {
-        var result =
-            await DeserializeBookTask(await TryPickFileUpTask("Please select a book file", new string[] { "xml" }));
-        WeakReferenceMessenger.Default.Send(
-            new StatusMessage()
-                { InfoKind = EInfoKind.CurrentInfo, Message = result ? $"Book loaded." : "Book not loaded." });
-
-        return result;
+         return await DeserializeBookTask(await TryPickFileUpTask("Please select a book file", new string[] { "xml" }));
     }
 
     private async Task<bool> DeserializeBookTask(FileResult fileResult)
@@ -139,11 +137,11 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
             IgnoreComments = false
         });
 
-        var book = await Task.Run(() =>
+        _temporaryBook = await Task.Run(() =>
             (Book)(new System.Xml.Serialization.XmlSerializer(typeof(Book))).Deserialize(xmlReader));
-        if (book?.IsValid() ?? false)
+        if (_temporaryBook?.IsValid() ?? false)
         {
-            await AddBookTask(book);
+            await AddBookTask(_temporaryBook);
             return true;
         }
 
@@ -567,4 +565,6 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
     private readonly IStatusBar _statusBar;
     private readonly IPopupService _popupService;
     #endregion
+
+    private Book _temporaryBook;
 }

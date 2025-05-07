@@ -92,6 +92,11 @@ public sealed class BooksViewModel : AbstractBookViewModel, IRefreshable
                     if (Book.IsValid())
                     {
                         await _bookManageable.AddBookTask(Book);
+                        WeakReferenceMessenger.Default.Send(new StatusMessage()
+                        {
+                            InfoKind = EInfoKind.CurrentInfo,
+                            Message = $"Added the Book of '{Book.Author}'"
+                        });
                     }
 
                     IsBooksCollectionViewVisible = true;
@@ -111,10 +116,16 @@ public sealed class BooksViewModel : AbstractBookViewModel, IRefreshable
                 {
                     if (Book.IsValid())
                     {
+                        Book _book = null;
                         await RunInMainThreadAsync(() =>
                         {
-                            var book = Library.BookList.FirstOrDefault(b => b.Id == Book.Id);
-                            book?.Set(Book);
+                            _book = Library.BookList.FirstOrDefault(b => b.Id == Book.Id);
+                            _book?.Set(Book);
+                        });
+                        WeakReferenceMessenger.Default.Send(new StatusMessage()
+                        {
+                            InfoKind = EInfoKind.CurrentInfo,
+                            Message = $"Updated the Book of '{_book.Author}'"
                         });
                     }
 
@@ -141,7 +152,6 @@ public sealed class BooksViewModel : AbstractBookViewModel, IRefreshable
 
                     break;
                 }
-
                 case Constants.EXPORT_BOOK:
                 {
                     if (!IsBookSelected)
@@ -160,7 +170,16 @@ public sealed class BooksViewModel : AbstractBookViewModel, IRefreshable
                         ? customDialog.InputString
                         : $"{Book.Author}. {Book.Title}";
 
-                    await _bookManageable.TrySaveBook(new XmlBookKeeper(), Book, GetPathToFile(bookName));
+                    var pathToContent = GetPathToFile(bookName);
+
+                    if (await _bookManageable.TrySaveBook(new XmlBookKeeper(), Book, pathToContent))
+                    {
+                        WeakReferenceMessenger.Default.Send(new StatusMessage()
+                        {
+                            InfoKind = EInfoKind.CurrentInfo,
+                            Message = $"Exported the Book of '{Book.Author}' by the path '{pathToContent}'"
+                        });
+                    }
 
                     break;
                 }
