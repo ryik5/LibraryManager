@@ -95,22 +95,26 @@ public class ToolsViewModel : AbstractViewModel
                 case Constants.SETTINGS: //SettingsView
                     IsDebugViewVisible = false;
                     IsSettingsViewVisible = true;
+                    #if DEBUG
                     WeakReferenceMessenger.Default.Send(new StatusMessage()
                     {
                         InfoKind = EInfoKind.DebugInfo,
                         LogLevel = ELogLevel.Debug,
                         Message = $"Selected Settings view"
                     });
+                    #endif
                     break;
 
                 case Constants.DEBUG: //DebugView
                     IsDebugViewVisible = true;
                     IsSettingsViewVisible = false;
+                    #if DEBUG
                     WeakReferenceMessenger.Default.Send(new StatusMessage()
                     {
                         InfoKind = EInfoKind.DebugInfo,
                         Message = $"Selected Debug view"
                     });
+                    #endif
                     break;
 
                 case Constants.TOOLS: //ToolsView
@@ -122,16 +126,11 @@ public class ToolsViewModel : AbstractViewModel
                 case Constants.CANCEL:
                 case Constants.RESET:
                     await Settings.PerformAction(commandParameter);
-                    WeakReferenceMessenger.Default.Send(new StatusMessage()
-                    {
-                        InfoKind = EInfoKind.DebugInfo,
-                        Message = $"Changed setting '{commandParameter}'"
-                    });
-
                     break;
-
                 default:
+                    #if DEBUG
                     await ShowNavigationErrorInDebug($"Unknown command '{commandParameter}'", nameof(ToolsViewModel));
+                    #endif
                     break;
             }
 

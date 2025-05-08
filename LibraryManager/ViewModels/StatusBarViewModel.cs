@@ -129,7 +129,6 @@ public class StatusBarViewModel : AbstractBindableModel, IStatusBar
     private string _commonInfo = String.Empty;
     private string _currentInfo = String.Empty;
     private List<IndexedString> _debugInfo = new();
-    private bool _isExisted;
     private readonly CancellationTokenSource _cancellationTokenSource;
     private static readonly ConcurrentQueue<StatusMessage> _messages = new();
     #endregion

@@ -56,7 +56,7 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
                 for (var b = 0; b < 10; b++)
                     await AddBookTask(BookModelMaker.GenerateDemoBook());
                 WeakReferenceMessenger.Default.Send(
-                    new StatusMessage() { InfoKind = EInfoKind.CurrentInfo, Message = "10 Books added." });
+                    new StatusMessage() { InfoKind = EInfoKind.CurrentInfo, Message = "10 Books were added." });
                 break;
             }
             case Constants.DELETE_BOOK:
@@ -234,7 +234,6 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
     }
     #endregion
 
-
     #region Properties
     /// <summary>
     /// Gets or sets a library.
@@ -247,8 +246,7 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
 
     public event EventHandler<TotalBooksEventArgs> TotalBooksChanged;
     #endregion
-
-
+    
     #region private methods
     /// <summary>
     /// Returns a sorted list of books based on the provided properties.

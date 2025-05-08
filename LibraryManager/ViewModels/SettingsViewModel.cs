@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using LibraryManager.AbstractObjects;
 using LibraryManager.Extensions;
 using LibraryManager.Models;
@@ -291,12 +292,27 @@ public class SettingsViewModel : AbstractBindableModel
                 break;
             case Constants.SAVE:
                 await SaveSettings();
+                WeakReferenceMessenger.Default.Send(new StatusMessage()
+                {
+                    InfoKind = EInfoKind.DebugInfo,
+                    Message = $"Saved setting values"
+                });
                 break;
             case Constants.CANCEL:
                 await LoadAllSettings();
+                WeakReferenceMessenger.Default.Send(new StatusMessage()
+                {
+                    InfoKind = EInfoKind.DebugInfo,
+                    Message = $"Restored previous setting values"
+                });
                 break;
             case Constants.RESET:
                 await ResetAllSettings();
+                WeakReferenceMessenger.Default.Send(new StatusMessage()
+                {
+                    InfoKind = EInfoKind.DebugInfo,
+                    Message = $"Restored default setting values"
+                });
                 break;
         }
     }
