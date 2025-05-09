@@ -294,15 +294,15 @@ public class SettingsViewModel : AbstractBindableModel
                 await SaveSettings();
                 WeakReferenceMessenger.Default.Send(new StatusMessage()
                 {
-                    InfoKind = EInfoKind.DebugInfo,
-                    Message = $"Saved setting values"
+                    InfoKind = EInfoKind.CurrentInfo,
+                    Message = $"Saved current setting values"
                 });
                 break;
             case Constants.CANCEL:
                 await LoadAllSettings();
                 WeakReferenceMessenger.Default.Send(new StatusMessage()
                 {
-                    InfoKind = EInfoKind.DebugInfo,
+                    InfoKind = EInfoKind.CurrentInfo,
                     Message = $"Restored previous setting values"
                 });
                 break;
@@ -310,7 +310,7 @@ public class SettingsViewModel : AbstractBindableModel
                 await ResetAllSettings();
                 WeakReferenceMessenger.Default.Send(new StatusMessage()
                 {
-                    InfoKind = EInfoKind.DebugInfo,
+                    InfoKind = EInfoKind.CurrentInfo,
                     Message = $"Restored default setting values"
                 });
                 break;
