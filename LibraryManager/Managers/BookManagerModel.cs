@@ -37,10 +37,15 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
         {
             case Constants.IMPORT_BOOK:
             {
-               var result = await TryLoadBook();
+                var result = await TryLoadBook();
                 WeakReferenceMessenger.Default.Send(
                     new StatusMessage()
-                        { InfoKind = EInfoKind.CurrentInfo, Message = result ? $"Book of '{_temporaryBook.Author}' was successfully imported." : "Book was not loaded." });
+                    {
+                        InfoKind = EInfoKind.CurrentInfo,
+                        Message = result
+                            ? $"Book of '{_temporaryBook.Author}' was successfully imported."
+                            : "Book was not loaded."
+                    });
 
                 break;
             }
@@ -80,28 +85,92 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
             {
                 book = selectedBooks[0];
                 var result = await TryLoadContentToBookTask(book);
+                if (result)
+                {
+                    WeakReferenceMessenger.Default.Send(new StatusMessage()
+                    {
+                        InfoKind = EInfoKind.DebugInfo,
+                        LogLevel = ELogLevel.Info,
+                        Message =
+                            $"It was loaded a new content '{book.Content.Name}' into a book ID:'{selectedBooks[0].Id}' with title '{book.Title}' by author '{book.Author}'."
+                    });
+                }
+
                 break;
             }
             case Constants.LOAD_COVER:
             {
                 book = selectedBooks[0];
                 var result = await TryLoadCoverBookTask(book);
+                if (result)
+                {
+                    WeakReferenceMessenger.Default.Send(new StatusMessage()
+                    {
+                        InfoKind = EInfoKind.DebugInfo,
+                        LogLevel = ELogLevel.Info,
+                        Message =
+                            $"It was added a new cover into a book ID:'{selectedBooks[0].Id}' with a title '{book.Title}' by author '{book.Author}'."
+                    });
+                }
+
                 break;
             }
             case Constants.SAVE_CONTENT:
             {
-                await TrySaveBookContentTask(selectedBooks[0]);
+                book = selectedBooks[0];
+                var result = await TrySaveBookContentTask(book);
+                if (result)
+                {
+                    WeakReferenceMessenger.Default.Send(new StatusMessage()
+                    {
+                        InfoKind = EInfoKind.DebugInfo,
+                        LogLevel = ELogLevel.Info,
+                        Message =
+                            $"It was saved content on a storage of the book ID:'{selectedBooks[0].Id}' with a title '{book.Title}' by author '{book.Author}'."
+                    });
+                }
+
                 break;
             }
             case Constants.CLEAR_CONTENT:
             {
                 selectedBooks[0].Content = null;
+                WeakReferenceMessenger.Default.Send(new StatusMessage()
+                {
+                    InfoKind = EInfoKind.DebugInfo,
+                    LogLevel = ELogLevel.Info,
+                    Message =
+                        $"It was removed content from the book ID:'{selectedBooks[0].Id}' with a title '{selectedBooks[0].Title}' by author '{selectedBooks[0].Author}'."
+                });
+
                 break;
             }
             case Constants.SORT_BOOKS:
             {
                 if (await MakeSortingList() is { Count: > 0 } props)
+                {
                     await SafetySortBooks(props);
+
+                    string msg = String.Empty;
+                    foreach (var prop in props)
+                    {
+                        if (prop.PropertyInfo.Name != nameof(Book.None))
+                        {
+                            if (!string.IsNullOrWhiteSpace(msg = String.Empty))
+                                msg += ", then ";
+                            msg +=
+                                $"sorted by {prop.PropertyInfo.Name} {(prop.DescendingOrder ? "descending" : "ascending")}";
+                        }
+                    }
+
+                    WeakReferenceMessenger.Default.Send(new StatusMessage()
+                    {
+                        InfoKind = EInfoKind.DebugInfo,
+                        LogLevel = ELogLevel.Info,
+                        Message = $"Library ID:'{_library.Id}' was {msg}"
+                    });
+                }
+
                 break;
             }
         }
@@ -125,7 +194,7 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
 
     private async Task<bool> TryLoadBook()
     {
-         return await DeserializeBookTask(await TryPickFileUpTask("Please select a book file", new string[] { "xml" }));
+        return await DeserializeBookTask(await TryPickFileUpTask("Please select a book file", new string[] { "xml" }));
     }
 
     private async Task<bool> DeserializeBookTask(FileResult fileResult)
@@ -246,7 +315,7 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
 
     public event EventHandler<TotalBooksEventArgs> TotalBooksChanged;
     #endregion
-    
+
     #region private methods
     /// <summary>
     /// Returns a sorted list of books based on the provided properties.
