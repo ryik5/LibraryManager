@@ -18,6 +18,16 @@ public interface IBookManageable
     /// enabling additional extensibility or dynamic behaviors based on the provided input.
     /// </remarks>
     Task RunCommand(string commandParameter, IList<Book>? selectedBooks);
+    
+    /// <summary>
+    /// Edits a book based on the provided command parameter.
+    /// </summary>
+    /// <param name="commandParameter">The parameter or name of the editing command to execute.</param>
+    /// <param name="book">The book to be edited.</param>
+    /// <remarks>
+    /// This method applies the specified editing command to the provided book, returning the updated book.
+    /// </remarks>
+    Task<Book> EditBook(string commandParameter, Book? book);
 
     /// <summary>
     /// Adds a book to the library.

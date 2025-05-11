@@ -82,67 +82,11 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
             }
 
             case Constants.LOAD_CONTENT:
-            {
-                book = selectedBooks[0];
-                var result = await TryLoadContentToBookTask(book);
-                if (result)
-                {
-                    WeakReferenceMessenger.Default.Send(new StatusMessage()
-                    {
-                        InfoKind = EInfoKind.DebugInfo,
-                        LogLevel = ELogLevel.Info,
-                        Message =
-                            $"It was loaded a new content '{book.Content.Name}' into a book ID:'{selectedBooks[0].Id}' with title '{book.Title}' by author '{book.Author}'."
-                    });
-                }
-
-                break;
-            }
             case Constants.LOAD_COVER:
-            {
-                book = selectedBooks[0];
-                var result = await TryLoadCoverBookTask(book);
-                if (result)
-                {
-                    WeakReferenceMessenger.Default.Send(new StatusMessage()
-                    {
-                        InfoKind = EInfoKind.DebugInfo,
-                        LogLevel = ELogLevel.Info,
-                        Message =
-                            $"It was added a new cover into a book ID:'{selectedBooks[0].Id}' with a title '{book.Title}' by author '{book.Author}'."
-                    });
-                }
-
-                break;
-            }
             case Constants.SAVE_CONTENT:
-            {
-                book = selectedBooks[0];
-                var result = await TrySaveBookContentTask(book);
-                if (result)
-                {
-                    WeakReferenceMessenger.Default.Send(new StatusMessage()
-                    {
-                        InfoKind = EInfoKind.DebugInfo,
-                        LogLevel = ELogLevel.Info,
-                        Message =
-                            $"It was saved content on a storage of the book ID:'{selectedBooks[0].Id}' with a title '{book.Title}' by author '{book.Author}'."
-                    });
-                }
-
-                break;
-            }
             case Constants.CLEAR_CONTENT:
             {
-                selectedBooks[0].Content = null;
-                WeakReferenceMessenger.Default.Send(new StatusMessage()
-                {
-                    InfoKind = EInfoKind.DebugInfo,
-                    LogLevel = ELogLevel.Info,
-                    Message =
-                        $"It was removed content from the book ID:'{selectedBooks[0].Id}' with a title '{selectedBooks[0].Title}' by author '{selectedBooks[0].Author}'."
-                });
-
+                await EditBook(commandParameter, selectedBooks[0]);
                 break;
             }
             case Constants.SORT_BOOKS:
@@ -174,6 +118,76 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
                 break;
             }
         }
+    }
+
+    public async Task<Book> EditBook(string commandParameter, Book book)
+    {
+        switch (commandParameter)
+        {
+            case Constants.LOAD_CONTENT:
+            {
+                var result = await TryLoadContentToBookTask(book);
+                if (result)
+                {
+                    WeakReferenceMessenger.Default.Send(new StatusMessage()
+                    {
+                        InfoKind = EInfoKind.DebugInfo,
+                        LogLevel = ELogLevel.Info,
+                        Message =
+                            $"It was loaded a new content '{book.Content.Name}' into a book ID:'{book.Id}' with title '{book.Title}' by author '{book.Author}'."
+                    });
+                }
+
+                break;
+            }
+            case Constants.LOAD_COVER:
+            {
+                var result = await TryLoadCoverBookTask(book);
+                if (result)
+                {
+                    WeakReferenceMessenger.Default.Send(new StatusMessage()
+                    {
+                        InfoKind = EInfoKind.DebugInfo,
+                        LogLevel = ELogLevel.Info,
+                        Message =
+                            $"It was added a new cover into a book ID:'{book.Id}' with a title '{book.Title}' by author '{book.Author}'."
+                    });
+                }
+
+                break;
+            }
+            case Constants.SAVE_CONTENT:
+            {
+                var result = await TrySaveBookContentTask(book);
+                if (result)
+                {
+                    WeakReferenceMessenger.Default.Send(new StatusMessage()
+                    {
+                        InfoKind = EInfoKind.DebugInfo,
+                        LogLevel = ELogLevel.Info,
+                        Message =
+                            $"It was saved content on a storage of the book ID:'{book.Id}' with a title '{book.Title}' by author '{book.Author}'."
+                    });
+                }
+
+                break;
+            }
+            case Constants.CLEAR_CONTENT:
+            {
+                book.Content = null;
+                WeakReferenceMessenger.Default.Send(new StatusMessage()
+                {
+                    InfoKind = EInfoKind.DebugInfo,
+                    LogLevel = ELogLevel.Info,
+                    Message =
+                        $"It was removed content from the book ID:'{book.Id}' with a title '{book.Title}' by author '{book.Author}'."
+                });
+
+                break;
+            }
+        }
+
+        return book;
     }
 
     /// <summary>
@@ -497,6 +511,8 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
         var length = settings.Book_MaxContentLength;
         var fileResult = await TryPickFileUpTask("Select book content", null);
         var readContentTask = await ReadContentFromDiskTask(book, fileResult, maxContentLength: length);
+        RaisePropertyChanged(nameof(book.Content.ObjectByteArray));
+        RaisePropertyChanged(nameof(book.Content));
 
         return readContentTask.IsSuccess;
     }
@@ -546,7 +562,6 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
             book.Content.ObjectByteArray = null;
         }
 
-
         return new ResultBook { Book = book, IsSuccess = false };
     }
 
@@ -561,6 +576,8 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
         if (readContentTask.IsSuccess)
             book.Set(readContentTask.Book);
 
+        RaisePropertyChanged(nameof(Book.Content.BookCoverByteArray));
+        RaisePropertyChanged(nameof(Book.Content));
         return readContentTask.IsSuccess;
     }
 
