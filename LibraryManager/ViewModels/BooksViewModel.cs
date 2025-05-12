@@ -19,8 +19,6 @@ public sealed class BooksViewModel : AbstractBookViewModel, IRefreshable
         IsBooksCollectionViewVisible = true;
         IsEditBookViewVisible = false;
         _bookManageable = new BookManagerModel(Library, settings, statusBar, popupService);
-        ContentState = Constants.LOAD_CONTENT;
-        ClearingState = Constants.CLEAR_CONTENT;
         ValidateOperations().GetAwaiter();
     }
 
@@ -29,21 +27,6 @@ public sealed class BooksViewModel : AbstractBookViewModel, IRefreshable
     /// <summary>
     /// Gets or sets the content state.
     /// </summary>
-    public string ContentState
-    {
-        get => _contentState;
-        set => SetProperty(ref _contentState, value);
-    }
-
-    /// <summary>
-    /// Gets or sets the clearing state.
-    /// </summary>
-    public string ClearingState
-    {
-        get => _clearingState;
-        set => SetProperty(ref _clearingState, value);
-    }
-
     /// <summary>
     /// Gets or sets a value indicating whether the content can be cleared.
     /// </summary>
@@ -188,8 +171,7 @@ public sealed class BooksViewModel : AbstractBookViewModel, IRefreshable
                 case Constants.CLEAR_CONTENT:
                 case Constants.SAVE_CONTENT:
                 case Constants.LOAD_COVER:
-                    var book = Book;
-                    await _bookManageable.RunCommand(commandParameter, new List<Book>() { book });
+                    var book = await _bookManageable.EditBook(commandParameter, Book);
                     Book = null;
                     Book = book;
                     break;
@@ -280,8 +262,6 @@ public sealed class BooksViewModel : AbstractBookViewModel, IRefreshable
     #region Private fields
     private readonly IBookManageable _bookManageable;
     private IList<Book> _selectedBooks;
-    private string _contentState;
-    private string _clearingState;
     private bool _canClearContent;
     #endregion
 }

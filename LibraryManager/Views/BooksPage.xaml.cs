@@ -24,6 +24,7 @@ public partial class BooksPage : ContentPage
         if (BindingContext is IRefreshable refresher)
         {
             await  refresher.RefreshControlsOnAppearing(); 
+            EditBookView.BindingContext ??= App.Services.GetService<BooksViewModel>();
         }
     }
 

@@ -98,11 +98,13 @@
                           HeightRequest="20"
                           Margin="0" />
 
+                <!--
                 <Button Grid.Row="8" Grid.Column="2" Text="Load Cover"
                         Command="{Binding Source={RelativeSource TemplatedParent}, Path=NavigateCommand}"
                         CommandParameter="Load Cover"
                         ToolTipProperties.Text="Load book's cover as picture from the disk to store it with the book" 
                         />
+                        -->
                 
                 <Image Grid.Row="0" Grid.Column="2" Grid.RowSpan="7"
                        Source="{Binding Source={RelativeSource TemplatedParent}, Path=Book.Content.BookCoverByteArray, Mode=OneWay, Converter={StaticResource ByteArrayToImageSourceConverter}}"

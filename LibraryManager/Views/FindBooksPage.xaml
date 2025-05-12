@@ -141,22 +141,23 @@
                     Grid.Row="2"
                     IsVisible="{Binding IsEditBookViewVisible, Mode=OneWay}"
                     HeightRequest="35"
-                    Margin="200,00,0,10"
+                    Margin="200,10,0,10"
                     HorizontalOptions="Start"
                     VerticalOptions="End"
                     NavigateCommand="{Binding NavigateCommand, Mode=OneTime}"
                     IsOkVisibile="True"
                     OkText="{Binding ContentState, Mode=OneWay}"
-                    IsNoVisibile="False"
-                    IsCancelVisibile="{Binding CanClearContent, Mode=OneWay}"
-                    CancelText="{Binding ClearingState, Mode=OneWay}" />
+                    IsNoVisibile="{Binding CanClearContent, Mode=OneWay}"
+                    NoText="{Binding ClearingState, Mode=OneWay}"
+                    IsCancelVisibile="True"
+                    CancelText="{Binding LoadCover, Mode=OneWay}" />
 
                 <!-- Add/Edit Book Controls -->
                 <control:ThreeButtonsPanel
                     Grid.Row="3"
                     IsVisible="{Binding IsEditBookViewVisible, Mode=OneWay}"
                     HeightRequest="35"
-                    Margin="0,50,0,10"
+                    Margin="0,20,0,10"
                     BindingContext="{Binding}"
                     HorizontalOptions="Center"
                     VerticalOptions="End"

@@ -121,7 +121,7 @@
                 </ScrollView>
 
                 <!-- Add/Edit Book View -->
-                <control:EditBookView
+                <control:EditBookView x:Name="EditBookView"
                     Grid.Row="1"
                     IsVisible="{Binding IsEditBookViewVisible, Mode=OneWay}"
                     Book="{Binding Book, Mode=TwoWay}"
@@ -135,18 +135,15 @@
                     IsVisible="{Binding IsEditBookViewVisible, Mode=OneWay}"
                     HeightRequest="35"
                     Margin="200,00,0,30"
-
                     HorizontalOptions="Start"
                     VerticalOptions="End"
                     NavigateCommand="{Binding NavigateCommand, Mode=OneTime}"
-
                     IsOkVisibile="True"
                     OkText="{Binding ContentState, Mode=OneWay}"
-
-                    IsNoVisibile="False"
-
-                    IsCancelVisibile="{Binding CanClearContent, Mode=OneWay}"
-                    CancelText="{Binding ClearingState, Mode=OneWay}" />
+                    IsNoVisibile="{Binding CanClearContent, Mode=OneWay}"
+                    NoText="{Binding ClearingState, Mode=OneWay}"
+                    IsCancelVisibile="True"
+                    CancelText="{Binding LoadCover, Mode=OneWay}" />
 
                 <!-- Add/Edit Book Controls -->
                 <control:ThreeButtonsPanel

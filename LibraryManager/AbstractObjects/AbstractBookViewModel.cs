@@ -18,6 +18,10 @@ public abstract class AbstractBookViewModel : AbstractViewModel
     {
         StatusBar = statusBar;
         Library = library;
+  
+        ContentState = Constants.LOAD_CONTENT;
+        ClearingState = Constants.CLEAR_CONTENT;
+        LoadCover = Constants.LOAD_COVER;
     }
 
     #region Public properties
@@ -90,6 +94,26 @@ public abstract class AbstractBookViewModel : AbstractViewModel
             }
         }
     }
+    public string ContentState
+    {
+        get => _contentState;
+        set => SetProperty(ref _contentState, value);
+    }
+
+    /// <summary>
+    /// Gets or sets the clearing state.
+    /// </summary>
+    public string ClearingState
+    {
+        get => _clearingState;
+        set => SetProperty(ref _clearingState, value);
+    }
+     
+    public string LoadCover
+    {
+        get => _loadCover;
+        set => SetProperty(ref _loadCover, value);
+    }
     #endregion
 
 
@@ -135,6 +159,9 @@ public abstract class AbstractBookViewModel : AbstractViewModel
     private string _ok = Constants.OK;
     private bool _canOperateWithBooks;
     private bool _canEditBook;
+    private string _contentState;
+    private string _clearingState;
+    private string _loadCover;
     private bool _isEditBookViewVisible;
     private bool _isBooksCollectionViewVisible;
     #endregion

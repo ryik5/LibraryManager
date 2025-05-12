@@ -25,6 +25,7 @@ public sealed class FindBooksViewModel : AbstractBookViewModel, IRefreshable
         IsEditBookViewVisible = false;
         ContentState = Constants.LOAD_CONTENT;
         ClearingState = Constants.CLEAR_CONTENT;
+        LoadCover = Constants.LOAD_COVER;
         _bookManageable = new BookManagerModel(Library, settings, statusBar, popupService);
 
         OK = Constants.SAVE_CHANGES;
@@ -102,6 +103,12 @@ public sealed class FindBooksViewModel : AbstractBookViewModel, IRefreshable
     {
         get => _canClearContent;
         set => SetProperty(ref _canClearContent, value);
+    }
+
+    public string LoadCover
+    {
+        get => _loadCover;
+        set => SetProperty(ref _loadCover, value);
     }
     #endregion
 
@@ -333,5 +340,6 @@ public sealed class FindBooksViewModel : AbstractBookViewModel, IRefreshable
     private string _contentState;
     private bool _canClearContent;
     private string _clearingState;
+    private string _loadCover;
     #endregion
 }

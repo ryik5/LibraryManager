@@ -33,7 +33,6 @@ public partial class EditBookView : ContentView
         InitializeComponent();
     }
 
-
     private static void OnBookChanged(BindableObject bindable, object oldValue, object newValue)
     {
         if (!(bindable is EditBookView editBookView))
