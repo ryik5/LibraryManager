@@ -36,32 +36,11 @@ public class LibraryManagerModel : AbstractBindableModel, ILibraryManageable
         {
             case Constants.LIBRARY_NEW:
                 break;
-
-            case Constants.LIBRARY_EDIT:
-                break;
-
-            case Constants.LIBRARY_LOAD:
-                var msg = await TryLoadLibrary()
-                    ? $"Loaded the Library with ID:{Library.Id}"
-                    : $"Error loading the Library";
-                WeakReferenceMessenger.Default.Send(new StatusMessage()
-                    { InfoKind = EInfoKind.CurrentInfo, Message = msg });
-                break;
-
-            case Constants.LIBRARY_SAVE:
-                break;
-
-            case Constants.LIBRARY_CLOSE:
-                TryCloseLibrary();
-                break;
-
-            case Constants.LIBRARY_SAVE_WITH_NEW_NAME:
-                break;
         }
     }
 
 
-    private async Task<bool> TryLoadLibrary()
+    public async Task<bool> TryLoadLibrary()
     {
         var result = await TryPickFileUpTask("Please select a library file", new string[] { "xml" });
         try
@@ -142,16 +121,18 @@ public class LibraryManagerModel : AbstractBindableModel, ILibraryManageable
     /// <summary>
     /// Closes the current library.
     /// </summary>
-    public void TryCloseLibrary()
+    public Task TryCloseLibrary()
     {
         if (0 < Library.TotalBooks)
             RunInMainThread(() => Library.BookList.Clear());
 
+        var id= Library.Id;
         Library.Name = string.Empty;
         Library.Description = string.Empty;
         Library.Id = 0;
         WeakReferenceMessenger.Default.Send(new StatusMessage()
-            { InfoKind = EInfoKind.CurrentInfo, Message = "Library closed." });
+            { InfoKind = EInfoKind.CurrentInfo, Message = $"Library with ID:{id} was closed." });
+        return Task.CompletedTask;
     }
     #endregion
 
@@ -167,19 +148,6 @@ public class LibraryManagerModel : AbstractBindableModel, ILibraryManageable
     }
 
     public event EventHandler<ActionFinishedEventArgs> LoadingFinished;
-    #endregion
-
-
-    #region private methods
-    /// <summary>
-    /// Handles the LoadingFinished event of the LibraryLoader.
-    /// </summary>
-    /// <param name="sender">The source of the event.</param>
-    /// <param name="e">The ActionFinishedEventArgs instance containing the event data.</param>
-    private void LibraryLoader_LoadingLibraryFinished(object? sender, ActionFinishedEventArgs e)
-    {
-        LoadingFinished?.Invoke(this, new ActionFinishedEventArgs { Message = e.Message, IsFinished = e.IsFinished });
-    }
     #endregion
 
 

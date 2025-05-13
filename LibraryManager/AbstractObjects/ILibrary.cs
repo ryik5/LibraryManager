@@ -64,6 +64,11 @@ public interface ILibrary
     }
 
     /// <summary>
+    /// Indicates whether the library is new or not.
+    /// </summary>
+    bool IsNew { get; set; }
+    
+    /// <summary>
     /// Gets or sets an array of <see cref="PropertyInfo"/> objects representing the properties of <see cref="Book"/>.
     /// </summary>
     PropertyInfo[] GetBookPropertiesInfo();

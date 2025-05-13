@@ -32,6 +32,11 @@ public interface ILibraryManageable
     /// <param name="pathToLibrary">The path to the file containing the library data.</param>
     /// <returns>True if the library was successfully loaded; otherwise, false.</returns>
     bool TryLoadLibrary(ILibraryLoader libraryLoader, string pathToLibrary);
+
+    /// <summary>
+    /// Loads a library.
+    /// </summary>
+    Task<bool> TryLoadLibrary();
     
     /// <summary>
     /// Saves the specified library to the specified folder.
@@ -44,7 +49,7 @@ public interface ILibraryManageable
     /// <summary>
     /// Closes the library and clears the book list.
     /// </summary>
-    void TryCloseLibrary();
+    Task TryCloseLibrary();
 
     /// <summary>
     /// Gets or sets the library.

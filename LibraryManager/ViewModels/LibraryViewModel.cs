@@ -51,6 +51,7 @@ public sealed class LibraryViewModel : AbstractBookViewModel, IRefreshable
                     }
 
                     await _libraryManager.CreateNewLibrary();
+                    Library.IsNew = true;
                     await UpdateLibraryHashCode();
                     break;
                 }
@@ -64,7 +65,13 @@ public sealed class LibraryViewModel : AbstractBookViewModel, IRefreshable
                             return;
                     }
 
-                    await _libraryManager.RunCommand(commandParameter);
+                    var isLoaded = await _libraryManager.TryLoadLibrary();
+                    var msg = isLoaded ? $"Loaded the Library with ID:{Library.Id}" : $"Error loading the Library";
+                    WeakReferenceMessenger.Default.Send(new StatusMessage()
+                        { InfoKind = EInfoKind.CurrentInfo, Message = msg });
+                    if (isLoaded)
+                        Library.IsNew = true;
+
                     await UpdateLibraryHashCode();
                     await HandlePostRefreshControlsOnAppearingTask();
                     break;
@@ -75,6 +82,7 @@ public sealed class LibraryViewModel : AbstractBookViewModel, IRefreshable
                         GetPathToCurrentLibraryFile());
                     if (res)
                     {
+                        Library.IsNew = false;
                         await UpdateLibraryHashCode();
                     }
 
@@ -92,17 +100,14 @@ public sealed class LibraryViewModel : AbstractBookViewModel, IRefreshable
                 case Constants.LIBRARY_SAVE_WITH_NEW_NAME:
                 {
                     // display window with input a new library name
-                    var castomDialog = await ShowCustomDialogPage(Constants.LIBRARY_SAVE_WITH_NEW_NAME,
-                        Constants.LIBRARY_NAME, true);
-
-                    var libName = castomDialog.IsOk && !string.IsNullOrEmpty(castomDialog.InputString)
-                        ? castomDialog.InputString
-                        : Library.Id.ToString();
+                    var libName = await GetSavingNameForLibrary();
 
                     var res = await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(), GetPathToFile(libName));
                     if (res)
                         await UpdateLibraryHashCode();
-                    var msg= res? $"Library with ID:{Library.Id} saved on disk with name '{libName}' successfully." : $"Error saving the Library with ID:{Library.Id}";
+                    var msg = res
+                        ? $"Library with ID:{Library.Id} saved on disk with name '{libName}' successfully."
+                        : $"Error saving the Library with ID:{Library.Id}";
                     WeakReferenceMessenger.Default.Send(new StatusMessage()
                     {
                         InfoKind = EInfoKind.CurrentInfo,
@@ -112,18 +117,23 @@ public sealed class LibraryViewModel : AbstractBookViewModel, IRefreshable
                 }
                 case Constants.LIBRARY_CLOSE:
                 {
-                    if (await HasLibraryHashCodeChanged())
+                    if (Library.IsNew && 0 < Library.TotalBooks || !Library.IsNew && await HasLibraryHashCodeChanged())
                     {
+                        string libName = string.Empty;
+                        if (Library.IsNew)
+                            libName = await GetSavingNameForLibrary();
+
                         var success =
-                            await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(), GetPathToCurrentLibraryFile());
+                            await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(),
+                                GetPathToCurrentLibraryFile(libName));
                         if (!success)
                             return;
                     }
 
-                    await _libraryManager.RunCommand(commandParameter);
+                    await _libraryManager.TryCloseLibrary();
                     await UpdateLibraryHashCode();
 
-                    HandleCloseLibrary();
+                    await HandleCloseLibrary();
                     break;
                 }
                 default:
@@ -157,7 +167,7 @@ public sealed class LibraryViewModel : AbstractBookViewModel, IRefreshable
 
     private async Task HandleCloseLibrary()
     {
-        await Task.Delay(200);
+        await Task.Delay(10);
         CanOperateWithBooks = false;
         CanCloseLibrary = false;
     }
@@ -208,7 +218,7 @@ public sealed class LibraryViewModel : AbstractBookViewModel, IRefreshable
     }
 
 
-    private string GetPathToCurrentLibraryFile() => GetPathToFile(Library.Id.ToString());
+    private string GetPathToCurrentLibraryFile(string? libName = null) => GetPathToFile(libName ?? Library.Id.ToString());
     #endregion
 
     #region Private Members

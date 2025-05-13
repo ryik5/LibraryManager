@@ -24,6 +24,7 @@ public abstract class AbstractBookViewModel : AbstractViewModel
         LoadCover = Constants.LOAD_COVER;
     }
 
+    
     #region Public properties
     /// <summary>
     /// Gets or sets the library instance.
@@ -116,7 +117,6 @@ public abstract class AbstractBookViewModel : AbstractViewModel
     }
     #endregion
 
-
     #region CommandParameters
     /// <summary>
     /// Gets or sets the OK command parameter.
@@ -134,6 +134,17 @@ public abstract class AbstractBookViewModel : AbstractViewModel
     #endregion
 
     #region Public Methods
+    public async Task<string>  GetSavingNameForLibrary()
+    {
+        // display window with input a new library name
+        var castomDialog = await ShowCustomDialogPage(Constants.LIBRARY_SAVE_WITH_NEW_NAME,
+            Constants.LIBRARY_NAME, true);
+
+        return castomDialog.IsOk && !string.IsNullOrEmpty(castomDialog.InputString)
+            ? castomDialog.InputString
+            : Library.Id.ToString();
+    }
+    
     /// <summary>
     /// Checks if the library is valid based on its ID.
     /// </summary>
@@ -150,8 +161,7 @@ public abstract class AbstractBookViewModel : AbstractViewModel
     /// </remarks>
     protected bool IsNotEmptyLibrary => IsNotZero(Library?.TotalBooks);
     #endregion
-
-
+    
     #region Private fields
     private ILibrary _library;
     private ObservableCollection<object> _selectedObjects = new();

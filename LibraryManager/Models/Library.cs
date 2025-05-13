@@ -144,6 +144,13 @@ public class Library : AbstractBindableModel, ILibrary, IXmlSerializable
         } while (!reader.EOF && reader.Read());
     }
 
+    public bool IsNew
+    {
+        get => _isNew;
+        set => SetProperty(ref _isNew, value);
+    }
+
+    
     /// <summary>
     /// Gets or sets an array of <see cref="PropertyInfo"/> objects representing the properties of <see cref="Book"/>.
     /// </summary>
@@ -214,5 +221,6 @@ public class Library : AbstractBindableModel, ILibrary, IXmlSerializable
     private PropertyInfo[] _bookPropertiesInfo;
     private string[] _bookProperties;
     private readonly object _locker = new();
+    private bool _isNew=true;
     #endregion
 }
