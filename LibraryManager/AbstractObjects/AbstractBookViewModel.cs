@@ -95,6 +95,7 @@ public abstract class AbstractBookViewModel : AbstractViewModel
             }
         }
     }
+   
     public string ContentState
     {
         get => _contentState;
@@ -137,8 +138,8 @@ public abstract class AbstractBookViewModel : AbstractViewModel
     public async Task<string>  GetSavingNameForLibrary()
     {
         // display window with input a new library name
-        var castomDialog = await ShowCustomDialogPage(Constants.LIBRARY_SAVE_WITH_NEW_NAME,
-            Constants.LIBRARY_NAME, true);
+        var castomDialog = await ShowCustomDialogPage(Constants.LIBRARY_SAVE_WITH_NAME,
+            Constants.LIBRARY_NAME, true,Library.Id.ToString());
 
         return castomDialog.IsOk && !string.IsNullOrEmpty(castomDialog.InputString)
             ? castomDialog.InputString

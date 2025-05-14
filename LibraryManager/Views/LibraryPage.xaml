@@ -86,7 +86,7 @@
                             Margin="10,0,10,0"
                             ToolTipProperties.Text="Click to save the current library with a new name"
                             Command="{Binding NavigateCommand}"
-                            CommandParameter="Save the library with a new name"
+                            CommandParameter="Save the library with the name"
                             IsEnabled="{Binding CanOperateWithBooks, Mode=TwoWay}" />
                     <Button Text="Close Library"
                             ToolTipProperties.Text="Click to close current library"

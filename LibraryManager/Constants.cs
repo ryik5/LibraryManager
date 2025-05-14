@@ -51,7 +51,7 @@ public static class Constants
     public const string LIBRARY_LOADING_FINISHED = "Library loading finished";
     public const string LIBRARY_EDIT = "Edit Library";
     public const string LIBRARY_SAVE = "Save Library";
-    public const string LIBRARY_SAVE_WITH_NEW_NAME = "Save the library with a new name";
+    public const string LIBRARY_SAVE_WITH_NAME = "Save the library with the name";
     public const string FOLDER_WAS_NOT_SELECTED = "Folder was not selected";
     public const string LIBRARY_IS_BEING_SAVED = "The library is being saved...";
     public const string LIBRARY_WAS_SAVED_SUCCESSFULLY = "Library was saved successfully to path";

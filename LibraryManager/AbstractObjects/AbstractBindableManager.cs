@@ -54,6 +54,20 @@ public abstract class AbstractBindableModel : INotifyPropertyChanged
 
         return new ResultInput(result, inputText);
     }
+    protected async Task<ResultInput> ShowCustomDialogPage(string title, string message, bool isInputVisible=true, string inputStartText="InputHere")
+    {
+        var dialogPage = new CustomDialogPage(title, message, isInputVisible, inputStartText);
+        await Application.Current?.MainPage?.Navigation.PushModalAsync(dialogPage)!;
+
+        var result = await dialogPage.DialogResultTask.Task; // Await the user's response
+        var inputText = dialogPage.InputText;
+
+        #if DEBUG
+        Debug.WriteLine(result ? "User pressed OK." : "User pressed Cancel.");
+        #endif
+
+        return new ResultInput(result, inputText);
+    }
 
     protected async Task ShowDisplayPromptAsync(string message)
     {

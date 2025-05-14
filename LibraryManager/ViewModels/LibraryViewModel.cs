@@ -97,7 +97,7 @@ public sealed class LibraryViewModel : AbstractBookViewModel, IRefreshable
 
                     break;
                 }
-                case Constants.LIBRARY_SAVE_WITH_NEW_NAME:
+                case Constants.LIBRARY_SAVE_WITH_NAME:
                 {
                     // display window with input a new library name
                     var libName = await GetSavingNameForLibrary();
@@ -210,7 +210,7 @@ public sealed class LibraryViewModel : AbstractBookViewModel, IRefreshable
 
         if (libraryChanged)
         {
-            var res = await ShowCustomDialogPage(Constants.LIBRARY_SAVE, StringsHandler.LibraryChangedMessage());
+            var res = await ShowCustomDialogPage(Constants.LIBRARY_SAVE, StringsHandler.LibraryChangedMessage(),false);
             return res.IsOk;
         }
 

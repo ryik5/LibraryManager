@@ -3,13 +3,14 @@ namespace LibraryManager.Views;
 /// <author>YR 2025-02-09</author>
 public partial class CustomDialogPage : ContentPage
 {
-    public CustomDialogPage(string title, string message, bool isInputVisible=false)
+    public CustomDialogPage(string title, string message, bool isInputVisible=false, string startInputText = "Input here")
     {
         InitializeComponent();
         
         TitleLabel.Text = title;
         MessageLabel.Text = message;
         IsInputVisible = isInputVisible;
+        EntryInput.Placeholder = startInputText;
         
         CancelButton.Command = new Command(async () =>
         {
