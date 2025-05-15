@@ -37,6 +37,10 @@
                    Placeholder="Input text here"
                    Focused="VisualElement_OnFocused"
                    Margin="10" />
+            <HorizontalStackLayout>
+                <Button Text="Button1" Margin="10"/>
+                <Button Text="Button2" Margin="10"/>
+            </HorizontalStackLayout>
         </StackLayout>
     </Frame>
 

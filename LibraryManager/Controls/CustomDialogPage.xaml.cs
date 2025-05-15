@@ -75,6 +75,7 @@ public partial class CustomDialogPage : ContentPage
     public string InputText { get; set; }
     
     public bool IsInputVisible { get; set; }
+    
     public TaskCompletionSource<bool> DialogResultTask { get; set; } = new TaskCompletionSource<bool>();
 
     private async Task CloseDialogAsync(bool isConfirmed)

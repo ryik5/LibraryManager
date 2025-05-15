@@ -21,14 +21,16 @@ public sealed class FindBooksViewModel : AbstractBookViewModel, IRefreshable
         Library.LibraryIdChanged += Handle_LibraryIdChanged;
         Library.TotalBooksChanged += Handle_TotalBooksChanged;
         FoundBookList.CollectionChanged += Handle_FoundBookListChanged;
+        
         IsBooksCollectionViewVisible = true;
         IsEditBookViewVisible = false;
         ContentState = Constants.LOAD_CONTENT;
         ClearingState = Constants.CLEAR_CONTENT;
         LoadCover = Constants.LOAD_COVER;
+        OK = Constants.SAVE_CHANGES;
+        
         _bookManageable = new BookManagerModel(Library, settings, statusBar, popupService);
 
-        OK = Constants.SAVE_CHANGES;
         RefreshControlsOnAppearing();
     }
 
