@@ -9,12 +9,11 @@ namespace LibraryManager.ViewModels;
 /// <author>YR 2025-02-09</author>
 public sealed class LibraryViewModel : AbstractBookViewModel, IRefreshable
 {
-    public LibraryViewModel(ILibrary library, SettingsViewModel settings, IStatusBar statusBar,
-        IPopupService popupService)
-        : base(library, statusBar, popupService)
+    public LibraryViewModel(ILibrary library, SettingsViewModel settings, IStatusBar statusBar)
+        : base(library, statusBar)
     {
         _settings = settings;
-        _libraryManager = new LibraryManagerModel(Library, statusBar, popupService);
+        _libraryManager = new LibraryManagerModel(Library, statusBar);
     }
 
 
@@ -210,7 +209,7 @@ public sealed class LibraryViewModel : AbstractBookViewModel, IRefreshable
 
         if (libraryChanged)
         {
-            var res = await ShowCustomDialogPage(Constants.LIBRARY_SAVE, StringsHandler.LibraryChangedMessage(),false);
+            var res = await ShowCustomDialogPage(Constants.LIBRARY_SAVE, StringsHandler.LibraryChangedMessage(), false);
             return res.IsOk;
         }
 
@@ -218,7 +217,8 @@ public sealed class LibraryViewModel : AbstractBookViewModel, IRefreshable
     }
 
 
-    private string GetPathToCurrentLibraryFile(string? libName = null) => GetPathToFile(libName ?? Library.Id.ToString());
+    private string GetPathToCurrentLibraryFile(string? libName = null) =>
+        GetPathToFile(libName ?? Library.Id.ToString());
     #endregion
 
     #region Private Members

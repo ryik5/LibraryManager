@@ -8,7 +8,7 @@ namespace LibraryManager.ViewModels;
 /// <author>YR 2025-02-09</author>
 public class AboutViewModel : AbstractViewModel
 {
-    public AboutViewModel(IStatusBar statusBar, IPopupService popupService) : base(popupService)
+    public AboutViewModel(IStatusBar statusBar)
     {
         StatusBar = statusBar;
 

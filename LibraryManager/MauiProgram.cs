@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 using LibraryManager.Models;
 using LibraryManager.ViewModels;
 using Microsoft.Extensions.Logging;
-using RGPopup.Maui.Extensions;
+using Mopups.Hosting;
 
 namespace LibraryManager;
 
@@ -17,17 +17,13 @@ public static class MauiProgram
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
-            .UseMauiRGPopup(config =>
-            {
-                config.BackPressHandler = null;
-                config.FixKeyboardOverlap = true;
-            })
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 fonts.AddFont("Manrope.ttf", "ManropeExtraLight");
-            });
+            })
+            .ConfigureMopups();
 
         /*// Configuration
         using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("LibraryManager.appsettings.json");
@@ -78,7 +74,6 @@ public static class MauiProgram
         builder.Services.AddTransient<AboutViewModel>();
         builder.Services.AddTransient<ToolsViewModel>();
 
-        builder.Services.AddTransient<IPopupService, PopupService>();
         #if DEBUG
         builder.Logging.AddDebug();
         #endif

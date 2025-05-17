@@ -3,6 +3,8 @@ using LibraryManager.AbstractObjects;
 using LibraryManager.Extensions;
 using LibraryManager.Models;
 using LibraryManager.Views;
+using Mopups.PreBaked.PopupPages.DualResponse;
+using Mopups.PreBaked.PopupPages.EntryInput;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
@@ -11,9 +13,8 @@ namespace LibraryManager.ViewModels;
 /// <author>YR 2025-02-09</author>
 public sealed class FindBooksViewModel : AbstractBookViewModel, IRefreshable
 {
-    public FindBooksViewModel(ILibrary library, SettingsViewModel settings, IStatusBar statusBar,
-        IPopupService popupService)
-        : base(library, statusBar, popupService)
+    public FindBooksViewModel(ILibrary library, SettingsViewModel settings, IStatusBar statusBar)
+        : base(library, statusBar)
     {
         SearchFields = Enum.GetValues(typeof(EBibliographicKindInformation)).Cast<EBibliographicKindInformation>()
             .ToList();
@@ -21,15 +22,15 @@ public sealed class FindBooksViewModel : AbstractBookViewModel, IRefreshable
         Library.LibraryIdChanged += Handle_LibraryIdChanged;
         Library.TotalBooksChanged += Handle_TotalBooksChanged;
         FoundBookList.CollectionChanged += Handle_FoundBookListChanged;
-        
+
         IsBooksCollectionViewVisible = true;
         IsEditBookViewVisible = false;
         ContentState = Constants.LOAD_CONTENT;
         ClearingState = Constants.CLEAR_CONTENT;
         LoadCover = Constants.LOAD_COVER;
         OK = Constants.SAVE_CHANGES;
-        
-        _bookManageable = new BookManagerModel(Library, settings, statusBar, popupService);
+
+        _bookManageable = new BookManagerModel(Library, settings, statusBar);
 
         RefreshControlsOnAppearing();
     }
@@ -119,7 +120,7 @@ public sealed class FindBooksViewModel : AbstractBookViewModel, IRefreshable
     {
         #if DEBUG
         await ShowNavigationCommandInDebug(commandParameter, nameof(FindBooksPage));
-#endif
+        #endif
         if (string.IsNullOrWhiteSpace(commandParameter))
             return;
 
@@ -213,16 +214,28 @@ public sealed class FindBooksViewModel : AbstractBookViewModel, IRefreshable
 
                 case "Test":
                     // await ShowDisplayPromptAsync("Test");
-                    var popup = new PopUpViewModel
-                    {
-                        TextField = "Just text",
-                        InputTextField = "Input something"
-                    };
 
                     // TODO : remove it after test
-                    await ShowPopUpView(popup);
+                    // await ShowPopUpView(popup);
+                    //https://www.nuget.org/packages/Mopups/
+                    var result = await DualResponseViewModel.AutoGenerateBasicPopup(
+                        Color.Parse("#EDF6FC"),
+                        Color.Parse("#005596"), "Cancel",
+                        Color.Parse("#EDF6FC"),
+                        Color.Parse("#005596"), "OK",
+                        Color.Parse("#CCE4F7"),
+                        "Do you want to save library?",
+                        "thumbsup.png");
 
-                    await TryGoToPage(nameof(FindBooksPage));
+                    ;
+                    var libraryName = await EntryInputViewModel.AutoGenerateBasicPopup(
+                        Color.Parse("#EDF6FC"),
+                        Color.Parse("#005596"), "Cancel",
+                        Color.Parse("#EDF6FC"),
+                        Color.Parse("#005596"), "OK",
+                        Color.Parse("#CCE4F7"),
+                        $"{Library.Id}", "New Library Name", 100, 200);
+                    //    await TryGoToPage(nameof(FindBooksPage));
                     break;
 
                 default: //jobs perform without creating views

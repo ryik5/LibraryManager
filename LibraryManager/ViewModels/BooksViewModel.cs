@@ -10,15 +10,14 @@ namespace LibraryManager.ViewModels;
 /// <author>YR 2025-02-09</author>
 public sealed class BooksViewModel : AbstractBookViewModel, IRefreshable
 {
-    public BooksViewModel(ILibrary library, SettingsViewModel settings, IStatusBar statusBar,
-        IPopupService popupService) : base(library, statusBar, popupService)
+    public BooksViewModel(ILibrary library, SettingsViewModel settings, IStatusBar statusBar) : base(library, statusBar)
     {
         Library.LibraryIdChanged += Handle_LibraryIdChanged;
         Library.BookList.CollectionChanged += Handle_BookListCollectionChanged;
         Library.TotalBooksChanged += Handle_TotalBooksChanged;
         IsBooksCollectionViewVisible = true;
         IsEditBookViewVisible = false;
-        _bookManageable = new BookManagerModel(Library, settings, statusBar, popupService);
+        _bookManageable = new BookManagerModel(Library, settings, statusBar);
         ValidateOperations().GetAwaiter();
     }
 

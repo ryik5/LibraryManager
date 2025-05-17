@@ -10,7 +10,7 @@ namespace LibraryManager.Models;
 /// <author>YR 2025-01-09</author>
 public class LibraryManagerModel : AbstractBindableModel, ILibraryManageable
 {
-    public LibraryManagerModel(ILibrary? library, IStatusBar statusBar, IPopupService popupService)
+    public LibraryManagerModel(ILibrary? library, IStatusBar statusBar)
     {
         if (library is null)
             throw new ArgumentNullException(nameof(library));
@@ -25,7 +25,6 @@ public class LibraryManagerModel : AbstractBindableModel, ILibraryManageable
         }
 
         _statusBar = statusBar;
-        _popupService = popupService;
     }
 
 
@@ -126,7 +125,7 @@ public class LibraryManagerModel : AbstractBindableModel, ILibraryManageable
         if (0 < Library.TotalBooks)
             RunInMainThread(() => Library.BookList.Clear());
 
-        var id= Library.Id;
+        var id = Library.Id;
         Library.Name = string.Empty;
         Library.Description = string.Empty;
         Library.Id = 0;
@@ -154,6 +153,5 @@ public class LibraryManagerModel : AbstractBindableModel, ILibraryManageable
     #region Private fields
     private ILibrary? _library;
     private readonly IStatusBar _statusBar;
-    private readonly IPopupService _popupService;
     #endregion
 }

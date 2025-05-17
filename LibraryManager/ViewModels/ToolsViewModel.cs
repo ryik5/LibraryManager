@@ -16,8 +16,7 @@ public class ToolsViewModel : AbstractViewModel
     /// </summary>
     /// <param name="settings">The settings view model.</param>
     /// <param name="statusBar">The status bar.</param>
-    public ToolsViewModel(SettingsViewModel settings, IStatusBar statusBar, IPopupService popupService) :
-        base(popupService)
+    public ToolsViewModel(SettingsViewModel settings, IStatusBar statusBar) 
     {
         StatusBar = statusBar;
         Settings = settings;

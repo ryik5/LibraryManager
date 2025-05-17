@@ -14,17 +14,17 @@ public abstract class AbstractBookViewModel : AbstractViewModel
     /// </summary>
     /// <param name="library">The library instance.</param>
     /// <param name="statusBar">The status bar instance.</param>
-    public AbstractBookViewModel(ILibrary library, IStatusBar statusBar, IPopupService popup) : base(popup)
+    public AbstractBookViewModel(ILibrary library, IStatusBar statusBar)
     {
         StatusBar = statusBar;
         Library = library;
-  
+
         ContentState = Constants.LOAD_CONTENT;
         ClearingState = Constants.CLEAR_CONTENT;
         LoadCover = Constants.LOAD_COVER;
     }
 
-    
+
     #region Public properties
     /// <summary>
     /// Gets or sets the library instance.
@@ -95,7 +95,7 @@ public abstract class AbstractBookViewModel : AbstractViewModel
             }
         }
     }
-   
+
     public string ContentState
     {
         get => _contentState;
@@ -110,7 +110,7 @@ public abstract class AbstractBookViewModel : AbstractViewModel
         get => _clearingState;
         set => SetProperty(ref _clearingState, value);
     }
-     
+
     public string LoadCover
     {
         get => _loadCover;
@@ -135,17 +135,17 @@ public abstract class AbstractBookViewModel : AbstractViewModel
     #endregion
 
     #region Public Methods
-    public async Task<string>  GetSavingNameForLibrary()
+    public async Task<string> GetSavingNameForLibrary()
     {
         // display window with input a new library name
         var castomDialog = await ShowCustomDialogPage(Constants.LIBRARY_SAVE_WITH_NAME,
-            Constants.LIBRARY_NAME, true,Library.Id.ToString());
+            Constants.LIBRARY_NAME, true, Library.Id.ToString());
 
         return castomDialog.IsOk && !string.IsNullOrEmpty(castomDialog.InputString)
             ? castomDialog.InputString
             : Library.Id.ToString();
     }
-    
+
     /// <summary>
     /// Checks if the library is valid based on its ID.
     /// </summary>
@@ -162,7 +162,7 @@ public abstract class AbstractBookViewModel : AbstractViewModel
     /// </remarks>
     protected bool IsNotEmptyLibrary => IsNotZero(Library?.TotalBooks);
     #endregion
-    
+
     #region Private fields
     private ILibrary _library;
     private ObservableCollection<object> _selectedObjects = new();

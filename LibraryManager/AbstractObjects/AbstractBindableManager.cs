@@ -54,7 +54,9 @@ public abstract class AbstractBindableModel : INotifyPropertyChanged
 
         return new ResultInput(result, inputText);
     }
-    protected async Task<ResultInput> ShowCustomDialogPage(string title, string message, bool isInputVisible=true, string inputStartText="InputHere")
+
+    protected async Task<ResultInput> ShowCustomDialogPage(string title, string message, bool isInputVisible = true,
+        string inputStartText = "InputHere")
     {
         var dialogPage = new CustomDialogPage(title, message, isInputVisible, inputStartText);
         await Application.Current?.MainPage?.Navigation.PushModalAsync(dialogPage)!;
@@ -200,7 +202,6 @@ public abstract class AbstractBindableModel : INotifyPropertyChanged
     }
     #endregion
 
-
     #region Implementation INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -218,6 +219,7 @@ public abstract class AbstractBindableModel : INotifyPropertyChanged
     }
     #endregion
 
-
+    #region Private fields
     private IStatusBar _statusBar;
+    #endregion
 }

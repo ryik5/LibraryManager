@@ -8,11 +8,10 @@ namespace LibraryManager.AbstractObjects;
 
 public abstract class AbstractViewModel : AbstractBindableModel
 {
-    protected AbstractViewModel(IPopupService popupService)
+    protected AbstractViewModel()
     {
         // Initialize the generic navigation command
         NavigateCommand = new AsyncRelayCommand<string>(PerformAction);
-        _popupService = popupService;
     }
 
 
@@ -147,11 +146,12 @@ public abstract class AbstractViewModel : AbstractBindableModel
 
     protected Task ShowNavigationErrorInDebug(string commandParameter, string className)
     {
-         WeakReferenceMessenger.Default.Send(new StatusMessage()
+        WeakReferenceMessenger.Default.Send(new StatusMessage()
         {
             InfoKind = EInfoKind.DebugInfo,
             LogLevel = ELogLevel.Warn,
-            Message = $"Navigation error path '{commandParameter}' in class '{className}' by method '{nameof(PerformAction)}'"
+            Message =
+                $"Navigation error path '{commandParameter}' in class '{className}' by method '{nameof(PerformAction)}'"
         });
 
         return Task.CompletedTask;
@@ -215,11 +215,11 @@ public abstract class AbstractViewModel : AbstractBindableModel
         }
     }
 
-    protected async Task ShowPopUpView(PopUpViewModel popup)
+    protected async Task ShowPopUpView()
     {
-        await _popupService.ShowPopup(popup)!;
+        // await _popupService.ShowPopup(popup)!;
 
-        await UpdateTimeOnUI(popup.CancellationTokenSource);
+      //  await UpdateTimeOnUI(popup.CancellationTokenSource);
     }
 
 
@@ -236,7 +236,4 @@ public abstract class AbstractViewModel : AbstractBindableModel
             }
         }, cts.Token);
     }
-
-
-    private readonly IPopupService _popupService;
 }
