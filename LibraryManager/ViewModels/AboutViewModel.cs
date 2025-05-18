@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using LibraryManager.AbstractObjects;
 using System.Diagnostics;
 using System.Reflection;
@@ -6,7 +7,7 @@ using LibraryManager.Views;
 namespace LibraryManager.ViewModels;
 
 /// <author>YR 2025-02-09</author>
-public class AboutViewModel : AbstractViewModel
+public partial class AboutViewModel : AbstractViewModel
 {
     public AboutViewModel(IStatusBar statusBar)
     {
@@ -26,12 +27,12 @@ public class AboutViewModel : AbstractViewModel
     /// <summary>
     /// Gets the Header of the About Page.
     /// </summary>
-    public string Header { get; }
+    [ObservableProperty] string _header;
 
     /// <summary>
     /// Gets the Footer of the About Page.
     /// </summary>
-    public string Footer { get; }
+    [ObservableProperty] private string _footer;
     #endregion
 
     #region Public Methods

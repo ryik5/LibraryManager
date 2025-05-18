@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using LibraryManager.AbstractObjects;
 using LibraryManager.Models;
@@ -7,7 +8,7 @@ using LibraryManager.Views;
 namespace LibraryManager.ViewModels;
 
 /// <author>YR 2025-02-09</author>
-public sealed class LibraryViewModel : AbstractBookViewModel, IRefreshable
+public sealed partial class LibraryViewModel : AbstractBookViewModel, IRefreshable
 {
     public LibraryViewModel(ILibrary library, SettingsViewModel settings, IStatusBar statusBar)
         : base(library, statusBar)
@@ -160,8 +161,6 @@ public sealed class LibraryViewModel : AbstractBookViewModel, IRefreshable
             CanOperateWithBooks = IsValidLibrary && IsNotEmptyLibrary;
             CanCloseLibrary = IsValidLibrary;
         });
-        RaisePropertyChanged(nameof(Library));
-        RaisePropertyChanged(nameof(Library.TotalBooks));
     }
 
     private async Task HandleCloseLibrary()
@@ -176,11 +175,7 @@ public sealed class LibraryViewModel : AbstractBookViewModel, IRefreshable
     /// <summary>
     /// Gets or sets a value indicating whether the book can be edited.
     /// </summary>
-    public bool CanCloseLibrary
-    {
-        get => _canCloseLibrary;
-        set => SetProperty(ref _canCloseLibrary, value);
-    }
+    [ObservableProperty] private bool _canCloseLibrary;
     #endregion
 
     #region Private methods
@@ -225,6 +220,5 @@ public sealed class LibraryViewModel : AbstractBookViewModel, IRefreshable
     private readonly SettingsViewModel _settings;
     private readonly ILibraryManageable _libraryManager;
     private int _libraryHashCode;
-    private bool _canCloseLibrary;
     #endregion
 }

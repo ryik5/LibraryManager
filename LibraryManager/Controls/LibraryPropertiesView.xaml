@@ -38,7 +38,7 @@
                Grid.Row="1" Grid.Column="1" />
 
         <Label Text="Total Books" Grid.Row="2" Grid.Column="0" />
-        <Entry Text="{Binding Library.TotalBooks, Mode=OneWay}"
+        <Entry Text="{Binding Library.BookList.Count, Mode=OneWay}"
                ToolTipProperties.Text="Total number ob the books in the Library" 
                IsReadOnly="True"
                Grid.Row="2" Grid.Column="1" />

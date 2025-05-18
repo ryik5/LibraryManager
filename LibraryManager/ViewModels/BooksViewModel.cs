@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using LibraryManager.AbstractObjects;
 using LibraryManager.Models;
@@ -8,7 +9,7 @@ using System.Collections.Specialized;
 namespace LibraryManager.ViewModels;
 
 /// <author>YR 2025-02-09</author>
-public sealed class BooksViewModel : AbstractBookViewModel, IRefreshable
+public sealed partial class BooksViewModel : AbstractBookViewModel, IRefreshable
 {
     public BooksViewModel(ILibrary library, SettingsViewModel settings, IStatusBar statusBar) : base(library, statusBar)
     {
@@ -29,11 +30,7 @@ public sealed class BooksViewModel : AbstractBookViewModel, IRefreshable
     /// <summary>
     /// Gets or sets a value indicating whether the content can be cleared.
     /// </summary>
-    public bool CanClearContent
-    {
-        get => _canClearContent;
-        set => SetProperty(ref _canClearContent, value);
-    }
+    [ObservableProperty] private bool _canClearContent;
     #endregion
 
     #region Public Methods
@@ -191,13 +188,6 @@ public sealed class BooksViewModel : AbstractBookViewModel, IRefreshable
         }
 
         await UpdateButtonContentState(Book.Content?.IsLoaded ?? false);
-        await RunInMainThreadAsync(() =>
-            {
-                RaisePropertyChanged(nameof(Library));
-                RaisePropertyChanged(nameof(Library.BookList));
-                RaisePropertyChanged(nameof(Book));
-            }
-        );
     }
 
     protected override async Task HandlePostRefreshControlsOnAppearingTask()
@@ -261,6 +251,5 @@ public sealed class BooksViewModel : AbstractBookViewModel, IRefreshable
     #region Private fields
     private readonly IBookManageable _bookManageable;
     private IList<Book> _selectedBooks;
-    private bool _canClearContent;
     #endregion
 }

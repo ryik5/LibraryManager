@@ -9,7 +9,7 @@ using LibraryManager.Extensions;
 namespace LibraryManager.Models;
 
 [Serializable]
-public class Library : AbstractBindableModel, ILibrary, IXmlSerializable
+public partial class Library : AbstractBindableModel, ILibrary, IXmlSerializable
 {
     /// <summary>
     /// Sets the library.
@@ -21,7 +21,6 @@ public class Library : AbstractBindableModel, ILibrary, IXmlSerializable
         Name = library.Name;
         Description = library.Description;
         _bookList.ResetAndAddRange(library.BookList);
-        RaisePropertyChanged(nameof(BookList));
     }
 
     /// <summary>
@@ -72,7 +71,6 @@ public class Library : AbstractBindableModel, ILibrary, IXmlSerializable
     public int TotalBooks
     {
         get => _totalBooks;
-
         set
         {
             _totalBooks = value;
@@ -130,7 +128,7 @@ public class Library : AbstractBindableModel, ILibrary, IXmlSerializable
                         break;
                     case nameof(BookList):
                         BookList = new ObservableCollection<Book>();
-                        while (reader.Name == "Book" || reader.Name == nameof(BookList)||!reader.EOF)
+                        while (reader.Name == "Book" || reader.Name == nameof(BookList) || !reader.EOF)
                         {
                             var book = new Book() { Author = "", Title = "", TotalPages = 0, Id = 0 };
                             book.ReadXml(reader);
@@ -150,7 +148,7 @@ public class Library : AbstractBindableModel, ILibrary, IXmlSerializable
         set => SetProperty(ref _isNew, value);
     }
 
-    
+
     /// <summary>
     /// Gets or sets an array of <see cref="PropertyInfo"/> objects representing the properties of <see cref="Book"/>.
     /// </summary>
@@ -221,6 +219,6 @@ public class Library : AbstractBindableModel, ILibrary, IXmlSerializable
     private PropertyInfo[] _bookPropertiesInfo;
     private string[] _bookProperties;
     private readonly object _locker = new();
-    private bool _isNew=true;
+    private bool _isNew = true;
     #endregion
 }

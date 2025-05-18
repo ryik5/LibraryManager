@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using LibraryManager.Models;
 using System.Collections.ObjectModel;
 
@@ -7,7 +8,7 @@ namespace LibraryManager.AbstractObjects;
 /// Abstract base class for book view models.
 /// </summary>
 /// <author>YR 2025-03-09</author>
-public abstract class AbstractBookViewModel : AbstractViewModel
+public abstract partial class AbstractBookViewModel : AbstractViewModel
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="AbstractBookViewModel"/> class.
@@ -29,56 +30,32 @@ public abstract class AbstractBookViewModel : AbstractViewModel
     /// <summary>
     /// Gets or sets the library instance.
     /// </summary>
-    public ILibrary Library
-    {
-        get => _library;
-        set => SetProperty(ref _library, value);
-    }
+    [ObservableProperty] ILibrary _library;
 
     /// <summary>
     /// Gets or sets the collection of selected books.
     /// </summary>
-    public ObservableCollection<object> SelectedBooks
-    {
-        get => _selectedObjects;
-        set => SetProperty(ref _selectedObjects, value);
-    }
+    [ObservableProperty] ObservableCollection<object> _selectedBooks;
 
     /// <summary>
     /// Gets or sets the book instance.
     /// </summary>
-    public Book Book
-    {
-        get => _book;
-        set => SetProperty(ref _book, value);
-    }
+    [ObservableProperty] private Book _book;
 
     /// <summary>
     /// Gets or sets a value indicating whether the books collection view is visible.
     /// </summary>
-    public bool IsBooksCollectionViewVisible
-    {
-        get => _isBooksCollectionViewVisible;
-        set => SetProperty(ref _isBooksCollectionViewVisible, value);
-    }
+    [ObservableProperty] private bool _isBooksCollectionViewVisible;
 
     /// <summary>
     /// Gets or sets a value indicating whether the edit book view is visible.
     /// </summary>
-    public bool IsEditBookViewVisible
-    {
-        get => _isEditBookViewVisible;
-        set => SetProperty(ref _isEditBookViewVisible, value);
-    }
+    [ObservableProperty] private bool _isEditBookViewVisible;
 
     /// <summary>
     /// Gets or sets a value indicating whether the book can be edited.
     /// </summary>
-    public bool CanEditBook
-    {
-        get => _canEditBook;
-        set => SetProperty(ref _canEditBook, value);
-    }
+    [ObservableProperty] private bool _canEditBook;
 
     /// <summary>
     /// Gets or sets a value indicating whether operations can be performed on books.
@@ -96,37 +73,21 @@ public abstract class AbstractBookViewModel : AbstractViewModel
         }
     }
 
-    public string ContentState
-    {
-        get => _contentState;
-        set => SetProperty(ref _contentState, value);
-    }
+    [ObservableProperty] string _contentState;
 
     /// <summary>
     /// Gets or sets the clearing state.
     /// </summary>
-    public string ClearingState
-    {
-        get => _clearingState;
-        set => SetProperty(ref _clearingState, value);
-    }
+    [ObservableProperty] string _clearingState;
 
-    public string LoadCover
-    {
-        get => _loadCover;
-        set => SetProperty(ref _loadCover, value);
-    }
+    [ObservableProperty] string _loadCover;
     #endregion
 
     #region CommandParameters
     /// <summary>
     /// Gets or sets the OK command parameter.
     /// </summary>
-    public string OK
-    {
-        get => _ok;
-        set => SetProperty(ref _ok, value);
-    }
+    [ObservableProperty] string _oK;
 
     /// <summary>
     /// Gets the cancel command parameter.
@@ -164,16 +125,7 @@ public abstract class AbstractBookViewModel : AbstractViewModel
     #endregion
 
     #region Private fields
-    private ILibrary _library;
-    private ObservableCollection<object> _selectedObjects = new();
-    private Book _book;
     private string _ok = Constants.OK;
     private bool _canOperateWithBooks;
-    private bool _canEditBook;
-    private string _contentState;
-    private string _clearingState;
-    private string _loadCover;
-    private bool _isEditBookViewVisible;
-    private bool _isBooksCollectionViewVisible;
     #endregion
 }

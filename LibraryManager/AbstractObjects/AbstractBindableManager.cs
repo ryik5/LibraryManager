@@ -1,10 +1,11 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using Foundation;
 using LibraryManager.Models;
 using LibraryManager.Utils;
 using LibraryManager.Views;
-using System.ComponentModel;
+using Mopups.PreBaked.PopupPages.DualResponse;
+using Mopups.PreBaked.PopupPages.EntryInput;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using System.Windows.Input;
 
 namespace LibraryManager.AbstractObjects;
@@ -13,24 +14,19 @@ namespace LibraryManager.AbstractObjects;
 /// Abstract base class for bindable models, providing common functionality for data binding and UI interactions.
 /// </summary>
 /// <author>YR 2025-03-09</author>
-public abstract class AbstractBindableModel : INotifyPropertyChanged
+public abstract partial class AbstractBindableModel : ObservableObject
 {
     #region Public Properties
     /// <summary>
     /// Command to perform an action, such as navigate to a different page or view or other actions.
     /// </summary>
-    public ICommand NavigateCommand { get; set; }
+    [ObservableProperty] ICommand _navigateCommand;
 
     /// <summary>
     /// Gets or sets the status bar instance.
     /// </summary>
-    public IStatusBar StatusBar
-    {
-        get => _statusBar;
-        set => SetProperty(ref _statusBar, value);
-    }
+    [ObservableProperty] private IStatusBar _statusBar;
     #endregion
-
 
     #region Public Methods
     /// <summary>
@@ -71,11 +67,33 @@ public abstract class AbstractBindableModel : INotifyPropertyChanged
         return new ResultInput(result, inputText);
     }
 
-    protected async Task ShowDisplayPromptAsync(string message)
+    protected async Task ShowDisplayPromptAsync(string title, string message)
     {
         await Application.Current.MainPage.DisplayPromptAsync("Error", message);
     }
 
+    protected async Task ShowSelectorPopupAsync(string question)
+    {
+        var result = await DualResponseViewModel.AutoGenerateBasicPopup(
+            Color.Parse("#EDF6FC"),
+            Color.Parse("#005596"), Constants.CANCEL,
+            Color.Parse("#EDF6FC"),
+            Color.Parse("#005596"), Constants.OK,
+            Color.Parse("#CCE4F7"),
+            question,
+            "thumbsup.png");
+    }
+
+    protected async Task ShowInputPopupAsync(string defaultText, string placeholder)
+    {
+        var libraryName = await EntryInputViewModel.AutoGenerateBasicPopup(
+            Color.Parse("#EDF6FC"),
+            Color.Parse("#005596"), Constants.CANCEL,
+            Color.Parse("#EDF6FC"),
+            Color.Parse("#005596"), Constants.OK,
+            Color.Parse("#CCE4F7"),
+            defaultText, placeholder, 100, 200);
+    }
 
     /// <summary>
     /// Invokes the specified action on the UI thread.
@@ -200,26 +218,5 @@ public abstract class AbstractBindableModel : INotifyPropertyChanged
         return Path.Combine(GetPathToDocumentDirectory(),
             StringsHandler.CreateXmlFileName(pointedName, fileExtenstion));
     }
-    #endregion
-
-    #region Implementation INotifyPropertyChanged
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    protected void RaisePropertyChanged([CallerMemberName] string? propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-
-    protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
-    {
-        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-        field = value;
-        RaisePropertyChanged(propertyName);
-        return true;
-    }
-    #endregion
-
-    #region Private fields
-    private IStatusBar _statusBar;
     #endregion
 }

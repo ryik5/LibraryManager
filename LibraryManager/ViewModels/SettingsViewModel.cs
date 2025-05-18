@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using LibraryManager.AbstractObjects;
@@ -11,7 +12,7 @@ namespace LibraryManager.ViewModels;
 /// View model for managing application settings.
 /// </summary>
 /// <author>YR 2025-02-14</author>
-public class SettingsViewModel : AbstractBindableModel
+public sealed partial class SettingsViewModel : AbstractBindableModel
 {
     /// <summary>
     /// Initializes a new instance of <see cref="SettingsViewModel"/>.
@@ -33,60 +34,44 @@ public class SettingsViewModel : AbstractBindableModel
     /// <summary>
     /// Gets an array of search fields available for the FindBooks page.
     /// </summary>
-    public EBibliographicKindInformation[] SearchFields { get; }
+    [ObservableProperty] private EBibliographicKindInformation[] _searchFields;
 
     /// <summary>
     /// Gets an array of boolean values representing the state of various settings.
     /// </summary>
-    public bool[] Booleans { get; }
+    [ObservableProperty] private bool[] _booleans;
 
     /// <summary>
     /// Sort directions - ASCENDING, DESCENDING
     /// </summary>
-    public string[] SortingDirections { get; }
+    [ObservableProperty] private string[] _sortingDirections;
 
     /// <summary>
     /// Gets an array of boolean values representing the state of various settings.
     /// </summary>
-    public string[] BookProperties { get; }
+    [ObservableProperty] private string[] _bookProperties;
     #endregion
 
     #region Public Properties
     /// <summary>
     /// Gets or sets the font size of the message box.
     /// </summary>
-    public double MessageBox_FontSize
-    {
-        get => _messageBoxFontSize;
-        set => SetProperty(ref _messageBoxFontSize, value);
-    }
+    [ObservableProperty] private double _messageBox_FontSize;
 
     /// <summary>
     /// Gets or sets the search field type.
     /// </summary>
-    public EBibliographicKindInformation SearchField
-    {
-        get => _searchField;
-        set => SetProperty(ref _searchField, value);
-    }
+    [ObservableProperty] private EBibliographicKindInformation _searchField = EBibliographicKindInformation.All;
 
     /// <summary>
     /// Gets or sets a value indicating whether to search on the fly.
     /// </summary>
-    public bool SearchOnFly
-    {
-        get => _searchOnFly;
-        set => SetProperty(ref _searchOnFly, value);
-    }
+    [ObservableProperty] private bool _searchOnFly;
 
     /// <summary>
     /// Gets or sets the font size of the debug text.
     /// </summary>
-    public double Debug_TextFontSize
-    {
-        get => _debugTextFontSize;
-        set => SetProperty(ref _debugTextFontSize, value);
-    }
+    [ObservableProperty] private double _debug_TextFontSize;
 
     /// <summary>
     /// Gets or sets the first sort book property.
@@ -260,20 +245,12 @@ public class SettingsViewModel : AbstractBindableModel
     /// <summary>
     /// Gets or sets the tooltip for the maximum content length for a book.
     /// </summary>
-    public string Book_MaxContentLength_ToolTip
-    {
-        get => _book_MaxContentLength_ToolTip;
-        set => SetProperty(ref _book_MaxContentLength_ToolTip, value);
-    }
+    [ObservableProperty] private string _book_MaxContentLength_ToolTip;
 
     /// <summary>
     /// Property to get/set the library home folder path
     /// </summary>
-    public string LibraryHomeFolder
-    {
-        get => _libraryHomeFolder;
-        set => SetProperty(ref _libraryHomeFolder, value);
-    }
+    [ObservableProperty] private string _libraryHomeFolder;
 
     /// <summary>
     /// Read-only property to get the label for the library home folder
@@ -403,8 +380,6 @@ public class SettingsViewModel : AbstractBindableModel
                 _propertyValue = Constants.SORTING_ASCENDING;
                 break;
         }
-
-        RaisePropertyChanged(nameof(PropertyName));
     }
 
     private void SetBooleanProperty(string key, ref bool _propertyValue, bool PropertyName)
@@ -418,8 +393,6 @@ public class SettingsViewModel : AbstractBindableModel
                 _propertyValue = false;
                 break;
         }
-
-        RaisePropertyChanged(nameof(PropertyName));
     }
 
     private Task ResetPreferencesExtensions()
@@ -497,9 +470,6 @@ public class SettingsViewModel : AbstractBindableModel
     #region Private fields
     private long _bookMaxContentLength;
     private double _messageBoxFontSize;
-    private EBibliographicKindInformation _searchField = EBibliographicKindInformation.All;
-    private bool _searchOnFly;
-    private double _debugTextFontSize;
     private string _firstSortBookProperty;
     private bool _firstSortPropertyByDescend;
     private string _firstSortProperty_SortingDirection;
@@ -509,8 +479,6 @@ public class SettingsViewModel : AbstractBindableModel
     private string _thirdSortBookProperty;
     private bool _thirdSortPropertyByDescend;
     private string _thirdSortProperty_SortingDirection;
-    private string _book_MaxContentLength_ToolTip;
-    private string _libraryHomeFolder;
     private readonly IFolderPicker _folderPicker;
 
     private readonly Dictionary<string, object> DefaultSettings = new() // Default values for preferences

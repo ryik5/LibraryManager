@@ -17,13 +17,13 @@ public static class MauiProgram
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
+            .ConfigureMopups()
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 fonts.AddFont("Manrope.ttf", "ManropeExtraLight");
-            })
-            .ConfigureMopups();
+            });
 
         /*// Configuration
         using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("LibraryManager.appsettings.json");
@@ -37,9 +37,26 @@ public static class MauiProgram
             Description = "",
             BookList = new ObservableCollection<Book>()
         };
+        builder.Services.AddSingleton<ILibrary>(library);
         builder.Services.AddTransient<IFolderPicker, Platforms.MacCatalyst.FolderPicker>();
         var settings = new SettingsViewModel();
+        builder.Services.AddSingleton<SettingsViewModel>(settings);
         var statusBar = new StatusBarViewModel();
+        builder.Services.AddSingleton<IStatusBar>(statusBar);
+        builder.Services.AddSingleton<StatusBarPanel>();
+
+
+        builder.Services.AddTransient<Book>();
+        builder.Services.AddTransient<App>();
+
+        // Register all shared ViewModels and objects
+        builder.Services.AddTransient<LibraryViewModel>();
+        builder.Services.AddTransient<BooksViewModel>();
+        builder.Services.AddTransient<FindBooksViewModel>();
+        builder.Services.AddTransient<AboutViewModel>();
+        builder.Services.AddTransient<ToolsViewModel>();
+
+
         var package = AppInfo.Current.PackageName;
         WeakReferenceMessenger.Default.Send(new StatusMessage()
             { InfoKind = EInfoKind.DebugInfo, Message = $"{AppInfo.Current.Name} started with package '{package}'." });
@@ -56,23 +73,6 @@ public static class MauiProgram
             { InfoKind = EInfoKind.CurrentInfo, Message = $"Current Library ID: '{library.Id}'" });
         // statusBar.SetStatusMessage(EInfoKind.TotalBooks,0);
         WeakReferenceMessenger.Default.Send(new StatusMessage() { InfoKind = EInfoKind.TotalBooks, Message = "0" });
-
-        builder.Services.AddTransient<Book>();
-        builder.Services.AddTransient<App>();
-
-        // Register all shared ViewModels and objects
-        builder.Services.AddSingleton<ILibrary>(library);
-
-        builder.Services.AddSingleton<IStatusBar>(statusBar);
-        builder.Services.AddTransient<StatusBarPanel>();
-
-        builder.Services.AddSingleton(settings);
-        builder.Services.AddSingleton<LibraryViewModel>();
-        builder.Services.AddSingleton<BooksViewModel>();
-        builder.Services.AddSingleton<FindBooksViewModel>();
-
-        builder.Services.AddTransient<AboutViewModel>();
-        builder.Services.AddTransient<ToolsViewModel>();
 
         #if DEBUG
         builder.Logging.AddDebug();

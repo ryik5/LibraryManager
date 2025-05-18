@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using LibraryManager.AbstractObjects;
 using LibraryManager.Models;
@@ -9,18 +10,17 @@ namespace LibraryManager.ViewModels;
 /// View model for the tools page.
 /// </summary>
 /// <author>YR 2025-03-09</author>
-public class ToolsViewModel : AbstractViewModel
+public sealed partial class ToolsViewModel : AbstractViewModel
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="ToolsViewModel"/> class.
     /// </summary>
     /// <param name="settings">The settings view model.</param>
     /// <param name="statusBar">The status bar.</param>
-    public ToolsViewModel(SettingsViewModel settings, IStatusBar statusBar) 
+    public ToolsViewModel(SettingsViewModel settings, IStatusBar statusBar)
     {
         StatusBar = statusBar;
         Settings = settings;
-        IsSettingsViewVisible = true;
     }
 
 
@@ -28,38 +28,22 @@ public class ToolsViewModel : AbstractViewModel
     /// <summary>
     /// Gets or sets a value indicating whether the settings view is visible.
     /// </summary>
-    public bool IsSettingsViewVisible
-    {
-        get => _isSettingsVisible;
-        set => SetProperty(ref _isSettingsVisible, value);
-    }
+    [ObservableProperty] bool isSettingsViewVisible = true;
 
     /// <summary>
     /// Gets or sets a value indicating whether the debug view is visible.
     /// </summary>
-    public bool IsDebugViewVisible
-    {
-        get => _isDebugViewVisible;
-        set => SetProperty(ref _isDebugViewVisible, value);
-    }
+    [ObservableProperty] private bool _isDebugViewVisible;
 
     /// <summary>
     /// Gets or sets the settings view model.
     /// </summary>
-    public SettingsViewModel Settings
-    {
-        get => _settings;
-        set => SetProperty(ref _settings, value);
-    }
+    [ObservableProperty] private SettingsViewModel _settings;
 
     /// <summary>
     /// Gets or sets the status bar.
     /// </summary>
-    public IStatusBar StatusBar
-    {
-        get => _statusBar;
-        set => SetProperty(ref _statusBar, value);
-    }
+    [ObservableProperty] private IStatusBar _statusBar;
     #endregion
 
     #region CommandParameters
@@ -132,8 +116,6 @@ public class ToolsViewModel : AbstractViewModel
                     #endif
                     break;
             }
-
-            RaisePropertyChanged(nameof(Settings));
         }
         else
         {
@@ -142,12 +124,5 @@ public class ToolsViewModel : AbstractViewModel
             #endif
         }
     }
-    #endregion
-
-    #region Private fields
-    private SettingsViewModel _settings;
-    private bool _isSettingsVisible;
-    private bool _isDebugViewVisible;
-    private IStatusBar _statusBar;
     #endregion
 }

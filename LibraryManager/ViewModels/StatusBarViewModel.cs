@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using LibraryManager.AbstractObjects;
 using LibraryManager.Models;
@@ -6,7 +7,7 @@ using System.Collections.Concurrent;
 namespace LibraryManager.ViewModels;
 
 /// <author>YR 2025-03-09</author>
-public class StatusBarViewModel : AbstractBindableModel, IStatusBar
+public sealed partial class StatusBarViewModel : AbstractBindableModel, IStatusBar
 {
     public StatusBarViewModel()
     {
@@ -20,38 +21,22 @@ public class StatusBarViewModel : AbstractBindableModel, IStatusBar
     /// <summary>
     /// General information about the application or system.
     /// </summary>
-    public string CommonInfo
-    {
-        get => _commonInfo;
-        private set => SetProperty(ref _commonInfo, value);
-    }
+    [ObservableProperty] string _commonInfo;
 
     /// <summary>
     /// Information about the current state or operation being performed.
     /// </summary>
-    public string CurrentInfo
-    {
-        get => _currentInfo;
-        private set => SetProperty(ref _currentInfo, value);
-    }
+    [ObservableProperty] private string _currentInfo;
 
     /// <summary>
     /// Total number of books in the current library.
     /// </summary>
-    public string TotalBooksInfo
-    {
-        get => _totalBooksInfo;
-        private set => SetProperty(ref _totalBooksInfo, value);
-    }
+    [ObservableProperty] string _totalBooksInfo;
 
     /// <summary>
     /// Detailed information for debugging purposes, typically used for troubleshooting.
     /// </summary>
-    public List<IndexedString> DebugInfo
-    {
-        get => _debugInfo;
-        private set => SetProperty(ref _debugInfo, value);
-    }
+    [ObservableProperty] private List<IndexedString> _debugInfo = new();
     #endregion
 
     #region Private Methods
@@ -125,10 +110,6 @@ public class StatusBarViewModel : AbstractBindableModel, IStatusBar
 
 
     #region Private fields
-    private string _totalBooksInfo = String.Empty;
-    private string _commonInfo = String.Empty;
-    private string _currentInfo = String.Empty;
-    private List<IndexedString> _debugInfo = new();
     private readonly CancellationTokenSource _cancellationTokenSource;
     private static readonly ConcurrentQueue<StatusMessage> _messages = new();
     #endregion

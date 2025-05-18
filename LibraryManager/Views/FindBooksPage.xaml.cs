@@ -9,23 +9,17 @@ public partial class FindBooksPage : ContentPage
     public FindBooksPage()
     {
         InitializeComponent();
+
+        BindingContext = App.Services.GetService<FindBooksViewModel>();
     }
 
 
     /// <summary>
     /// To ensure the BindingContext is bound correctly
     /// </summary>
-    protected async override void OnAppearing()
+    protected override void OnAppearing()
     {
         base.OnAppearing();
-
-        // Avoid assigning a new instance unnecessarily
-        BindingContext ??= App.Services.GetService<FindBooksViewModel>();
-        BooksCollectionView.BindingContext ??= App.Services.GetService<FindBooksViewModel>();
-        if (BindingContext is IRefreshable refresher)
-        {
-            await refresher.RefreshControlsOnAppearing();
-        }
     }
 
     /// <summary>
@@ -34,6 +28,7 @@ public partial class FindBooksPage : ContentPage
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
-        BindingContext = null;
+
+        /*BindingContext = null;*/
     }
 }

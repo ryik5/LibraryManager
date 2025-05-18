@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using LibraryManager.AbstractObjects;
 using LibraryManager.Extensions;
@@ -11,20 +12,18 @@ using System.Collections.Specialized;
 namespace LibraryManager.ViewModels;
 
 /// <author>YR 2025-02-09</author>
-public sealed class FindBooksViewModel : AbstractBookViewModel, IRefreshable
+public sealed partial class FindBooksViewModel : AbstractBookViewModel, IRefreshable
 {
     public FindBooksViewModel(ILibrary library, SettingsViewModel settings, IStatusBar statusBar)
         : base(library, statusBar)
     {
-        SearchFields = Enum.GetValues(typeof(EBibliographicKindInformation)).Cast<EBibliographicKindInformation>()
-            .ToList();
-
-        Library.LibraryIdChanged += Handle_LibraryIdChanged;
+         Library.LibraryIdChanged += Handle_LibraryIdChanged;
         Library.TotalBooksChanged += Handle_TotalBooksChanged;
         FoundBookList.CollectionChanged += Handle_FoundBookListChanged;
-
-        IsBooksCollectionViewVisible = true;
-        IsEditBookViewVisible = false;
+        
+       SearchFields = Enum.GetValues(typeof(EBibliographicKindInformation)).Cast<EBibliographicKindInformation>()
+            .ToList();
+       
         ContentState = Constants.LOAD_CONTENT;
         ClearingState = Constants.CLEAR_CONTENT;
         LoadCover = Constants.LOAD_COVER;
@@ -32,21 +31,18 @@ public sealed class FindBooksViewModel : AbstractBookViewModel, IRefreshable
 
         _bookManageable = new BookManagerModel(Library, settings, statusBar);
 
-        RefreshControlsOnAppearing();
+        HandlePostRefreshControlsOnAppearingTask();
     }
+    
 
 
     #region Public Properties
-    public ObservableCollection<Book> FoundBookList
-    {
-        get => _foundBookList;
-        set => SetProperty(ref _foundBookList, value);
-    }
+    [ObservableProperty] private ObservableCollection<Book> _foundBookList = new();
 
     /// <summary>
     /// The fields of the book to perform search.
     /// </summary>
-    public List<EBibliographicKindInformation> SearchFields { get; }
+    [ObservableProperty] private List<EBibliographicKindInformation> _searchFields;
 
     /// <summary>
     /// The search text.
@@ -89,30 +85,13 @@ public sealed class FindBooksViewModel : AbstractBookViewModel, IRefreshable
     #endregion
 
     #region CommandParameters
-    // TODO : 
-    public string ContentState
-    {
-        get => _contentState;
-        set => SetProperty(ref _contentState, value);
-    }
+    [ObservableProperty] private string _contentState;
 
-    public string ClearingState
-    {
-        get => _clearingState;
-        set => SetProperty(ref _clearingState, value);
-    }
+    [ObservableProperty] private string _clearingState;
 
-    public bool CanClearContent
-    {
-        get => _canClearContent;
-        set => SetProperty(ref _canClearContent, value);
-    }
+    [ObservableProperty] private bool _canClearContent;
 
-    public string LoadCover
-    {
-        get => _loadCover;
-        set => SetProperty(ref _loadCover, value);
-    }
+    [ObservableProperty] private string _loadCover;
     #endregion
 
     #region Public Methods
@@ -292,6 +271,16 @@ public sealed class FindBooksViewModel : AbstractBookViewModel, IRefreshable
         return Task.CompletedTask;
     }
 
+    private async Task ValidateOperations()
+    {
+        await Task.Run(() =>
+        {
+            IsBooksCollectionViewVisible = true;
+            IsEditBookViewVisible = false;
+            
+        });
+    }
+    
     private void FindBooks()
     {
         var foundBooks = _bookManageable.FindBooksByKind(SelectedSearchField, SearchText);
@@ -346,15 +335,10 @@ public sealed class FindBooksViewModel : AbstractBookViewModel, IRefreshable
     #endregion
 
     #region Private fields
-    private ObservableCollection<Book> _foundBookList = new();
     private IList<Book> _selectedBooks = new List<Book>();
     private readonly BookManagerModel _bookManageable;
     private string _searchText;
     private bool _searchOnFly;
     private EBibliographicKindInformation _searchField;
-    private string _contentState;
-    private bool _canClearContent;
-    private string _clearingState;
-    private string _loadCover;
     #endregion
 }

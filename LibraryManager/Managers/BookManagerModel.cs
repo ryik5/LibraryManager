@@ -509,9 +509,7 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
         var length = settings.Book_MaxContentLength;
         var fileResult = await TryPickFileUpTask("Select book content", null);
         var readContentTask = await ReadContentFromDiskTask(book, fileResult, maxContentLength: length);
-        RaisePropertyChanged(nameof(book.Content.ObjectByteArray));
-        RaisePropertyChanged(nameof(book.Content));
-
+ 
         return readContentTask.IsSuccess;
     }
 
@@ -574,8 +572,6 @@ public class BookManagerModel : AbstractBindableModel, IBookManageable
         if (readContentTask.IsSuccess)
             book.Set(readContentTask.Book);
 
-        RaisePropertyChanged(nameof(Book.Content.BookCoverByteArray));
-        RaisePropertyChanged(nameof(Book.Content));
         return readContentTask.IsSuccess;
     }
 

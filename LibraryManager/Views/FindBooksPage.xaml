@@ -3,7 +3,9 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:control="clr-namespace:LibraryManager.Controls"
-             x:Class="LibraryManager.Views.FindBooksPage">
+             xmlns:vm="clr-namespace:LibraryManager.ViewModels"
+             x:Class="LibraryManager.Views.FindBooksPage"
+             x:DataType="vm:FindBooksViewModel">
 
     <ContentPage.MenuBarItems>
         <MenuBarItem Text="Find Books">
@@ -53,7 +55,7 @@
 
                 <!-- General Controls -->
                 <StackLayout Grid.Row="0"
-                             IsVisible="{Binding IsBooksCollectionViewVisible, Mode=OneWay}"
+                             IsVisible="{Binding IsBooksCollectionViewVisible, Mode=OneWay, TargetNullValue=True}"
                              IsEnabled="{Binding CanOperateWithBooks, Mode=TwoWay}"
                              Orientation="Horizontal"
                              HorizontalOptions="Fill"
@@ -114,25 +116,24 @@
                 </StackLayout>
 
                 <!-- Displays Found Books-->
-                <ScrollView Grid.Row="1"
-                            IsVisible="{Binding IsBooksCollectionViewVisible, Mode=OneWay}"
+                <ScrollView Grid.Row="1" 
+                            IsVisible="{Binding IsBooksCollectionViewVisible, TargetNullValue=False, Mode=OneWay}"
                             HorizontalScrollBarVisibility="Always"
                             VerticalScrollBarVisibility="Always">
-                    <control:BookCollectionView
-                        HorizontalOptions="Start"
-                        x:Name="BooksCollectionView"
+                    <control:BookCollectionView x:Name="BooksCollectionView"
                         BookCollection="{Binding FoundBookList,Mode=OneWay}"
                         SelectedBooks="{Binding SelectedBooks, Mode=TwoWay}"
                         NavigateCommand="{Binding NavigateCommand, Mode=OneTime}"
+                        IsVisible="{Binding IsBooksCollectionViewVisible, TargetNullValue=False, Mode=OneWay}"
+                        HorizontalOptions="Start"
                         Margin="10,10,5,20" />
                 </ScrollView>
 
                 <!-- Add/Edit Book View -->
-                <control:EditBookView
+                <control:EditBookView x:Name="EditBookView"
                     Grid.Row="1"
                     Book="{Binding Book, Mode=TwoWay}"
                     NavigateCommand="{Binding NavigateCommand, Mode=OneTime}"
-                    BindingContext="{Binding}"
                     IsVisible="{Binding IsEditBookViewVisible, Mode=OneWay}"
                     Margin="10,20,20,10" />
 
@@ -158,8 +159,7 @@
                     IsVisible="{Binding IsEditBookViewVisible, Mode=OneWay}"
                     HeightRequest="35"
                     Margin="0,20,0,10"
-                    BindingContext="{Binding}"
-                    HorizontalOptions="Center"
+                     HorizontalOptions="Center"
                     VerticalOptions="End"
                     NavigateCommand="{Binding NavigateCommand, Mode=OneTime}"
                     IsOkVisibile="True"
@@ -171,7 +171,7 @@
             </Grid>
 
             <!-- StatusBar -->
-            <control:StatusBarPanel Grid.Row="1" BindingContext="{Binding}"
+            <control:StatusBarPanel Grid.Row="1" 
                                     StatusBar="{Binding StatusBar, Mode=OneWay}"
                                     BackgroundColor="{StaticResource Quaternary}"
                                     Margin="0" />
