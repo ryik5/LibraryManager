@@ -67,12 +67,12 @@ public abstract partial class AbstractBindableModel : ObservableObject
         return new ResultInput(result, inputText);
     }
 
-    protected async Task ShowDisplayPromptAsync(string title, string message)
+    protected async Task<string> ShowDisplayPromptAsync(string title, string message)
     {
-        await Application.Current.MainPage.DisplayPromptAsync("Error", message);
+       return await Application.Current.MainPage.DisplayPromptAsync("Error", message);
     }
 
-    protected async Task ShowSelectorPopupAsync(string question)
+    protected async Task<bool> ShowSelectorPopupAsync(string question)
     {
         var result = await DualResponseViewModel.AutoGenerateBasicPopup(
             Color.Parse("#EDF6FC"),
@@ -82,6 +82,7 @@ public abstract partial class AbstractBindableModel : ObservableObject
             Color.Parse("#CCE4F7"),
             question,
             "thumbsup.png");
+        return result;
     }
 
     protected async Task ShowInputPopupAsync(string defaultText, string placeholder)

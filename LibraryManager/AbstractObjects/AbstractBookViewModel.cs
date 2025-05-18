@@ -30,7 +30,8 @@ public abstract partial class AbstractBookViewModel : AbstractViewModel
     /// <summary>
     /// Gets or sets the library instance.
     /// </summary>
-    [ObservableProperty] ILibrary _library;
+    [ObservableProperty]
+    ILibrary _library;
 
     /// <summary>
     /// Gets or sets the collection of selected books.
@@ -87,12 +88,12 @@ public abstract partial class AbstractBookViewModel : AbstractViewModel
     /// <summary>
     /// Gets or sets the OK command parameter.
     /// </summary>
-    [ObservableProperty] string _oK;
+    [ObservableProperty] string _oK = Constants.OK;
 
     /// <summary>
     /// Gets the cancel command parameter.
     /// </summary>
-    public string Cancel => Constants.CANCEL;
+    [ObservableProperty] string _cancel = Constants.CANCEL;
     #endregion
 
     #region Public Methods
@@ -125,7 +126,6 @@ public abstract partial class AbstractBookViewModel : AbstractViewModel
     #endregion
 
     #region Private fields
-    private string _ok = Constants.OK;
     private bool _canOperateWithBooks;
     #endregion
 }

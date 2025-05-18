@@ -24,7 +24,7 @@ public class LibraryManagerModel : AbstractBindableModel, ILibraryManageable
             _library = library;
         }
 
-        _statusBar = statusBar;
+        StatusBar = statusBar;
     }
 
 

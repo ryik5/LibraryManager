@@ -59,6 +59,8 @@ public sealed partial class LibraryViewModel : AbstractBookViewModel, IRefreshab
                 {
                     if (await HasLibraryHashCodeChanged())
                     {
+                         //   var libName=await ShowDisplayPromptAsync(Constants.LIBRARY_SAVE_WITH_NAME, Library.Id.ToString());
+ 
                         var success =
                             await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(), GetPathToCurrentLibraryFile());
                         if (!success)
@@ -204,6 +206,8 @@ public sealed partial class LibraryViewModel : AbstractBookViewModel, IRefreshab
 
         if (libraryChanged)
         {
+            return await ShowSelectorPopupAsync(StringsHandler.LibraryChangedMessage());
+            
             var res = await ShowCustomDialogPage(Constants.LIBRARY_SAVE, StringsHandler.LibraryChangedMessage(), false);
             return res.IsOk;
         }
