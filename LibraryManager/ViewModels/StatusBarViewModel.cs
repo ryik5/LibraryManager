@@ -107,8 +107,7 @@ public sealed partial class StatusBarViewModel : AbstractBindableModel, IStatusB
         return Task.CompletedTask;
     }
     #endregion
-
-
+    
     #region Private fields
     private readonly CancellationTokenSource _cancellationTokenSource;
     private static readonly ConcurrentQueue<StatusMessage> _messages = new();

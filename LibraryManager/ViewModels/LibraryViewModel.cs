@@ -50,32 +50,42 @@ public sealed partial class LibraryViewModel : AbstractBookViewModel, IRefreshab
                             return;
                     }
 
-                    await _libraryManager.CreateNewLibrary();
-                    Library.IsNew = true;
+                    await _libraryManager.CreateNewLibrary(); 
                     await UpdateLibraryHashCode();
+                    
                     break;
                 }
                 case Constants.LIBRARY_LOAD:
                 {
                     if (await HasLibraryHashCodeChanged())
                     {
-                         //   var libName=await ShowDisplayPromptAsync(Constants.LIBRARY_SAVE_WITH_NAME, Library.Id.ToString());
- 
-                        var success =
-                            await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(), GetPathToCurrentLibraryFile());
-                        if (!success)
-                            return;
+                        var shouldSave = await ShowCustomDialogPage(Constants.LIBRARY_SAVE,
+                            StringsHandler.LibraryChangedMessage(), false);
+                        if (shouldSave.IsOk)
+                        {
+                            var shouldSaveLibrary = await ShowCustomDialogPage(Constants.SAVE_CHANGES,
+                                Constants.LIBRARY_SAVE_WITH_NAME, true, Library.Id.ToString());
+                            bool success = true;
+                            if (shouldSaveLibrary.IsOk)
+                                success =
+                                    await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(),
+                                        GetPathToCurrentLibraryFile(shouldSaveLibrary.InputString));
+
+                            if (!success)
+                                return;
+                        }
                     }
 
+                    // await  TryGoToPage(nameof(LibraryPage));
                     var isLoaded = await _libraryManager.TryLoadLibrary();
-                    var msg = isLoaded ? $"Loaded the Library with ID:{Library.Id}" : $"Error loading the Library";
-                    WeakReferenceMessenger.Default.Send(new StatusMessage()
-                        { InfoKind = EInfoKind.CurrentInfo, Message = msg });
-                    if (isLoaded)
-                        Library.IsNew = true;
+                     if (isLoaded)
+                        Library.IsNew = false;
 
                     await UpdateLibraryHashCode();
                     await HandlePostRefreshControlsOnAppearingTask();
+                    var msg = isLoaded ? $"Loaded the Library with ID:{Library.Id}" : $"Error loading the Library";
+                   WeakReferenceMessenger.Default.Send(new StatusMessage()
+                        { InfoKind = EInfoKind.CurrentInfo, Message = msg });
                     break;
                 }
                 case Constants.LIBRARY_SAVE:
@@ -119,7 +129,7 @@ public sealed partial class LibraryViewModel : AbstractBookViewModel, IRefreshab
                 }
                 case Constants.LIBRARY_CLOSE:
                 {
-                    if (Library.IsNew && 0 < Library.TotalBooks || !Library.IsNew && await HasLibraryHashCodeChanged())
+                    if (await HasLibraryHashCodeChanged())
                     {
                         string libName = string.Empty;
                         if (Library.IsNew)
@@ -196,23 +206,24 @@ public sealed partial class LibraryViewModel : AbstractBookViewModel, IRefreshab
     /// Checks if the library hash code has changed and prompts the user to save changes if necessary.
     /// </summary>
     /// <returns>True if the user confirms saving changes, false otherwise.</returns>
-    private async Task<bool> HasLibraryHashCodeChanged()
+    private Task<bool> HasLibraryHashCodeChanged()
     {
-        if (!IsValidLibrary || !IsNotEmptyLibrary)
-            return false;
+        if (!IsValidLibrary || IsEmptyLibrary&&Library.IsNew)
+            return Task.FromResult(false); 
 
         var currentHash = Library.GetHashCode();
-        var libraryChanged = currentHash != 0 && currentHash != _libraryHashCode;
+        return Task.FromResult(currentHash != 0 && currentHash != _libraryHashCode);
 
-        if (libraryChanged)
+       // if (libraryChanged)
         {
-            return await ShowSelectorPopupAsync(StringsHandler.LibraryChangedMessage());
-            
-            var res = await ShowCustomDialogPage(Constants.LIBRARY_SAVE, StringsHandler.LibraryChangedMessage(), false);
-            return res.IsOk;
+          //  var res = await ShowSelectorPopupAsync(StringsHandler.LibraryChangedMessage());
+          //  return res;
+
+            // res = await ShowCustomDialogPage(Constants.LIBRARY_SAVE, StringsHandler.LibraryChangedMessage(), false);
+            // return res.IsOk;
         }
 
-        return false;
+        //return false;
     }
 
 

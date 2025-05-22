@@ -76,12 +76,23 @@ public class LibraryManagerModel : AbstractBindableModel, ILibraryManageable
     /// </summary>
     public Task CreateNewLibrary()
     {
-        TryCloseLibrary();
+        if (0 < Library.BookList.Count)
+            RunInMainThread(() => Library.BookList.Clear());
 
+        Library.Name = string.Empty;
+        Library.Description = string.Empty;
         Library.Id = new Random().Next();
-
-        WeakReferenceMessenger.Default.Send(new StatusMessage()
+        Library.IsNew = true;
+        
+       WeakReferenceMessenger.Default.Send(new StatusMessage()
             { InfoKind = EInfoKind.CurrentInfo, Message = $"Created new library with ID:{Library.Id}." });
+       return Task.CompletedTask;
+    }
+
+    private Task NewLibrary()
+    {
+        Library.Id = new Random().Next();
+        Library.IsNew = true;
         return Task.CompletedTask;
     }
 
@@ -122,7 +133,7 @@ public class LibraryManagerModel : AbstractBindableModel, ILibraryManageable
     /// </summary>
     public Task TryCloseLibrary()
     {
-        if (0 < Library.TotalBooks)
+        if (0 < Library.BookList.Count)
             RunInMainThread(() => Library.BookList.Clear());
 
         var id = Library.Id;

@@ -1,4 +1,4 @@
-using LibraryManager.AbstractObjects;
+using CommunityToolkit.Mvvm.ComponentModel;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
@@ -6,7 +6,7 @@ using System.Xml.Serialization;
 namespace LibraryManager.Models;
 
 [Serializable]
-public class Book : AbstractBindableModel, IXmlSerializable
+public class Book : ObservableObject, IXmlSerializable
 {
     #region Public Properties
     /// <summary>

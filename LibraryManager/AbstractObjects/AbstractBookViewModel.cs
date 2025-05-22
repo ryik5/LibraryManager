@@ -123,6 +123,8 @@ public abstract partial class AbstractBookViewModel : AbstractViewModel
     /// A library is considered not empty if its total books count is not zero.
     /// </remarks>
     protected bool IsNotEmptyLibrary => IsNotZero(Library?.TotalBooks);
+    protected bool IsEmptyLibrary => !IsNotZero(Library?.TotalBooks);
+
     #endregion
 
     #region Private fields

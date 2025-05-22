@@ -4,6 +4,7 @@ using LibraryManager.AbstractObjects;
 using LibraryManager.Models;
 using LibraryManager.Utils;
 using LibraryManager.Views;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
 namespace LibraryManager.ViewModels;
@@ -16,6 +17,7 @@ public sealed partial class BooksViewModel : AbstractBookViewModel, IRefreshable
         Library.LibraryIdChanged += Handle_LibraryIdChanged;
         Library.BookList.CollectionChanged += Handle_BookListCollectionChanged;
         Library.TotalBooksChanged += Handle_TotalBooksChanged;
+        SelectedBooks = new ObservableCollection<object>();
         IsBooksCollectionViewVisible = true;
         IsEditBookViewVisible = false;
         _bookManageable = new BookManagerModel(Library, settings, statusBar);

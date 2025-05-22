@@ -74,15 +74,14 @@ public abstract partial class AbstractBindableModel : ObservableObject
 
     protected async Task<bool> ShowSelectorPopupAsync(string question)
     {
-        var result = await DualResponseViewModel.AutoGenerateBasicPopup(
+        return await DualResponseViewModel.AutoGenerateBasicPopup(
             Color.Parse("#EDF6FC"),
-            Color.Parse("#005596"), Constants.CANCEL,
+            Color.Parse("#005596"), Constants.NO,
             Color.Parse("#EDF6FC"),
-            Color.Parse("#005596"), Constants.OK,
+            Color.Parse("#005596"), Constants.YES,
             Color.Parse("#CCE4F7"),
             question,
             "thumbsup.png");
-        return result;
     }
 
     protected async Task ShowInputPopupAsync(string defaultText, string placeholder)

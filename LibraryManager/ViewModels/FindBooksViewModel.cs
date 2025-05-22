@@ -19,6 +19,8 @@ public sealed partial class FindBooksViewModel : AbstractBookViewModel, IRefresh
     {
          Library.LibraryIdChanged += Handle_LibraryIdChanged;
         Library.TotalBooksChanged += Handle_TotalBooksChanged;
+        FoundBookList = new ObservableCollection<Book>();
+        SelectedBooks=new ObservableCollection<object>();
         FoundBookList.CollectionChanged += Handle_FoundBookListChanged;
         
        SearchFields = Enum.GetValues(typeof(EBibliographicKindInformation)).Cast<EBibliographicKindInformation>()

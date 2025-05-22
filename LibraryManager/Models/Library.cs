@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using LibraryManager.AbstractObjects;
 using System.Collections.ObjectModel;
 using System.Reflection;
@@ -9,7 +10,7 @@ using LibraryManager.Extensions;
 namespace LibraryManager.Models;
 
 [Serializable]
-public partial class Library : AbstractBindableModel, ILibrary, IXmlSerializable
+public class Library : ObservableObject, ILibrary, IXmlSerializable
 {
     /// <summary>
     /// Sets the library.
@@ -32,7 +33,9 @@ public partial class Library : AbstractBindableModel, ILibrary, IXmlSerializable
         set
         {
             if (SetProperty(ref _id, value))
+            {
                 LibraryIdChanged?.Invoke(this, new EventArgs());
+            }
         }
     }
 
