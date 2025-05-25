@@ -199,23 +199,11 @@ public sealed partial class FindBooksViewModel : AbstractBookViewModel, IRefresh
                     // TODO : remove it after test
                     // await ShowPopUpView(popup);
                     //https://www.nuget.org/packages/Mopups/
-                    var result = await DualResponseViewModel.AutoGenerateBasicPopup(
-                        Color.Parse("#EDF6FC"),
-                        Color.Parse("#005596"), "Cancel",
-                        Color.Parse("#EDF6FC"),
-                        Color.Parse("#005596"), "OK",
-                        Color.Parse("#CCE4F7"),
-                        "Do you want to save library?",
-                        "thumbsup.png");
+                    var result = await  ShowSelectorPopupAsync("Do you want to save library?");
 
-                    ;
-                    var libraryName = await EntryInputViewModel.AutoGenerateBasicPopup(
-                        Color.Parse("#EDF6FC"),
-                        Color.Parse("#005596"), "Cancel",
-                        Color.Parse("#EDF6FC"),
-                        Color.Parse("#005596"), "OK",
-                        Color.Parse("#CCE4F7"),
-                        $"{Library.Id}", "New Library Name", 100, 200);
+                    var libraryName = await ShowInputPopupAsync($"{Library.Id}",$"Library_name"  );
+                    //$"{Library.Id}"
+                    var isInputed =!Constants.NoText.Equals(libraryName);
                     //    await TryGoToPage(nameof(FindBooksPage));
                     break;
 

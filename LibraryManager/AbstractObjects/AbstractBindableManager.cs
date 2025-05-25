@@ -72,9 +72,9 @@ public abstract partial class AbstractBindableModel : ObservableObject
        return await Application.Current.MainPage.DisplayPromptAsync("Error", message);
     }
 
-    protected async Task<bool> ShowSelectorPopupAsync(string question)
+    protected Task<bool> ShowSelectorPopupAsync(string question)
     {
-        return await DualResponseViewModel.AutoGenerateBasicPopup(
+        return DualResponseViewModel.AutoGenerateBasicPopup(
             Color.Parse("#EDF6FC"),
             Color.Parse("#005596"), Constants.NO,
             Color.Parse("#EDF6FC"),
@@ -84,14 +84,14 @@ public abstract partial class AbstractBindableModel : ObservableObject
             "thumbsup.png");
     }
 
-    protected async Task ShowInputPopupAsync(string defaultText, string placeholder)
+    protected Task<string> ShowInputPopupAsync(string defaultText, string placeholder)
     {
-        var libraryName = await EntryInputViewModel.AutoGenerateBasicPopup(
+        return EntryInputViewModel.AutoGenerateBasicPopup(
+            Color.FromArgb("#EDF6FC"),
+            Color.Parse("#FF005596"), Constants.CANCEL,
             Color.Parse("#EDF6FC"),
-            Color.Parse("#005596"), Constants.CANCEL,
-            Color.Parse("#EDF6FC"),
-            Color.Parse("#005596"), Constants.OK,
-            Color.Parse("#CCE4F7"),
+            Color.Parse("#FF005596"), Constants.OK,
+            Color.FromArgb("#00CCE4F7"),
             defaultText, placeholder, 100, 200);
     }
 

@@ -19,7 +19,8 @@ public static class Constants
     public const string DOUBLECLICK = "DoubleClick";
     public const string CLICK = "Click";
     public const string SELECTION_CHANGED= "SelectionChanged";
-
+    public const string NoText="No Text Available";
+    
     public const string ID = "ID";
     public const string LIBRARY_MANAGER = "LibraryManager";
     public const string LIBRARY_MANAGER_PIPE_SERVER = "LibraryManagerPipeServer";
