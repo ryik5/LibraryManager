@@ -111,15 +111,16 @@ public sealed partial class LibraryViewModel : AbstractBookViewModel, IRefreshab
                 }
                 case Constants.LIBRARY_SAVE_WITH_NAME:
                 {
-                    // display window with input a new library name
-                    var libName = await GetSavingNameForLibrary();
-
+                    var inputtedLibraryName = await ShowInputPopupAsync($"{Library.Id}",$"Library_name"  );
+                     var isInputted =!Constants.NoText.Equals(inputtedLibraryName);
+                    var libName = isInputted && !string.IsNullOrEmpty(inputtedLibraryName) ? inputtedLibraryName : Library.Id.ToString();
+                    
                     var res = await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(), GetPathToFile(libName));
                     if (res)
                         await UpdateLibraryHashCode();
                     var msg = res
-                        ? $"Library with ID:{Library.Id} saved on disk with name '{libName}' successfully."
-                        : $"Error saving the Library with ID:{Library.Id}";
+                        ? $"Library with ID:'{Library.Id}' saved on disk with name '{libName}' successfully."
+                        : $"Error Of saving the Library with ID:'{Library.Id}' as '{libName}'";
                     WeakReferenceMessenger.Default.Send(new StatusMessage()
                     {
                         InfoKind = EInfoKind.CurrentInfo,
