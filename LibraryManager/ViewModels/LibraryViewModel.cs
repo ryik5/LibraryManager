@@ -132,15 +132,17 @@ public sealed partial class LibraryViewModel : AbstractBookViewModel, IRefreshab
                 {
                     if (await HasLibraryHashCodeChanged())
                     {
-                        string libName = string.Empty;
-                        if (Library.IsNew)
-                            libName = await GetSavingNameForLibrary();
+                        var result = await ShowSelectorPopupAsync("Library has been changed but wasn't saved.\nDo you want to save library?");
+                        if (result)
+                        {
+                            WeakReferenceMessenger.Default.Send(new StatusMessage()
+                            {
+                                InfoKind = EInfoKind.CurrentInfo,
+                                Message = "Library hasn't been closed. You must save it first."
+                            });
 
-                        var success =
-                            await _libraryManager.TrySaveLibrary(new XmlLibraryKeeper(),
-                                GetPathToCurrentLibraryFile(libName));
-                        if (!success)
                             return;
+                        }
                     }
 
                     await _libraryManager.TryCloseLibrary();

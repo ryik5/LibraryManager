@@ -79,7 +79,7 @@ public abstract partial class AbstractBindableModel : ObservableObject
             Color.Parse("#005596"), Constants.NO,
             Color.Parse("#EDF6FC"),
             Color.Parse("#005596"), Constants.YES,
-            Color.Parse("#CCE4F7"),
+            Color.Parse("#005596"),
             question,
             "thumbsup.png");
     }
