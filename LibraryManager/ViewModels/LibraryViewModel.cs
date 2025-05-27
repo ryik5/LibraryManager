@@ -132,8 +132,8 @@ public sealed partial class LibraryViewModel : AbstractBookViewModel, IRefreshab
                 {
                     if (await HasLibraryHashCodeChanged())
                     {
-                        var result = await ShowSelectorPopupAsync("Library has been changed but wasn't saved.\nDo you want to save library?");
-                        if (result)
+                        if (await ShowSelectorPopupAsync(
+                                "Library has been changed but wasn't saved.\nDo you want to save library?"))
                         {
                             WeakReferenceMessenger.Default.Send(new StatusMessage()
                             {
