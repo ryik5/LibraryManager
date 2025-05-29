@@ -193,20 +193,6 @@ public sealed partial class FindBooksViewModel : AbstractBookViewModel, IRefresh
                     Book = book;
                     break;
 
-                case "Test":
-                    // await ShowDisplayPromptAsync("Test");
-
-                    // TODO : remove it after test
-                    // await ShowPopUpView(popup);
-                    //https://www.nuget.org/packages/Mopups/
-                    var result = await  ShowSelectorPopupAsync("Do you want to save library?");
-
-                    var libraryName = await ShowInputPopupAsync($"{Library.Id}",$"Library_name"  );
-                    //$"{Library.Id}"
-                    var isInputed =!Constants.NoText.Equals(libraryName);
-                    //    await TryGoToPage(nameof(FindBooksPage));
-                    break;
-
                 default: //jobs perform without creating views
                 {
                     // Performing actions by the BooksManager

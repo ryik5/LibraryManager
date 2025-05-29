@@ -107,12 +107,7 @@
                             CommandParameter="Delete the selected book"
                             ToolTipProperties.Text="Delete the selected books"
                             MinimumWidthRequest="100" />
-
-                    <Button Text="Test Pop Up"
-                            Command="{Binding NavigateCommand}"
-                            CommandParameter="Test"
-                            MinimumWidthRequest="100" />
-
+                    
                 </StackLayout>
 
                 <!-- Displays Found Books-->
