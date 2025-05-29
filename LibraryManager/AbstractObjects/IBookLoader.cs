@@ -2,7 +2,7 @@
 
 namespace LibraryManager.AbstractObjects;
 
-/// <author>YR 2025-01-09</author>
+/// <author>YR 2025-02-09</author>
 public interface IBookLoader 
 {
     bool TryLoadBook(string pathToBook, out Book? book);
