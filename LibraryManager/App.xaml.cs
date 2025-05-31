@@ -1,5 +1,6 @@
 ﻿namespace LibraryManager;
 
+/// <author>YR 2025-02-09</author>
 public partial class App : Application
 {
     public App(IServiceProvider serviceProvider)
@@ -12,7 +13,7 @@ public partial class App : Application
     }
 
     /// <summary>
-    /// DI for singletons // TODO : Check necessary
+    /// DI for singletons
     /// </summary>
     public static IServiceProvider Services { get; private set; }
 }

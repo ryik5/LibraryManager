@@ -32,8 +32,8 @@ public static class MauiProgram
 
         var library = new Library
         {
-            Id = new Random().Next(),
-            Name = "Empty Library",
+            Id = 0,
+            Name = "",
             Description = "",
             BookList = new ObservableCollection<Book>()
         };
